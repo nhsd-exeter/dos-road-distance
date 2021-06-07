@@ -113,8 +113,11 @@ devops-copy: ### Copy the DevOps automation toolchain scripts from this codebase
 		cp -fv build/automation/lib/project/template/.gitignore $(DIR)
 		(
 			cp -fv $(DIR)/project.code-workspace /tmp/project.code-workspace || cp -fv build/automation/lib/project/template/project.code-workspace /tmp/project.code-workspace
+			which npx && cat /tmp/project.code-workspace | npx strip-json-comments-cli > /tmp/project.code-workspace.tmp && mv -fv /tmp/project.code-workspace.tmp /tmp/project.code-workspace ||:
 			cp -fv build/automation/lib/project/template/project.code-workspace $(DIR)
 			jq --argjson data "$$(cat /tmp/project.code-workspace | jq '.folders')" '.folders = $$data' $(DIR)/project.code-workspace > $(DIR)/project.code-workspace.new
+			mv -fv $(DIR)/project.code-workspace.new $(DIR)/project.code-workspace
+			jq --argjson data "$$(cat /tmp/project.code-workspace | jq '.settings."workbench.colorTheme"')" '.settings."workbench.colorTheme" = $$data' $(DIR)/project.code-workspace > $(DIR)/project.code-workspace.new
 			mv -fv $(DIR)/project.code-workspace.new $(DIR)/project.code-workspace
 			jq --argjson data "$$(cat /tmp/project.code-workspace | jq '.settings."workbench.colorCustomizations"')" '.settings."workbench.colorCustomizations" = $$data' $(DIR)/project.code-workspace > $(DIR)/project.code-workspace.new
 			mv -fv $(DIR)/project.code-workspace.new $(DIR)/project.code-workspace
@@ -221,8 +224,11 @@ devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolc
 		cp -fv build/automation/lib/project/template/.gitignore $(PARENT_PROJECT_DIR)
 		(
 			cp -fv $(PARENT_PROJECT_DIR)/project.code-workspace /tmp/project.code-workspace || cp -fv build/automation/lib/project/template/project.code-workspace /tmp/project.code-workspace
+			which npx && cat /tmp/project.code-workspace | npx strip-json-comments-cli > /tmp/project.code-workspace.tmp && mv -fv /tmp/project.code-workspace.tmp /tmp/project.code-workspace ||:
 			cp -fv build/automation/lib/project/template/project.code-workspace $(PARENT_PROJECT_DIR)
 			jq --argjson data "$$(cat /tmp/project.code-workspace | jq '.folders')" '.folders = $$data' $(PARENT_PROJECT_DIR)/project.code-workspace > $(PARENT_PROJECT_DIR)/project.code-workspace.new
+			mv -fv $(PARENT_PROJECT_DIR)/project.code-workspace.new $(PARENT_PROJECT_DIR)/project.code-workspace
+			jq --argjson data "$$(cat /tmp/project.code-workspace | jq '.settings."workbench.colorTheme"')" '.settings."workbench.colorTheme" = $$data' $(PARENT_PROJECT_DIR)/project.code-workspace > $(PARENT_PROJECT_DIR)/project.code-workspace.new
 			mv -fv $(PARENT_PROJECT_DIR)/project.code-workspace.new $(PARENT_PROJECT_DIR)/project.code-workspace
 			jq --argjson data "$$(cat /tmp/project.code-workspace | jq '.settings."workbench.colorCustomizations"')" '.settings."workbench.colorCustomizations" = $$data' $(PARENT_PROJECT_DIR)/project.code-workspace > $(PARENT_PROJECT_DIR)/project.code-workspace.new
 			mv -fv $(PARENT_PROJECT_DIR)/project.code-workspace.new $(PARENT_PROJECT_DIR)/project.code-workspace
@@ -265,7 +271,7 @@ devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolc
 		version=$$(make get-variable NAME=DEVOPS_PROJECT_VERSION)
 		if [ 0 -lt $$(git status -s | wc -l) ]; then
 			git add .
-			[ "$(NO_COMMIT)" != true ] && git commit -S -m "Update the DevOps automation toolchain scripts to $$version" || echo "Please, check and commit the changes with the following message: \"Update the DevOps automation toolchain scripts to $$version\""
+			[ "$(NO_COMMIT)" != true ] && git commit -S -m "Update automation scripts to $$version" || echo "Please, check and commit the changes with the following message: \"Update automation scripts to $$version\""
 		fi
 	}
 	if [ -z "$(__DEVOPS_SYNCHRONISE)" ]; then
@@ -576,7 +582,7 @@ BUILD_COMMIT_DATE := $(or $(shell TZ=UTC git show -s --format=%cd --date=format-
 BUILD_COMMIT_AUTHOR_NAME := $(shell git show -s --format='%an' HEAD 2> /dev/null ||:)
 BUILD_COMMIT_AUTHOR_EMAIL := $(shell git show -s --format='%ae' HEAD 2> /dev/null ||:)
 BUILD_COMMIT_MESSAGE := $(shell git log -1 --pretty=%B HEAD 2> /dev/null ||:)
-BUILD_TAG := $(or $(BUILD_TAG), $(BUILD_TIMESTAMP)-$(BUILD_COMMIT_HASH))
+BUILD_TAG := $(shell echo "$(BUILD_TAG)" | grep -Eq ^jenkins- && echo $(BUILD_TIMESTAMP)-$(BUILD_COMMIT_HASH) || echo $(or $(BUILD_TAG), $(BUILD_TIMESTAMP)-$(BUILD_COMMIT_HASH)))
 USER_ID := $(shell id -u)
 GROUP_ID := $(shell id -g)
 TTY_ENABLE := $(or $(TTY_ENABLE), $(shell [ $(BUILD_ID) -eq 0 ] && echo true || echo false))
