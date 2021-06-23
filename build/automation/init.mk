@@ -97,9 +97,13 @@ devops-copy: ### Copy the DevOps automation toolchain scripts from this codebase
 			--exclude=jenkins/Jenkinsfile* \
 			build/* \
 			$(DIR)/build
+		# ---
+		make _devops-project-update-variables DIR=$(DIR)
+		# ---
 		[ $$is_github == true ] && (
 			mkdir -p $(DIR)/.github/workflows
-			cp -fv build/automation/lib/project/template/.github/workflows/check-pull-request-title.yml $(DIR)/.github/workflows
+			cp -fv build/automation/lib/project/template/.github/workflows/*.yml $(DIR)/.github/workflows
+			make file-replace-variables-in-dir DIR=$(DIR)/.github/workflows
 			cp -fv build/automation/lib/project/template/.github/CODEOWNERS $(DIR)/.github
 			cp -fv build/automation/lib/project/template/.gitattributes $(DIR)
 		)
@@ -129,6 +133,11 @@ devops-copy: ### Copy the DevOps automation toolchain scripts from this codebase
 		[ ! -f $(DIR)/README.md ] && cp -fv build/automation/lib/project/template/README.md $(DIR)
 		[ -f $(DIR)/TODO.md ] && mv -fv $(DIR)/TODO.md $(DIR)/documentation; [ ! -f $(DIR)/documentation/TODO.md ] && cp -fv build/automation/lib/project/template/documentation/TODO.md $(DIR)/documentation
 		cp -fv build/automation/lib/project/template/documentation/adr/README.md $(DIR)/documentation/adr
+		[ ! -f "$(DIR)/documentation/diagrams/C4 model.drawio" ] && (
+			cp -fv "build/automation/lib/project/template/documentation/diagrams/C4 model.drawio" $(DIR)/documentation/diagrams
+			cp -fv "build/automation/lib/project/template/documentation/diagrams/C4 model - *.png" $(DIR)/documentation/diagrams
+		)
+		[ ! -f $(DIR)/documentation/diagrams/Infrastructure.drawio ] && cp -fv build/automation/lib/project/template/documentation/diagrams/Infrastructure.drawio $(DIR)/documentation/diagrams
 		cp -fv build/automation/lib/project/template/documentation/diagrams/DevOps-Pipelines.png $(DIR)/documentation/diagrams
 		[ ! -f $(DIR)/documentation/CONTRIBUTING.md ] && cp -fv build/automation/lib/project/template/documentation/CONTRIBUTING.md $(DIR)/documentation
 		[ ! -f $(DIR)/documentation/ONBOARDING.md ] && cp -fv build/automation/lib/project/template/documentation/ONBOARDING.md $(DIR)/documentation
@@ -208,9 +217,13 @@ devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolc
 			--exclude=jenkins/Jenkinsfile* \
 			build/* \
 			$(PARENT_PROJECT_DIR)/build
+		# ---
+		make _devops-project-update-variables DIR=$(PARENT_PROJECT_DIR)
+		# ---
 		[ $$is_github == true ] && (
 			mkdir -p $(PARENT_PROJECT_DIR)/.github/workflows
-			cp -fv build/automation/lib/project/template/.github/workflows/check-pull-request-title.yml $(PARENT_PROJECT_DIR)/.github/workflows
+			cp -fv build/automation/lib/project/template/.github/workflows/*.yml $(PARENT_PROJECT_DIR)/.github/workflows
+			make file-replace-variables-in-dir DIR=$(PARENT_PROJECT_DIR)/.github/workflows
 			cp -fv build/automation/lib/project/template/.github/CODEOWNERS $(PARENT_PROJECT_DIR)/.github
 			cp -fv build/automation/lib/project/template/.gitattributes $(PARENT_PROJECT_DIR)
 		)
@@ -240,6 +253,11 @@ devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolc
 		[ ! -f $(PARENT_PROJECT_DIR)/README.md ] && cp -fv build/automation/lib/project/template/README.md $(PARENT_PROJECT_DIR)
 		[ -f $(PARENT_PROJECT_DIR)/TODO.md ] && mv -fv $(PARENT_PROJECT_DIR)/TODO.md $(PARENT_PROJECT_DIR)/documentation; [ ! -f $(PARENT_PROJECT_DIR)/documentation/TODO.md ] && cp -fv build/automation/lib/project/template/documentation/TODO.md $(PARENT_PROJECT_DIR)/documentation
 		cp -fv build/automation/lib/project/template/documentation/adr/README.md $(PARENT_PROJECT_DIR)/documentation/adr
+		[ ! -f "$(PARENT_PROJECT_DIR)/documentation/diagrams/C4 model.drawio" ] && (
+			cp -fv "build/automation/lib/project/template/documentation/diagrams/C4 model.drawio" $(PARENT_PROJECT_DIR)/documentation/diagrams
+			cp -fv "build/automation/lib/project/template/documentation/diagrams/C4 model - *.png" $(PARENT_PROJECT_DIR)/documentation/diagrams
+		)
+		[ ! -f $(PARENT_PROJECT_DIR)/documentation/diagrams/Infrastructure.drawio ] && cp -fv build/automation/lib/project/template/documentation/diagrams/Infrastructure.drawio $(PARENT_PROJECT_DIR)/documentation/diagrams
 		cp -fv build/automation/lib/project/template/documentation/diagrams/DevOps-Pipelines.png $(PARENT_PROJECT_DIR)/documentation/diagrams
 		[ ! -f $(PARENT_PROJECT_DIR)/documentation/CONTRIBUTING.md ] && cp -fv build/automation/lib/project/template/documentation/CONTRIBUTING.md $(PARENT_PROJECT_DIR)/documentation
 		[ ! -f $(PARENT_PROJECT_DIR)/documentation/ONBOARDING.md ] && cp -fv build/automation/lib/project/template/documentation/ONBOARDING.md $(PARENT_PROJECT_DIR)/documentation
@@ -284,6 +302,66 @@ devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolc
 		sync && version && cleanup && commit
 	fi
 
+_devops-project-update-variables: ### Set up project variables - mandatory: DIR=[project directory]; optional: ALWAYS_ASK=true
+	file=$(DIR)/build/automation/var/project.mk
+	pg=$$(cat $$file | grep "PROJECT_GROUP = " | sed "s/PROJECT_GROUP = //")
+	pgs=$$(cat $$file | grep "PROJECT_GROUP_SHORT = " | sed "s/PROJECT_GROUP_SHORT = //")
+	pn=$$(cat $$file | grep "PROJECT_NAME = " | sed "s/PROJECT_NAME = //")
+	pns=$$(cat $$file | grep "PROJECT_NAME_SHORT = " | sed "s/PROJECT_NAME_SHORT = //")
+	pdn=$$(cat $$file | grep "PROJECT_DISPLAY_NAME = " | sed "s/PROJECT_DISPLAY_NAME = //")
+	if [[ ! "$(ALWAYS_ASK)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]]; then
+		if [ "$$pg" != 'uec/tools' ] && [ "$$pgs" != 'uec-tools' ] && [ "$$pn" != 'make-devops' ] && [ "$$pns" != 'mdo' ] && [ "$$pdn" != 'Make DevOps' ]; then
+			exit 0
+		fi
+	fi
+	printf "\nPlease, set each project variable to a valid value or press ENTER to leave it unchanged.\n\n"
+	read -p "PROJECT_GROUP        ($$pg) : " new_pg
+	read -p "PROJECT_GROUP_SHORT  ($$pgs) : " new_pgs
+	read -p "PROJECT_NAME         ($$pn) : " new_pn
+	read -p "PROJECT_NAME_SHORT   ($$pns) : " new_pns
+	read -p "PROJECT_DISPLAY_NAME ($$pdn) : " new_pdn
+	if [ -n "$$new_pg" ]; then
+		make -s file-replace-content \
+			FILE=$$file \
+			OLD="PROJECT_GROUP = $$pg" \
+			NEW="PROJECT_GROUP = $$new_pg" \
+		> /dev/null 2>&1
+	fi
+	if [ -n "$$new_pgs" ]; then
+		make -s file-replace-content \
+			FILE=$$file \
+			OLD="PROJECT_GROUP_SHORT = $$pgs" \
+			NEW="PROJECT_GROUP_SHORT = $$new_pgs" \
+		> /dev/null 2>&1
+	fi
+	if [ -n "$$new_pn" ]; then
+		make -s file-replace-content \
+			FILE=$$file \
+			OLD="PROJECT_NAME = $$pn" \
+			NEW="PROJECT_NAME = $$new_pn" \
+		> /dev/null 2>&1
+	fi
+	if [ -n "$$new_pns" ]; then
+		make -s file-replace-content \
+			FILE=$$file \
+			OLD="PROJECT_NAME_SHORT = $$pns" \
+			NEW="PROJECT_NAME_SHORT = $$new_pns" \
+		> /dev/null 2>&1
+	fi
+	if [ -n "$$new_pdn" ]; then
+		make -s file-replace-content \
+			FILE=$$file \
+			OLD="PROJECT_DISPLAY_NAME = $$pdn" \
+			NEW="PROJECT_DISPLAY_NAME = $$new_pdn" \
+		> /dev/null 2>&1
+	fi
+	printf "\nFILE: $$file\n\n"
+	tput setaf 4
+	cat $$file
+	tput setaf 2
+	printf "\nThe project variables have been set sucessfully!\n\n"
+	tput sgr0
+
 _devops-project-clean: ### Clean up the project structure - mandatory: DIR=[project directory]
 	# Remove not needed project files
 	[ -n "$(DIR)" ] && rm -f $(DIR)/build/docker/.gitkeep
@@ -297,6 +375,7 @@ _devops-project-clean: ### Clean up the project structure - mandatory: DIR=[proj
 		~/bin/toggle-natural-scrolling.sh \
 		~/usr/mfa-aliases
 	[ -n "$(DIR)" ] && rm -rf \
+		$(DIR)/.github/workflows/check-pull-request-title.yml \
 		$(DIR)/build/automation/bin/markdown.pl \
 		$(DIR)/build/automation/etc/githooks/scripts/*.default \
 		$(DIR)/build/automation/etc/platform-texas* \
@@ -345,62 +424,8 @@ _devops-synchronise-select-tag-to-install: ### TODO: This is WIP
 	# 	echo "$$choice"
 	# done
 
-devops-setup-aws-accounts aws-accounts-setup: ### Ask user to input valid AWS account IDs to be used by the DevOps automation toolchain scripts
-	file=$(DEV_OHMYZSH_DIR)/plugins/$(DEVOPS_PROJECT_NAME)/aws-platform.zsh
-	if [ -f $$file ]; then
-		parent_id=$$(cat $$file | grep "export AWS_ACCOUNT_ID_LIVE_PARENT=" | sed "s/export AWS_ACCOUNT_ID_LIVE_PARENT=//")
-		mgmt_id=$$(cat $$file | grep "export AWS_ACCOUNT_ID_MGMT=" | sed "s/export AWS_ACCOUNT_ID_MGMT=//")
-		nonprod_id=$$(cat $$file | grep "export AWS_ACCOUNT_ID_NONPROD=" | sed "s/export AWS_ACCOUNT_ID_NONPROD=//")
-		prod_id=$$(cat $$file | grep "export AWS_ACCOUNT_ID_PROD=" | sed "s/export AWS_ACCOUNT_ID_PROD=//")
-		identities_id=$$(cat $$file | grep "export AWS_ACCOUNT_ID_IDENTITIES=" | sed "s/export AWS_ACCOUNT_ID_IDENTITIES=//")
-		printf "\nPlease, provide valid AWS account IDs or press ENTER to leave it unchanged.\n\n"
-		read -p "AWS_ACCOUNT_ID_LIVE_PARENT ($$parent_id) : " new_parent_id
-		read -p "AWS_ACCOUNT_ID_MGMT        ($$mgmt_id) : " new_mgmt_id
-		read -p "AWS_ACCOUNT_ID_NONPROD     ($$nonprod_id) : " new_nonprod_id
-		read -p "AWS_ACCOUNT_ID_PROD        ($$prod_id) : " new_prod_id
-		read -p "AWS_ACCOUNT_ID_IDENTITIES  ($$identities_id) : " new_identities_id
-		printf "\n"
-		if [ -n "$$new_parent_id" ]; then
-			make -s file-replace-content \
-				FILE=$$file \
-				OLD="export AWS_ACCOUNT_ID_LIVE_PARENT=$$parent_id" \
-				NEW="export AWS_ACCOUNT_ID_LIVE_PARENT=$$new_parent_id" \
-			> /dev/null 2>&1
-		fi
-		if [ -n "$$new_mgmt_id" ]; then
-			make -s file-replace-content \
-				FILE=$$file \
-				OLD="export AWS_ACCOUNT_ID_MGMT=$$mgmt_id" \
-				NEW="export AWS_ACCOUNT_ID_MGMT=$$new_mgmt_id" \
-			> /dev/null 2>&1
-		fi
-		if [ -n "$$new_nonprod_id" ]; then
-			make -s file-replace-content \
-				FILE=$$file \
-				OLD="export AWS_ACCOUNT_ID_NONPROD=$$nonprod_id" \
-				NEW="export AWS_ACCOUNT_ID_NONPROD=$$new_nonprod_id" \
-			> /dev/null 2>&1
-		fi
-		if [ -n "$$new_prod_id" ]; then
-			make -s file-replace-content \
-				FILE=$$file \
-				OLD="export AWS_ACCOUNT_ID_PROD=$$prod_id" \
-				NEW="export AWS_ACCOUNT_ID_PROD=$$new_prod_id" \
-			> /dev/null 2>&1
-		fi
-		if [ -n "$$new_identities_id" ]; then
-			make -s file-replace-content \
-				FILE=$$file \
-				OLD="export AWS_ACCOUNT_ID_IDENTITIES=$$identities_id" \
-				NEW="export AWS_ACCOUNT_ID_IDENTITIES=$$new_identities_id" \
-			> /dev/null 2>&1
-		fi
-		printf "FILE: $$file\n"
-		cat $$file
-		printf "Please, run \`reload\` to make sure that this change takes effect\n\n"
-	else
-		printf "\nERROR: Please, before proceeding run \`make macos-setup\`\n\n"
-	fi
+devops-setup-aws-accounts: ### Ask user to input valid AWS account IDs to be used by the DevOps automation toolchain scripts
+	make aws-accounts-setup
 
 devops-setup-aws-accounts-for-service aws-accounts-setup-for-service: ### Ask user to input valid AWS account IDs to be used by the DevOps automation toolchain scripts for service accounts
 	file=$(DEV_OHMYZSH_DIR)/plugins/$(DEVOPS_PROJECT_NAME)/aws-platform-default.zsh
@@ -566,11 +591,15 @@ INFRASTRUCTURE_DIR_REL = $(shell echo $(INFRASTRUCTURE_DIR) | sed "s;$(PROJECT_D
 JQ_DIR_REL := $(shell echo $(abspath $(LIB_DIR)/jq) | sed "s;$(PROJECT_DIR);;g")
 
 GIT_BRANCH_PATTERN_MAIN := ^(master|develop)$$
-GIT_BRANCH_PATTERN_PREFIX := ^(task|spike|bugfix|hotfix|fix|test|release|migration)
-GIT_BRANCH_PATTERN_SUFFIX := [A-Za-z]{2,5}-([0-9]{1,5}|X{1,5})_[A-Za-z0-9_]{4,64}$$
-GIT_BRANCH_PATTERN_ADDITIONAL := ^task/Update_automation_scripts$$|^task/Update_versions$$|^task/Refactor$$
+GIT_BRANCH_PATTERN_PREFIX := ^(task|spike|automation|test|bugfix|hotfix|fix|release|migration)
+GIT_BRANCH_PATTERN_SUFFIX := ([A-Z]{2,5}-([0-9]{1,5}|X{1,5})_[A-Z][a-z]+_[A-Za-z0-9]+_[A-Za-z0-9_]+)$$
+GIT_BRANCH_PATTERN_ADDITIONAL := ^(task/Update_(automation_scripts|dependencies|documentation|tests|versions)|task/Refactor|devops/[A-Z][a-z]+_[A-Za-z0-9_]+_[A-Za-z0-9_]+)$$
 GIT_BRANCH_PATTERN := $(GIT_BRANCH_PATTERN_MAIN)|$(GIT_BRANCH_PATTERN_PREFIX)/$(GIT_BRANCH_PATTERN_SUFFIX)|$(GIT_BRANCH_PATTERN_ADDITIONAL)
+GIT_BRANCH_MAX_LENGTH := 72
 GIT_TAG_PATTERN := [0-9]{12,14}-[a-z]{3,10}
+GIT_COMMIT_MESSAGE_PATTERN_MAIN := ^(([A-Z]{2,5}-([0-9]{1,5}|X{1,5}) [A-Z][a-z]+ [[:print:]]+ [[:print:]]+[^!?,.:;=-]|Update (automation scripts|dependencies|documentation|tests|versions))([[:print:]][^!?,.:;=-])*)$$|^((Update|Refactor|Automate|Test|Fix|Release|Migrate) [[:print:]]+ [[:print:]]+[^!?,.:;=-])$$
+GIT_COMMIT_MESSAGE_PATTERN_ADDITIONAL := ^([A-Z]{2,5}-([0-9]{1,5}|X{1,5}) [A-Z][a-z]+ [[:print:]]+ [[:print:]]+[^!?,.:;=-]|[A-Z][a-z]+ [[:print:]]+ [[:print:]]+[^!?,.:;=-])$$|([A-Z][[:print:]]+ \[ci:[[:blank:]]?[,a-z0-9-]+\])
+GIT_COMMIT_MESSAGE_MAX_LENGTH := 72
 
 BUILD_DATE := $(or $(BUILD_DATE), $(shell date -u +"%Y-%m-%dT%H:%M:%S%z"))
 BUILD_TIMESTAMP := $(shell date --date=$(BUILD_DATE) -u +"%Y%m%d%H%M%S" 2> /dev/null)
@@ -583,6 +612,7 @@ BUILD_COMMIT_AUTHOR_NAME := $(shell git show -s --format='%an' HEAD 2> /dev/null
 BUILD_COMMIT_AUTHOR_EMAIL := $(shell git show -s --format='%ae' HEAD 2> /dev/null ||:)
 BUILD_COMMIT_MESSAGE := $(shell git log -1 --pretty=%B HEAD 2> /dev/null ||:)
 BUILD_TAG := $(shell echo "$(BUILD_TAG)" | grep -Eq ^jenkins- && echo $(BUILD_TIMESTAMP)-$(BUILD_COMMIT_HASH) || echo $(or $(BUILD_TAG), $(BUILD_TIMESTAMP)-$(BUILD_COMMIT_HASH)))
+
 USER_ID := $(shell id -u)
 GROUP_ID := $(shell id -g)
 TTY_ENABLE := $(or $(TTY_ENABLE), $(shell [ $(BUILD_ID) -eq 0 ] && echo true || echo false))
@@ -763,9 +793,9 @@ endif
 # ==============================================================================
 
 .SILENT: \
+	_devops-project-update-variables \
 	_devops-synchronise-select-tag-to-install \
 	_devops-test \
-	aws-accounts-setup \
 	aws-accounts-setup-for-service \
 	aws-accounts-switch \
 	devops-check-versions \
