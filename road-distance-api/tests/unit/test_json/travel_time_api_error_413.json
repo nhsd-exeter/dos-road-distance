@@ -1,0 +1,7 @@
+{
+  "http_status": 413,
+  "error_code": 21,
+  "description": "Request body is too large, maximum allowed size is 100KB",
+  "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
+  "additional_info": {}
+}

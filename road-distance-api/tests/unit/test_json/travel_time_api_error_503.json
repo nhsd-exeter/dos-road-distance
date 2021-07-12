@@ -1,0 +1,7 @@
+{
+  "http_status": 503,
+  "error_code": 11,
+  "description": "Service is temporarily unavailable, try again shortly",
+  "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
+  "additional_info": {}
+}
