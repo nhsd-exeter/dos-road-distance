@@ -1,0 +1,144 @@
+{
+	"info": {
+		"_postman_id": "457a95c9-a013-4e86-abc5-4b9cec06ad4d",
+		"name": "RoadTestsPilot CCS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Road Distance Lambda Valid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"response has valid content type\", function() {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"transactionid\": \"a-unique-string-of-characters\",\r\n  \"origin\": {\r\n    \"reference\": \"51654318543\",\r\n    \"latitude\": 50.72179229048227,\r\n    \"longitude\": -3.525942582444856\r\n  },\r\n  \"destinations\": [\r\n    {\r\n        \"reference\": \"1000\",\r\n        \"latitude\": 50.71731288843375,\r\n        \"longitude\": -3.5389588298795496\r\n    },\r\n    {\r\n        \"reference\": \"1001\",\r\n        \"latitude\": 50.71691049054391,\r\n        \"longitude\": -3.5367355145986004\r\n    },\r\n    {\r\n        \"reference\": \"1002\",\r\n        \"latitude\": 50.9917288843375,\r\n        \"longitude\": -3.53895882987634\r\n    },\r\n    {\r\n        \"reference\": \"1003\",\r\n        \"latitude\": 51.991728884,\r\n        \"longitude\": -3.53895882987262\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_lambda}}/{{endpoint_lambda}}",
+					"host": [
+						"{{url_lambda}}"
+					],
+					"path": [
+						"{{endpoint_lambda}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "RDL Happy case",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"transactionid\": \"a-unique-string-of-characters\",\r\n  \"origin\": {\r\n    \"reference\": \"51654318543\",\r\n    \"latitude\": 50.72179229048227,\r\n    \"longitude\": -3.525942582444856\r\n  },\r\n  \"destinations\": [\r\n    {\r\n        \"reference\": \"1000\",\r\n        \"latitude\": 50.71731288843375,\r\n        \"longitude\": -3.5389588298795496\r\n    },\r\n    {\r\n        \"reference\": \"1001\",\r\n        \"latitude\": 50.71691049054391,\r\n        \"longitude\": -3.5367355145986004\r\n    },\r\n    {\r\n        \"reference\": \"1002\",\r\n        \"latitude\": 50.9917288843375,\r\n        \"longitude\": -3.53895882987634\r\n    },\r\n    {\r\n        \"reference\": \"1003\",\r\n        \"latitude\": 51.991728884,\r\n        \"longitude\": -3.53895882987262\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://feafcd0d-38c6-40dc-a72b-b8a7de4a5847.mock.pstmn.io",
+							"protocol": "https",
+							"host": [
+								"feafcd0d-38c6-40dc-a72b-b8a7de4a5847",
+								"mock",
+								"pstmn",
+								"io"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Mon, 19 Jul 2021 11:51:05 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						},
+						{
+							"key": "x-srv-trace",
+							"value": "v=1;t=e8fbdb2b9bd4bc60"
+						},
+						{
+							"key": "x-srv-span",
+							"value": "v=1;s=eb8e719b758040c8"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "120"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "119"
+						},
+						{
+							"key": "X-RateLimit-Reset",
+							"value": "1626695525"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a4-7hO0T/XLq3TuFViTu2ZVQQdIY+A\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"results\": [\n    {\n      \"reference\": \"1000\",\n      \"distance\": 11234\n    },\n    {\n      \"reference\": \"1001\",\n      \"distance\": 22245\n    },\n    {\n      \"reference\": \"1002\",\n      \"distance\": 31245\n    },\n    {\n      \"reference\": \"1003\",\n      \"status\": \"NOT_FOUND\"\n    }\n  ],\n  \"statusCode\": 200,\n  \"status\": \"OK\"\n}"
+				}
+			]
+		}
+	]
+}
