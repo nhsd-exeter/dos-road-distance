@@ -1,0 +1,271 @@
+openapi: 3.0.0
+info:
+  title: RequestsCommon
+  description: ''
+  version: '1'
+paths: {}
+components:
+  schemas:
+    com.igeolise.traveltime.rabbitmq.requests.Coords:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+      required:
+        - lat
+        - lng
+      description: ''
+    com.igeolise.traveltime.rabbitmq.requests.Transportation:
+      type: object
+      properties:
+        type:
+          $ref: >-
+            #/components/schemas/com.igeolise.traveltime.rabbitmq.requests.TransportationType
+      required:
+        - type
+      description: ''
+    com.igeolise.traveltime.rabbitmq.requests.TransportationType:
+      type: number
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+      description: >-
+        0 - PUBLIC_TRANSPORT // Considers all paths found by the following
+        steps:
+
+        * up to 30 minutes of walking (always included even if no stops found)
+
+        * all connections in the 30 minute walking range from public transport
+
+        stops to other public transport stops in travel_time_limit, AND
+
+        * up to 30 minutes of walking from public transport stops that were
+        visited
+
+        by public transport (IOW a path
+
+        [origin]--walking->[stop]--walking-->[destination] is not possible but
+
+        [origin]--walking->[stop]--public_transport-->[stop]--walking--> is.
+
+        1 - DRIVING // Considers all paths found traveling by car from origin(s)
+        to
+
+        destination(s) within the travel_time_limit
+
+        2 - DRIVING_AND_PUBLIC_TRANSPORT // Considers all paths found by the
+        following steps:
+
+        * up to 30 minutes of driving (always included even no stops found)
+
+        * all connections in the 30 minute driving range from public transport
+        stops
+
+        to other public transport stops in travel_time_limit, AND
+
+        * up to 30 minutes of walking from public transport stops that were
+        visited
+
+        by public transport (IOW a path
+
+        [origin]--driving->[stop]--walking-->[destination] is not possible but
+
+        [origin]--driving->[stop]--public_transport-->[stop]--walking--> is.
+
+        AND/OR
+
+        * up to 30 minutes of walking
+
+        3 - DRIVING_AND_FERRY // Considers all paths found travelling by car
+        from origin(s) to
+
+        destination(s) including all paths that are traversable by ferries that
+
+        take cars within the travel_time_limit.
+
+        4 - WALKING // Considers all paths found travelling by foot from
+        origin(s) to
+
+        destination(s) within the travel_time_limit
+    com.igeolise.traveltime.rabbitmq.requests.TimePeriod:
+      type: number
+      enum:
+        - 0
+      description: '0 - WEEKDAY_MORNING '
+    com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest:
+      type: object
+      properties:
+        oneToManyRequest:
+          $ref: >-
+            #/components/schemas/com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.OneToMany
+      required:
+        - oneToManyRequest
+      description: ''
+    com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse:
+      type: object
+      properties:
+        error:
+          $ref: >-
+            #/components/schemas/com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Error
+        properties:
+          $ref: >-
+            #/components/schemas/com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Properties
+      description: ''
+    com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.Property:
+      type: number
+      enum:
+        - 0
+        - 1
+      description: |-
+        0 - FARES
+        1 - DISTANCES
+    com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.OneToMany:
+      type: object
+      properties:
+        departureLocation:
+          $ref: >-
+            #/components/schemas/com.igeolise.traveltime.rabbitmq.requests.Coords
+        locationDeltas:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: >-
+            We encode arrival locations as deltas (relative to the source) using
+            a fixedpoint encoding i.e
+
+            deltaLat = round((lat - sourceLat) * 10^5).toInt
+
+            deltaLon = round((lon - sourceLon) * 10^5).toInt
+
+
+            The deltas should be interleaved in the `locationDeltas` field i.e
+
+
+            locationDeltas[0] should be the first lat
+
+            locationDeltas[1] should be the first lon
+
+            locationDeltas[2] should be the second lat
+
+            ...
+
+            etc
+        transportation:
+          $ref: >-
+            #/components/schemas/com.igeolise.traveltime.rabbitmq.requests.Transportation
+        arrivalTimePeriod:
+          $ref: >-
+            #/components/schemas/com.igeolise.traveltime.rabbitmq.requests.TimePeriod
+        travelTime:
+          type: integer
+          format: int32
+        properties:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.Property
+          description: ''
+      required:
+        - departureLocation
+        - locationDeltas
+        - transportation
+        - travelTime
+      description: ''
+    com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Properties:
+      type: object
+      properties:
+        travelTimes:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: ''
+        monthlyFares:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: ''
+        distances:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: ''
+      required:
+        - distances
+      description: ''
+    com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Error:
+      type: object
+      properties:
+        type:
+          $ref: >-
+            #/components/schemas/com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.ErrorType
+      description: ''
+    com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.ErrorType:
+      type: number
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+        - 10
+        - 11
+        - 12
+      description: >-
+        0 - UNKNOWN // Catch all unknown error type
+
+        1 - ONE_TO_MANY_MUST_NOT_BE_NULL // oneToManyRequest to many field must
+        not be null
+
+        2 - SOURCE_MUST_NOT_BE_NULL // Source (either departure or arrival
+        location) must not be null
+
+        3 - TRANSPORTATION_MUST_NOT_BE_NULL // Transportation mode must not be
+        null.
+
+        4 - SOURCE_NOT_IN_GEOMETRY // Source (either departure or arrival
+        location) must not be null
+
+        5 - UNRECOGNIZED_TRANSPORTATION_MODE // Transportation mode
+        unrecognized.
+
+        6 - TRAVEL_TIME_LIMIT_TOO_LOW // The travel time limit is too low to
+        process this request.
+
+        7 - TRAVEL_TIME_LIMIT_TOO_HIGH // The travel time limit is too high to
+        process this request.
+
+        8 - AUTH_ERROR_NO_USER_ID // User id not set.
+
+        9 - SERVICE_MISMATCH_WRONG_TRANSPORTATION_MODE // Message sent to wrong
+        queue - transportation mode cannot be handled.
+
+        10 - SOURCE_OUT_OF_REACH // Source is in a area that doesn't have any
+        points that can be out of
+
+        search e.g a lake, mountains or other desolate areas.
+
+        11 - INTERLEAVED_DELTAS_INVALID_COORDINATE_PAIRS // The interleaved
+        deltas array should have (lat/lon) deltas and have an
+
+        even number of elements
+
+        12 - DISTANCE_PROPERTY_NOT_SUPPORTED // Public transport requests do not
+        support returning distances for
+
+        returned points.
