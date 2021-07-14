@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+	title: Road Distance API
+	description: Road distance API to return distance in meters from a given origin point to multiple destination points
+	version: 0.0.1
+
+
+paths:
+	/road-distance:
+	post:
+		summary: Return road distances
+		requestBody:
+			required: true
+			content:
+				application/json:
+					schema:
+						type: object
+						properties:
+							transactionid:
+								type: string
+								description: Unique request reference
+								required: true
+							origin:
+								type: object
+								description: Object defining the origin point
+								required: true
+								properties:
+									reference:
+										type: string
+										description: Unique reference to identify origin in response
+										required: true
+									latitude:
+										type: number
+										description: Latitude point of origin
+										required: true
+									longitude:
+										type: number
+										description: Longitude point of origin
+										required: true
+							destinations:
+							type: array
+							required: true
+							minItems: 1
+							maxItems: 2000
+								type: object
+									properties:
+										reference:
+											type: string
+											description: Unique reference to identify destination item in response
+											required: true
+										latitude:
+											type: number
+											description: Latitude point of destination item
+											required: true
+										longitude:
+											type: number
+											description: Longitude point of destination item
+											required: true
+		responses:
+			200:
+				description: The request was received successfully
