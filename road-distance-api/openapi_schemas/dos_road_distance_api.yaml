@@ -15,7 +15,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: 
+              required:
                 - transactionid
                 - origin
                 - destinations
@@ -26,7 +26,7 @@ paths:
                 origin:
                   type: object
                   description: Object defining the origin point
-                  required: 
+                  required:
                     - reference
                     - latitude
                     - longitude
@@ -46,7 +46,7 @@ paths:
                   maxItems: 2000
                   items:
                     type: object
-                    required: 
+                    required:
                       - reference
                       - latitude
                       - longitude
@@ -66,7 +66,7 @@ paths:
                   reference: "<locationId>"
                   latitude: 50.72179229048227
                   longitude: -3.525942582444856
-                destinations: 
+                destinations:
                   - reference: "1000"
                     latitude: 50.72179229048227
                     longitude: -3.525942582444856

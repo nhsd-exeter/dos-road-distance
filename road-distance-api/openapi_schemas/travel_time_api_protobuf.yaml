@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: RequestsCommon
-  description: ''
+  description: Protobuf road distance API to return distance in meters from a given origin point to multiple destination points
   version: '1'
 paths: {}
 components:
