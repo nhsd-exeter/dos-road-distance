@@ -175,4 +175,32 @@ paths:
                     items:
                       type: string
                       description: Id of the location that has been deemed too distance to reach within travel_time
+        422:
+          description: Unprocessable Entity - Json syntax is correct, but fails validation
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [422]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [2,13,14,15,16,17,22,23,24,27]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Details of specific parameter failing validation. May contain multiple failing parameters as key -> array
 
