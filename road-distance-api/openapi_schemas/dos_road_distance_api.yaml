@@ -9,6 +9,12 @@ paths:
   /road-distance:
     post:
       summary: Return road distances
+      parameters:
+        - in: header
+          name: X-Api-Key
+          schema:
+            type: string
+          required: true
       requestBody:
         required: true
         content:
