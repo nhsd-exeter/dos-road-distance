@@ -175,6 +175,90 @@ paths:
                     items:
                       type: string
                       description: Id of the location that has been deemed too distance to reach within travel_time
+        500:
+          description: We are having issues with our servers right now. Please contact us if you keep seeing this to help resolve the issue
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [500]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [1]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Additional error specific information
+        400:
+          description: We were unable to parse the provided json body due to invalid syntax
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [400]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [3,25]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Additional error specific information
+        415:
+          description: Unsupported media type
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [415]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [4]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Additional error specific information
         422:
           description: Unprocessable Entity - Json syntax is correct, but fails validation
           content:
@@ -203,4 +287,200 @@ paths:
                   additional_info:
                     type: object
                     description: Details of specific parameter failing validation. May contain multiple failing parameters as key -> array
+        401:
+          description: Applications id or API key are missing or formatted incorrectly
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [401]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [5,6,7,8,10]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Additional error specific information
+        429:
+          description: You have exceeded your request limit
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [429]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [9]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Additional error specific information
+        503:
+          description: Service is temporarily unavailable, try again shortly
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [503]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [11]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Additional error specific information
+        504:
+          description: Our servers have timed out while processing your request. If the problem persists, you can try splitting the current request into multiple smaller requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [504]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [12]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Additional error specific information
+        406:
+          description: Unacceptable content type
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [406]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [19]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Additional error specific information
+        404:
+          description: Requested resource is not found
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [404]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [20]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Additional error specific information
+        413:
+          description: Request body is too large
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - https_status
+                  - error_code
+                  - description
+                  - documentation_link
+                  - additional_info
+                properties:
+                  http_status:
+                    type: integer
+                    enum: [413]
+                  error_code:
+                    type: integer
+                    description: Travel Time error code specific to parameter failing validation
+                    enum: [21]
+                  description:
+                    type: string
+                  documentation_link:
+                    type: string
+                    description: Url linking to Travel Time error codes documentation
+                  additional_info:
+                    type: object
+                    description: Additional error specific information
 
