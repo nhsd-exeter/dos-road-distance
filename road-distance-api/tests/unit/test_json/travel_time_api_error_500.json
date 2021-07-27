@@ -1,0 +1,7 @@
+{
+  "http_status": 500,
+  "error_code": 1,
+  "description": "We are having issues with our servers right now. Please contact us if you keep seeing this to help resolve the issue",
+  "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
+  "additional_info": {}
+}

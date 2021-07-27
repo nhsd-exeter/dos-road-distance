@@ -1,0 +1,194 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "RequestsCommon",
+    "description": "Protobuf road distance API to return distance in meters from a given origin point to multiple destination points",
+    "version": "1"
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "com.igeolise.traveltime.rabbitmq.requests.Coords": {
+        "type": "object",
+        "properties": {
+          "lat": {
+            "type": "number",
+            "format": "float"
+          },
+          "lng": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "required": [
+          "lat",
+          "lng"
+        ],
+        "description": ""
+      },
+      "com.igeolise.traveltime.rabbitmq.requests.Transportation": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/com.igeolise.traveltime.rabbitmq.requests.TransportationType"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "description": ""
+      },
+      "com.igeolise.traveltime.rabbitmq.requests.TransportationType": {
+        "type": "number",
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "description": "0 - PUBLIC_TRANSPORT // Considers all paths found by the following steps:\n* up to 30 minutes of walking (always included even if no stops found)\n* all connections in the 30 minute walking range from public transport\nstops to other public transport stops in travel_time_limit, AND\n* up to 30 minutes of walking from public transport stops that were visited\nby public transport (IOW a path\n[origin]--walking->[stop]--walking-->[destination] is not possible but\n[origin]--walking->[stop]--public_transport-->[stop]--walking--> is.\n1 - DRIVING // Considers all paths found traveling by car from origin(s) to\ndestination(s) within the travel_time_limit\n2 - DRIVING_AND_PUBLIC_TRANSPORT // Considers all paths found by the following steps:\n* up to 30 minutes of driving (always included even no stops found)\n* all connections in the 30 minute driving range from public transport stops\nto other public transport stops in travel_time_limit, AND\n* up to 30 minutes of walking from public transport stops that were visited\nby public transport (IOW a path\n[origin]--driving->[stop]--walking-->[destination] is not possible but\n[origin]--driving->[stop]--public_transport-->[stop]--walking--> is.\nAND/OR\n* up to 30 minutes of walking\n3 - DRIVING_AND_FERRY // Considers all paths found travelling by car from origin(s) to\ndestination(s) including all paths that are traversable by ferries that\ntake cars within the travel_time_limit.\n4 - WALKING // Considers all paths found travelling by foot from origin(s) to\ndestination(s) within the travel_time_limit"
+      },
+      "com.igeolise.traveltime.rabbitmq.requests.TimePeriod": {
+        "type": "number",
+        "enum": [
+          0
+        ],
+        "description": "0 - WEEKDAY_MORNING "
+      },
+      "com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest": {
+        "type": "object",
+        "properties": {
+          "oneToManyRequest": {
+            "$ref": "#/components/schemas/com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.OneToMany"
+          }
+        },
+        "required": [
+          "oneToManyRequest"
+        ],
+        "description": ""
+      },
+      "com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Error"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Properties"
+          }
+        },
+        "description": ""
+      },
+      "com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.Property": {
+        "type": "number",
+        "enum": [
+          0,
+          1
+        ],
+        "description": "0 - FARES\n1 - DISTANCES"
+      },
+      "com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.OneToMany": {
+        "type": "object",
+        "properties": {
+          "departureLocation": {
+            "$ref": "#/components/schemas/com.igeolise.traveltime.rabbitmq.requests.Coords"
+          },
+          "locationDeltas": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "We encode arrival locations as deltas (relative to the source) using a fixedpoint encoding i.e\ndeltaLat = round((lat - sourceLat) * 10^5).toInt\ndeltaLon = round((lon - sourceLon) * 10^5).toInt\n\nThe deltas should be interleaved in the `locationDeltas` field i.e\n\nlocationDeltas[0] should be the first lat\nlocationDeltas[1] should be the first lon\nlocationDeltas[2] should be the second lat\n...\netc"
+          },
+          "transportation": {
+            "$ref": "#/components/schemas/com.igeolise.traveltime.rabbitmq.requests.Transportation"
+          },
+          "arrivalTimePeriod": {
+            "$ref": "#/components/schemas/com.igeolise.traveltime.rabbitmq.requests.TimePeriod"
+          },
+          "travelTime": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.Property"
+            },
+            "description": ""
+          }
+        },
+        "required": [
+          "departureLocation",
+          "locationDeltas",
+          "transportation",
+          "travelTime"
+        ],
+        "description": ""
+      },
+      "com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Properties": {
+        "type": "object",
+        "properties": {
+          "travelTimes": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": ""
+          },
+          "monthlyFares": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": ""
+          },
+          "distances": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": ""
+          }
+        },
+        "required": [
+          "distances"
+        ],
+        "description": ""
+      },
+      "com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.ErrorType"
+          }
+        },
+        "description": ""
+      },
+      "com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.ErrorType": {
+        "type": "number",
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "description": "0 - UNKNOWN // Catch all unknown error type\n1 - ONE_TO_MANY_MUST_NOT_BE_NULL // oneToManyRequest to many field must not be null\n2 - SOURCE_MUST_NOT_BE_NULL // Source (either departure or arrival location) must not be null\n3 - TRANSPORTATION_MUST_NOT_BE_NULL // Transportation mode must not be null.\n4 - SOURCE_NOT_IN_GEOMETRY // Source (either departure or arrival location) must not be null\n5 - UNRECOGNIZED_TRANSPORTATION_MODE // Transportation mode unrecognized.\n6 - TRAVEL_TIME_LIMIT_TOO_LOW // The travel time limit is too low to process this request.\n7 - TRAVEL_TIME_LIMIT_TOO_HIGH // The travel time limit is too high to process this request.\n8 - AUTH_ERROR_NO_USER_ID // User id not set.\n9 - SERVICE_MISMATCH_WRONG_TRANSPORTATION_MODE // Message sent to wrong queue - transportation mode cannot be handled.\n10 - SOURCE_OUT_OF_REACH // Source is in a area that doesn't have any points that can be out of\nsearch e.g a lake, mountains or other desolate areas.\n11 - INTERLEAVED_DELTAS_INVALID_COORDINATE_PAIRS // The interleaved deltas array should have (lat/lon) deltas and have an\neven number of elements\n12 - DISTANCE_PROPERTY_NOT_SUPPORTED // Public transport requests do not support returning distances for\nreturned points."
+      }
+    }
+  }
+}

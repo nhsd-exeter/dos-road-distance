@@ -1,0 +1,11 @@
+{
+  "http_status": 422,
+  "error_code": 2,
+  "description": "The provided json body has the correct syntax, but didn’t pass request validation. More information is available in additional_info attribute",
+  "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
+  "additional_info": {
+      "obj.departure_searches[0].id": [
+          "Path missing"
+      ]
+  }
+}
