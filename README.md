@@ -1,8 +1,8 @@
-# PROJECT_NAME_TO_REPLACE
+# DoS Road Distance
 
 ## Table of Contents
 
-- [PROJECT_NAME_TO_REPLACE](#project_name_to_replace)
+- [DoS Road Distance](#dos-road-distance)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Quick Start](#quick-start)
