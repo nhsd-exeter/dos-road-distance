@@ -31,7 +31,7 @@ class TestContracts:
         json_content = self.fetch_json(provider.contract_name + '_invalid_missing_element.json')
         assert provider.validateJson(provider.contract_name, json_content) == False
 
-    def test_contract_lambda_to_provider_bad_request(self):
+    def test_contract_lambda_to_provider_bad_response(self):
         json_content = self.fetch_json(provider.contract_name + '_response_invalid_missing_element.json')
         assert provider.validateJson(provider.contract_name, json_content) == False
 
