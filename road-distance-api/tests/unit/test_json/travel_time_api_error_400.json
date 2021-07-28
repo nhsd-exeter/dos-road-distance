@@ -1,7 +1,0 @@
-{
-    "http_status": 400,
-    "error_code": 25,
-    "description": "The GET request did not pass request validation. More information is available in additional_info attribute",
-    "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
-    "additional_info": {}
-}
