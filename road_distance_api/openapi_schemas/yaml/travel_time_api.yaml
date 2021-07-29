@@ -35,18 +35,18 @@ paths:
                       coords:
                         type: object
                         properties:
-                          latitude:
+                          lat:
                             type: number
                             description: Latitude point of origin
-                          longitude:
+                          lng:
                             type: number
                             description: Longitude point of origin
                         required:
-                          - latitude
-                          - longitude
+                          - lat
+                          - lng
                 departure_searches:
                   type: array
-                  description: orgin and destination configuration
+                  description: Origin and destination configuration
                   items:
                     type: object
                     required:
@@ -83,10 +83,10 @@ paths:
                             type: integer
                             enum: [0]
                             description: Time in minutes to account for parking - limited to 0
-                      arrival_time_period:
+                      departure_time:
                         type: string
-                        enum: [weekday_morning]
-                        description: Date and time string representing the departure time in extended ISO-8601 format
+                        description: Extended ISO format datetime describing departure time
+                        pattern: ^(20[234]\d-[01]\d-[0123]\dT\d{2}:\d{2}:\d{2}\.\d{6})$
                       properties:
                         type: array
                         description: Data attributes to return - limited to 'distance'
@@ -104,12 +104,12 @@ paths:
                 locations:
                   - id: "1001"
                     coords:
-                      latitude: 50.72179229048227
-                      longitude: -3.525942582444856
+                      lat: 50.72179229048227
+                      lng: -3.525942582444856
                   - id: "1002"
                     coords:
-                      latitude: 50.72179229048227
-                      longitude: -3.525942582444856
+                      lat: 50.72179229048227
+                      lng: -3.525942582444856
                 departure_searches:
                   - id: "description of search"
                     departure_location_id: "1001"
