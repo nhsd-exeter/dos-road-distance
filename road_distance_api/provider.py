@@ -14,8 +14,10 @@ class Provider():
 
     url: str = ''
     request_id: str = ''
-    contracts_path: str = 'openapi_schemas/json/'
-    contracts: dict = {
+    
+    contracts_path: str = 'openapi_schemas/json/' # Path to the JSON contracts
+    contracts: dict = { 
+    # The contract file prefixes for provider request/response, and the Lamba (local) request.
         'provider': 'travel_time_api',
         'local': 'dos_road_distance_api',
         'provider-response': 'travel_time_api_response'
@@ -32,10 +34,11 @@ class Provider():
         self.request_id = uuid.uuid4()
 
 
-    def validate_against_schema(self, schema_name: str, json: dict) -> bool:
+    # Validate the JSON against the schema
+    def validate_against_schema(self, json: dict, schema_name: str) -> bool:
         try:
             contract = self.fetch_json(self.contracts[schema_name] + '.json')
-            result = validate(schema=contract, instance=json)
+            result = validate(instance=json, schema=contract)
             print(result)
             return True
         except (ValidationError, SchemaError, Exception) as error:

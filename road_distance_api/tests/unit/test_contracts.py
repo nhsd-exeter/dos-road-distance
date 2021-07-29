@@ -6,8 +6,6 @@ from road_distance_api.provider import Provider
 
 class TestContracts:
 
-    print(os.getcwd())
-
     """
     contracts are defined in openapi3 specification
     and validated via jsonschema
@@ -18,27 +16,27 @@ class TestContracts:
 
     def test_css_to_lambda_contract_happy(self):
         json_content = self.fetch_json('dos_road_distance_api_happy.json')
-        assert self.provider.validate_against_schema('local', json_content) == True
+        assert self.provider.validate_against_schema(json_content, 'local') == True
 
     def test_lambda_to_Provider_contract_happy(self):
         json_content = self.fetch_json(self.provider.contracts['provider'] + '_happy.json')
-        assert self.provider.validate_against_schema('provider', json_content) == True
+        assert self.provider.validate_against_schema(json_content, 'provider') == True
 
     def test_Provider_to_lambda_contract_happy(self):
         json_content = self.fetch_json(self.provider.contracts['provider'] + '_response_happy.json')
-        assert self.provider.validate_against_schema('provider-response', json_content) == True
+        assert self.provider.validate_against_schema(json_content, 'provider-response') == True
 
     def test_contract_css_to_lambda_bad_request(self):
         json_content = self.fetch_json('dos_road_distance_api_invalid_missing_element.json')
-        assert self.provider.validate_against_schema('local', json_content) == False
+        assert self.provider.validate_against_schema(json_content, 'local') == False
 
     def test_contract_lambda_to_Provider_bad_request(self):
         json_content = self.fetch_json(self.provider.contracts['provider'] + '_invalid_missing_element.json')
-        assert self.provider.validate_against_schema('provider', json_content) == False
+        assert self.provider.validate_against_schema(json_content, 'provider') == False
 
     def test_contract_lambda_to_Provider_bad_response(self):
         json_content = self.fetch_json(self.provider.contracts['provider']+ '_response_invalid_missing_element.json')
-        assert self.provider.validate_against_schema('provider-response', json_content) == False
+        assert self.provider.validate_against_schema(json_content, 'provider-response') == False
 
     def fetch_json(self, file_name: str):
         try:
