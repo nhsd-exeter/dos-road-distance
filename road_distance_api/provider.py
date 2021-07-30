@@ -38,8 +38,7 @@ class Provider():
     def validate_against_schema(self, json: dict, schema_name: str) -> bool:
         try:
             contract = self.fetch_json(self.contracts[schema_name] + '.json')
-            result = validate(instance=json, schema=contract)
-            print(result)
+            validate(instance=json, schema=contract)
             return True
         except (ValidationError, SchemaError, Exception) as error:
             print(error)
