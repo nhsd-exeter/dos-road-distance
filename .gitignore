@@ -7,7 +7,3 @@
 .scannerwork
 *.code-workspace
 !project.code-workspace
-venv
-__pycache__
-.pytest_cache
-/project.code-workspace

@@ -1,1678 +1,1678 @@
 {
-	"info": {
-		"_postman_id": "767fd822-f99b-40f4-982a-4734ce6d9df5",
-		"name": "RoadTestsPilot Lambda",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Travel Time Valid",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"tests[\"check top level results exist\"] = pm.response.json().results.length > 0;\r",
-							"\r",
-							"\r",
-							"var r = pm.response.json().results[0];\r",
-							"\r",
-							"tests[\"check search_id type and value\"] = r.hasOwnProperty(\"search_id\") && r.search_id !== null\r",
-							"    && typeof r.search_id == \"string\" && r.search_id == \"Patient postcode centered\";\r",
-							"\r",
-							"tests[\"check locations exist\"] = r.locations.length > 0;\r",
-							"var location = r.locations[0];\r",
-							"\r",
-							"tests[\"check location id type and value\"] = location.hasOwnProperty(\"id\") && location.id !== null && typeof location.id == \"string\" && location.id == \"1385993720\";\r",
-							"\r",
-							"tests[\"check properties of location exist\"] = location.properties.length > 0;\r",
-							"var property = location.properties[0];\r",
-							"\r",
-							"tests[\"check location distance type and value\"] = property.hasOwnProperty(\"distance\") && property.distance !== null && typeof property.distance == \"number\" && Number.isInteger(property.distance) && property.distance >= 0;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
-							"\r",
-							"\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-Application-Id",
-						"value": "{{application_id_traveltime}}",
-						"type": "text"
-					},
-					{
-						"key": "X-Api-Key",
-						"value": "{{api_key_traveltime}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"{{endpoint_traveltime}}"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "TT Happy case",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"results\": [\n        {\n            \"search_id\": \"Patient postcode centered\",\n            \"locations\": [\n                {\n                    \"id\": \"1385993720\",\n                    \"properties\": [\n                        {\n                            \"distance\": 17568\n                        }\n                    ]\n                }\n            ],\n            \"unreachable\": [\n                \"135540\",\n                \"1427197950\",\n                \"1322478297\",\n                \"141557\",\n                \"1368524402\"\n            ]\n        }\n    ]\n}"
-				}
-			]
-		},
-		{
-			"name": "Travel Time No Content Type",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(415);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"var r = pm.response.json();\r",
-							"\r",
-							"tests[\"check http_status\"] = r.http_status == 415;\r",
-							"tests[\"check error_code\"] = r.error_code == 4;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {
-					"content-type": true
-				}
-			},
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-mock-response-name",
-						"value": "TT Error 4",
-						"type": "text"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/pdf",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"{{endpoint_traveltime}}"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "TT Error 1",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 500,\n    \"error_code\": 1,\n    \"description\": \"We are having issues with our servers right now. Please contact us if you keep seeing this to help resolve the issue\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 2",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 422,\n    \"error_code\": 2,\n    \"description\": \"The provided json body has the correct syntax, but didn’t pass request validation. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {\n        \"obj.departure_searches[0].id\": [\n            \"Path missing\"\n        ]\n    }\n}"
-				},
-				{
-					"name": "TT Error 3",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 400,\n    \"error_code\": 3,\n    \"description\": \"We were unable to parse the provided json body due to invalid syntax\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 4",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unsupported Media Type",
-					"code": 415,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 415,\n    \"error_code\": 4,\n    \"description\": \"Expected content-type of application/json\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 5",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 401,\n    \"error_code\": 5,\n    \"description\": \"Application Id was not set, specify it in X-Application-Id header\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 6",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 401,\n    \"error_code\": 6,\n    \"description\": \"Api Key was not set, specify it in X-Api-Key header\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 7",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 401,\n    \"error_code\": 7,\n    \"description\": \"Application Id must not be empty and contain only alphanumeric characters\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 8",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 401,\n    \"error_code\": 8,\n    \"description\": \"Api Key must not be empty and contain only alphanumeric characters\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 9",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Too Many Requests",
-					"code": 429,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 429,\n    \"error_code\": 9,\n    \"description\": \"You have exceeded your request limit\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 10",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"code": 401,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 401,\n    \"error_code\": 10,\n    \"description\": \"Application Id or Api Key is invalid\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 11",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Service Unavailable",
-					"code": 503,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 503,\n    \"error_code\": 11,\n    \"description\": \"Service is temporarily unavailable, try again shortly\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 12",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Gateway Timeout",
-					"code": 504,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 504,\n    \"error_code\": 12,\n    \"description\": \"Our servers have timed out while processing your request. If the problem persists, you can try splitting the current request into multiple smaller requests\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 13",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 422,\n    \"error_code\": 13,\n    \"description\": \"We do not have the fare data for this region. Fares are only supported in Great Britain. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 14",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 422,\n    \"error_code\": 14,\n    \"description\": \"We do not have the postcode data for this region. Postcodes are only supported in the UK\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {\n        \"search_id\": [\n            \"Patient postcode centered\"\n        ]\n    }\n}"
-				},
-				{
-					"name": "TT Error 15",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 422,\n    \"error_code\": 15,\n    \"description\": \"We do not have public transport data for the region at the time you have specified, try a more recent date. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 16",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 422,\n    \"error_code\": 16,\n    \"description\": \"We do not support searches in the given area. Make sure that all points for a search are in the same country. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {\n        \"search_id\": [\n            \"Patient postcode centered\"\n        ],\n        \"locations\": [\n            \"SA14 9DW\"\n        ]\n    }\n}"
-				},
-				{
-					"name": "TT Error 17",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 422,\n    \"error_code\": 17,\n    \"description\": \"We couldn’t start the search at the given point. Please make sure you are not attempting to start a search from a lake, river, etc. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 19",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Not Acceptable",
-					"code": 406,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 406,\n    \"error_code\": 19,\n    \"description\": \"Unsupported content type was specified in the Accept header. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {\n         \"supported_content_types\": [\n            \"application/json\"\n        ]\n    }\n}"
-				},
-				{
-					"name": "TT Error 20",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Not Found",
-					"code": 404,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 404,\n    \"error_code\": 20,\n    \"description\": \"The requested resource could not be found\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 21",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Request Entity Too Large",
-					"code": 413,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 413,\n    \"error_code\": 21,\n    \"description\": \"Request body is too large, maximum allowed size is 100KB\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 22",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 422,\n    \"error_code\": 22,\n    \"description\": \"We do not have public transport data for the region for the time-filter/fast endpoint. Try using the regular time-filter endpoint. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 23",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 422,\n    \"error_code\": 23,\n    \"description\": \"We do not have driving data for the region for the time-filter/fast endpoint. Try using the regular time-filter endpoint. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 24",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 422,\n    \"error_code\": 24,\n    \"description\": \"We do not have public transport data for the region for the time-filter/fast endpoint. Try using the regular time-filter endpoint. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 25",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 400,\n    \"error_code\": 25,\n    \"description\": \"The GET request did not pass request validation. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				},
-				{
-					"name": "TT Error 27",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-							"host": [
-								"{{url_traveltime}}"
-							],
-							"path": [
-								"{{endpoint_traveltime}}"
-							]
-						}
-					},
-					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
-					"code": 422,
-					"_postman_previewlanguage": "json",
-					"header": null,
-					"cookie": [],
-					"body": "{\n    \"http_status\": 422,\n    \"error_code\": 27,\n    \"description\": \"We do not have cycling data for the region for the time-filter/fast endpoint. Try using the regular time-filter endpoint. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
-				}
-			]
-		},
-		{
-			"name": "Travel Time Outside UK",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(422);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"var r = pm.response.json();\r",
-							"\r",
-							"tests[\"check http_status\"] = r.http_status == 422;\r",
-							"tests[\"check error_code\"] = r.error_code == 16;\r",
-							"\r",
-							"tests[\"check addition info\"] = Object.keys(r.additional_info).length > 0;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-mock-response-name",
-						"value": "TT Error 16",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 32.138409,\r\n        \"lng\": 5.4437256\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"{{endpoint_traveltime}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Travel Time Starting from a lake",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(422);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"var r = pm.response.json();\r",
-							"\r",
-							"tests[\"check http_status\"] = r.http_status == 422;\r",
-							"tests[\"check error_code\"] = r.error_code == 14;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-mock-response-name",
-						"value": "TT Error 14",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.522843, \r\n        \"lng\": -2.8039169\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"{{endpoint_traveltime}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Travel Time Invalid request JSON",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(422);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"var r = pm.response.json();\r",
-							"\r",
-							"tests[\"check http_status\"] = r.http_status == 422;\r",
-							"tests[\"check error_code\"] = r.error_code == 2;\r",
-							"\r",
-							"tests[\"check addition info\"] = Object.keys(r.additional_info).length > 0;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-mock-response-name",
-						"value": "TT Error 2",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 32.138409,\r\n        \"lng\": 5.4437256\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"{{endpoint_traveltime}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Travel Time Request path not found",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"var r = pm.response.json();\r",
-							"\r",
-							"tests[\"check http_status\"] = r.http_status == 404;\r",
-							"tests[\"check error_code\"] = r.error_code == 20;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-mock-response-name",
-						"value": "TT Error 20",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/nosuchpath",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"nosuchpath"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Travel Time Bad accept header",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(406);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"var r = pm.response.json();\r",
-							"\r",
-							"tests[\"check http_status\"] = r.http_status == 406;\r",
-							"tests[\"check error_code\"] = r.error_code == 19;\r",
-							"\r",
-							"tests[\"check addition info\"] = Object.keys(r.additional_info).length > 0;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {
-					"accept": true
-				}
-			},
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-mock-response-name",
-						"value": "TT Error 19",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/octet-stream",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"{{endpoint_traveltime}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Travel Time No driving data for region",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(422);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"var r = pm.response.json();\r",
-							"\r",
-							"tests[\"check http_status\"] = r.http_status == 422;\r",
-							"tests[\"check error_code\"] = r.error_code == 23;\r",
-							"\r",
-							"tests[\"check addition info\"] = Object.keys(r.additional_info).length > 0;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {}
-			},
-			"request": {
-				"auth": {
-					"type": "apikey",
-					"apikey": [
-						{
-							"key": "value",
-							"value": "{{api_key_traveltime}}",
-							"type": "string"
-						},
-						{
-							"key": "key",
-							"value": "{{application_id_traveltime}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-mock-response-name",
-						"value": "TT Error 23",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"{{endpoint_traveltime}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "WIP Travel Time Request body gt 100kB",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(413);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"var r = pm.response.json();\r",
-							"\r",
-							"tests[\"check http_status\"] = r.http_status == 413;\r",
-							"tests[\"check error_code\"] = r.error_code == 21;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 4000;\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {}
-			},
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-mock-response-name",
-						"value": "TT Error 21",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"{{endpoint_traveltime}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Travel Time Api Key was not set",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(422);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"var r = pm.response.json();\r",
-							"\r",
-							"tests[\"check http_status\"] = r.http_status == 422;\r",
-							"tests[\"check error_code\"] = r.error_code == 23;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {}
-			},
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-mock-response-name",
-						"value": "TT Error 6",
-						"type": "text"
-					},
-					{
-						"key": "x-api-key",
-						"value": "{{api_key_traveltime}}",
-						"type": "text"
-					},
-					{
-						"key": "X-Application-Id",
-						"value": "{{application_id_traveltime}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"{{endpoint_traveltime}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Travel Time Application Id was not set",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"response is ok\", function () {\r",
-							"    pm.response.to.have.status(422);\r",
-							"});\r",
-							"pm.test(\"response has valid content type\", function () {\r",
-							"    pm.response.to.have.header(\"Content-Type\");\r",
-							"});\r",
-							"\r",
-							"var r = pm.response.json();\r",
-							"\r",
-							"tests[\"check http_status\"] = r.http_status == 422;\r",
-							"tests[\"check error_code\"] = r.error_code == 23;\r",
-							"\r",
-							"tests[\"Excessive Response time\"] = responseTime < 1000;\r",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {}
-			},
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "x-mock-response-name",
-						"value": "TT Error 6",
-						"type": "text"
-					},
-					{
-						"key": "x-api-key",
-						"value": "{{api_key_traveltime}}",
-						"type": "text"
-					},
-					{
-						"key": "X-Application-Id",
-						"value": "{{application_id_traveltime}}",
-						"type": "text",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
-					"host": [
-						"{{url_traveltime}}"
-					],
-					"path": [
-						"{{endpoint_traveltime}}"
-					]
-				}
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "767fd822-f99b-40f4-982a-4734ce6d9df5",
+    "name": "RoadTestsPilot Lambda",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Travel Time Valid",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "tests[\"check top level results exist\"] = pm.response.json().results.length > 0;\r",
+              "\r",
+              "\r",
+              "var r = pm.response.json().results[0];\r",
+              "\r",
+              "tests[\"check search_id type and value\"] = r.hasOwnProperty(\"search_id\") && r.search_id !== null\r",
+              "    && typeof r.search_id == \"string\" && r.search_id == \"Patient postcode centered\";\r",
+              "\r",
+              "tests[\"check locations exist\"] = r.locations.length > 0;\r",
+              "var location = r.locations[0];\r",
+              "\r",
+              "tests[\"check location id type and value\"] = location.hasOwnProperty(\"id\") && location.id !== null && typeof location.id == \"string\" && location.id == \"1385993720\";\r",
+              "\r",
+              "tests[\"check properties of location exist\"] = location.properties.length > 0;\r",
+              "var property = location.properties[0];\r",
+              "\r",
+              "tests[\"check location distance type and value\"] = property.hasOwnProperty(\"distance\") && property.distance !== null && typeof property.distance == \"number\" && Number.isInteger(property.distance) && property.distance >= 0;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+              "\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Application-Id",
+            "value": "{{application_id_traveltime}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Api-Key",
+            "value": "{{api_key_traveltime}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "{{endpoint_traveltime}}"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "TT Happy case",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"results\": [\n        {\n            \"search_id\": \"Patient postcode centered\",\n            \"locations\": [\n                {\n                    \"id\": \"1385993720\",\n                    \"properties\": [\n                        {\n                            \"distance\": 17568\n                        }\n                    ]\n                }\n            ],\n            \"unreachable\": [\n                \"135540\",\n                \"1427197950\",\n                \"1322478297\",\n                \"141557\",\n                \"1368524402\"\n            ]\n        }\n    ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "Travel Time No Content Type",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(415);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "var r = pm.response.json();\r",
+              "\r",
+              "tests[\"check http_status\"] = r.http_status == 415;\r",
+              "tests[\"check error_code\"] = r.error_code == 4;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disabledSystemHeaders": {
+          "content-type": true
+        }
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-mock-response-name",
+            "value": "TT Error 4",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/pdf",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "{{endpoint_traveltime}}"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "TT Error 1",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 500,\n    \"error_code\": 1,\n    \"description\": \"We are having issues with our servers right now. Please contact us if you keep seeing this to help resolve the issue\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 2",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 422,\n    \"error_code\": 2,\n    \"description\": \"The provided json body has the correct syntax, but didn’t pass request validation. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {\n        \"obj.departure_searches[0].id\": [\n            \"Path missing\"\n        ]\n    }\n}"
+        },
+        {
+          "name": "TT Error 3",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 400,\n    \"error_code\": 3,\n    \"description\": \"We were unable to parse the provided json body due to invalid syntax\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 4",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unsupported Media Type",
+          "code": 415,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 415,\n    \"error_code\": 4,\n    \"description\": \"Expected content-type of application/json\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 5",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 401,\n    \"error_code\": 5,\n    \"description\": \"Application Id was not set, specify it in X-Application-Id header\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 6",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 401,\n    \"error_code\": 6,\n    \"description\": \"Api Key was not set, specify it in X-Api-Key header\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 7",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 401,\n    \"error_code\": 7,\n    \"description\": \"Application Id must not be empty and contain only alphanumeric characters\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 8",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 401,\n    \"error_code\": 8,\n    \"description\": \"Api Key must not be empty and contain only alphanumeric characters\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 9",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 429,\n    \"error_code\": 9,\n    \"description\": \"You have exceeded your request limit\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 10",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 401,\n    \"error_code\": 10,\n    \"description\": \"Application Id or Api Key is invalid\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 11",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 503,\n    \"error_code\": 11,\n    \"description\": \"Service is temporarily unavailable, try again shortly\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 12",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Gateway Timeout",
+          "code": 504,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 504,\n    \"error_code\": 12,\n    \"description\": \"Our servers have timed out while processing your request. If the problem persists, you can try splitting the current request into multiple smaller requests\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 13",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 422,\n    \"error_code\": 13,\n    \"description\": \"We do not have the fare data for this region. Fares are only supported in Great Britain. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 14",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 422,\n    \"error_code\": 14,\n    \"description\": \"We do not have the postcode data for this region. Postcodes are only supported in the UK\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {\n        \"search_id\": [\n            \"Patient postcode centered\"\n        ]\n    }\n}"
+        },
+        {
+          "name": "TT Error 15",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 422,\n    \"error_code\": 15,\n    \"description\": \"We do not have public transport data for the region at the time you have specified, try a more recent date. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 16",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 422,\n    \"error_code\": 16,\n    \"description\": \"We do not support searches in the given area. Make sure that all points for a search are in the same country. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {\n        \"search_id\": [\n            \"Patient postcode centered\"\n        ],\n        \"locations\": [\n            \"SA14 9DW\"\n        ]\n    }\n}"
+        },
+        {
+          "name": "TT Error 17",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 422,\n    \"error_code\": 17,\n    \"description\": \"We couldn’t start the search at the given point. Please make sure you are not attempting to start a search from a lake, river, etc. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 19",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Not Acceptable",
+          "code": 406,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 406,\n    \"error_code\": 19,\n    \"description\": \"Unsupported content type was specified in the Accept header. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {\n         \"supported_content_types\": [\n            \"application/json\"\n        ]\n    }\n}"
+        },
+        {
+          "name": "TT Error 20",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 404,\n    \"error_code\": 20,\n    \"description\": \"The requested resource could not be found\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 21",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Request Entity Too Large",
+          "code": 413,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 413,\n    \"error_code\": 21,\n    \"description\": \"Request body is too large, maximum allowed size is 100KB\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 22",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 422,\n    \"error_code\": 22,\n    \"description\": \"We do not have public transport data for the region for the time-filter/fast endpoint. Try using the regular time-filter endpoint. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 23",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 422,\n    \"error_code\": 23,\n    \"description\": \"We do not have driving data for the region for the time-filter/fast endpoint. Try using the regular time-filter endpoint. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 24",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 422,\n    \"error_code\": 24,\n    \"description\": \"We do not have public transport data for the region for the time-filter/fast endpoint. Try using the regular time-filter endpoint. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 25",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 400,\n    \"error_code\": 25,\n    \"description\": \"The GET request did not pass request validation. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        },
+        {
+          "name": "TT Error 27",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+              "host": [
+                "{{url_traveltime}}"
+              ],
+              "path": [
+                "{{endpoint_traveltime}}"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": null,
+          "cookie": [],
+          "body": "{\n    \"http_status\": 422,\n    \"error_code\": 27,\n    \"description\": \"We do not have cycling data for the region for the time-filter/fast endpoint. Try using the regular time-filter endpoint. More information is available in additional_info attribute\",\n    \"documentation_link\": \"http://docs.traveltimeplatform.com/reference/error-codes\",\n    \"additional_info\": {}\n}"
+        }
+      ]
+    },
+    {
+      "name": "Travel Time Outside UK",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "var r = pm.response.json();\r",
+              "\r",
+              "tests[\"check http_status\"] = r.http_status == 422;\r",
+              "tests[\"check error_code\"] = r.error_code == 16;\r",
+              "\r",
+              "tests[\"check addition info\"] = Object.keys(r.additional_info).length > 0;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-mock-response-name",
+            "value": "TT Error 16",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 32.138409,\r\n        \"lng\": 5.4437256\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "{{endpoint_traveltime}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Travel Time Starting from a lake",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "var r = pm.response.json();\r",
+              "\r",
+              "tests[\"check http_status\"] = r.http_status == 422;\r",
+              "tests[\"check error_code\"] = r.error_code == 14;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-mock-response-name",
+            "value": "TT Error 14",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.522843, \r\n        \"lng\": -2.8039169\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "{{endpoint_traveltime}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Travel Time Invalid request JSON",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "var r = pm.response.json();\r",
+              "\r",
+              "tests[\"check http_status\"] = r.http_status == 422;\r",
+              "tests[\"check error_code\"] = r.error_code == 2;\r",
+              "\r",
+              "tests[\"check addition info\"] = Object.keys(r.additional_info).length > 0;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-mock-response-name",
+            "value": "TT Error 2",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 32.138409,\r\n        \"lng\": 5.4437256\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "{{endpoint_traveltime}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Travel Time Request path not found",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "var r = pm.response.json();\r",
+              "\r",
+              "tests[\"check http_status\"] = r.http_status == 404;\r",
+              "tests[\"check error_code\"] = r.error_code == 20;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-mock-response-name",
+            "value": "TT Error 20",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/nosuchpath",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "nosuchpath"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Travel Time Bad accept header",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(406);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "var r = pm.response.json();\r",
+              "\r",
+              "tests[\"check http_status\"] = r.http_status == 406;\r",
+              "tests[\"check error_code\"] = r.error_code == 19;\r",
+              "\r",
+              "tests[\"check addition info\"] = Object.keys(r.additional_info).length > 0;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disabledSystemHeaders": {
+          "accept": true
+        }
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-mock-response-name",
+            "value": "TT Error 19",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/octet-stream",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "{{endpoint_traveltime}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Travel Time No driving data for region",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "var r = pm.response.json();\r",
+              "\r",
+              "tests[\"check http_status\"] = r.http_status == 422;\r",
+              "tests[\"check error_code\"] = r.error_code == 23;\r",
+              "\r",
+              "tests[\"check addition info\"] = Object.keys(r.additional_info).length > 0;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {
+              "key": "value",
+              "value": "{{api_key_traveltime}}",
+              "type": "string"
+            },
+            {
+              "key": "key",
+              "value": "{{application_id_traveltime}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-mock-response-name",
+            "value": "TT Error 23",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "{{endpoint_traveltime}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "WIP Travel Time Request body gt 100kB",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(413);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "var r = pm.response.json();\r",
+              "\r",
+              "tests[\"check http_status\"] = r.http_status == 413;\r",
+              "tests[\"check error_code\"] = r.error_code == 21;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 4000;\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-mock-response-name",
+            "value": "TT Error 21",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "{{endpoint_traveltime}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Travel Time Api Key was not set",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "var r = pm.response.json();\r",
+              "\r",
+              "tests[\"check http_status\"] = r.http_status == 422;\r",
+              "tests[\"check error_code\"] = r.error_code == 23;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-mock-response-name",
+            "value": "TT Error 6",
+            "type": "text"
+          },
+          {
+            "key": "x-api-key",
+            "value": "{{api_key_traveltime}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Application-Id",
+            "value": "{{application_id_traveltime}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "{{endpoint_traveltime}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Travel Time Application Id was not set",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"response is ok\", function () {\r",
+              "    pm.response.to.have.status(422);\r",
+              "});\r",
+              "pm.test(\"response has valid content type\", function () {\r",
+              "    pm.response.to.have.header(\"Content-Type\");\r",
+              "});\r",
+              "\r",
+              "var r = pm.response.json();\r",
+              "\r",
+              "tests[\"check http_status\"] = r.http_status == 422;\r",
+              "tests[\"check error_code\"] = r.error_code == 23;\r",
+              "\r",
+              "tests[\"Excessive Response time\"] = responseTime < 1000;\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-mock-response-name",
+            "value": "TT Error 6",
+            "type": "text"
+          },
+          {
+            "key": "x-api-key",
+            "value": "{{api_key_traveltime}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Application-Id",
+            "value": "{{application_id_traveltime}}",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"locations\": [\r\n    {\r\n      \"id\": \"SA14 9DW\",\r\n      \"coords\": {\r\n        \"lat\": 51.680372,\r\n        \"lng\": -4.121095\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1385993720\",\r\n      \"coords\": {\r\n        \"lat\": 51.609035,\r\n        \"lng\": -3.984778\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1368524402\",\r\n      \"coords\": {\r\n        \"lat\": 51.232193,\r\n        \"lng\": -3.837206\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"141557\",\r\n      \"coords\": {\r\n        \"lat\": 51.206295,\r\n        \"lng\": -3.477139\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"135540\",\r\n      \"coords\": {\r\n        \"lat\": 51.181343,\r\n        \"lng\": -3.330617\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1427197950\",\r\n      \"coords\": {\r\n        \"lat\": 51.149021,\r\n        \"lng\": -3.98286\r\n      }\r\n    },\r\n    {\r\n      \"id\": \"1322478297\",\r\n      \"coords\": {\r\n        \"lat\": 51.198603,\r\n        \"lng\": -3.468119\r\n      }\r\n    }\r\n  ],\r\n  \"departure_searches\": [\r\n    {\r\n      \"id\": \"Patient postcode centered\",\r\n      \"departure_location_id\": \"SA14 9DW\",\r\n      \"arrival_location_ids\": [\r\n        \"1385993720\",\r\n        \"1368524402\",\r\n        \"141557\",\r\n        \"135540\",\r\n        \"1427197950\",\r\n        \"1322478297\"\r\n      ],\r\n      \"transportation\": {\r\n        \"type\": \"driving\",\r\n        \"parking_time\": 0\r\n      },\r\n      \"departure_time\": \"2021-05-12T08:44:35.725283\",\r\n      \"properties\": [\r\n        \"distance\"\r\n      ],\r\n      \"travel_time\": 7200\r\n    }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url_traveltime}}/{{endpoint_traveltime}}",
+          "host": [
+            "{{url_traveltime}}"
+          ],
+          "path": [
+            "{{endpoint_traveltime}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
 }
