@@ -1,4 +1,4 @@
-import provider
+from road_distance_api.provider import Provider
 import pytest
 import re
 
