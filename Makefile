@@ -61,8 +61,9 @@ apply-data-changes:
 run-static-analisys:
 	echo TODO: $(@)
 
-run-unit-test:
-	echo TODO: $(@)
+run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
+	cd road_distance_api && \
+		pytest -q tests/unit/test_contracts.py -k "$(NAME)"
 
 run-smoke-test:
 	echo TODO: $(@)
