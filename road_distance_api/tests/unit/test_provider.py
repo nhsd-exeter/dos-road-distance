@@ -1,7 +1,7 @@
 import os
 import json
 import pytest
-import provider
+from road_distance_api.provider import Provider
 
 class TestProvider():
 
