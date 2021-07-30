@@ -63,7 +63,7 @@ run-static-analisys:
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	cd road_distance_api && \
-		pytest -q tests/unit/test_contracts.py -k "$(NAME)"
+		pytest -q tests/unit/$(TEST_FILE) -k "$(NAME)"
 
 run-smoke-test:
 	echo TODO: $(@)
@@ -71,8 +71,8 @@ run-smoke-test:
 run-integration-test:
 	echo TODO: $(@)
 
-run-contract-test:
-	echo TODO: $(@)
+run-contract-test: # Run contract only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
+	make run-unit-test TEST_FILE=test_contracts.py
 
 run-functional-test:
 	[ $$(make project-branch-func-test) != true ] && exit 0
