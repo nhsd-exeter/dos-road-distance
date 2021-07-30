@@ -46,15 +46,10 @@
     "java.home": "/Library/Java/JavaVirtualMachines/adoptopenjdk-16.jdk/Contents/Home",
     "php.suggest.basic": false,
     "php.validate.executablePath": "/usr/bin/php",
-    "python.formatting.blackArgs": [
-      "--line-length",
-      "120"
-    ],
+    "python.formatting.blackArgs": ["--line-length", "120"],
     "python.formatting.provider": "black",
     "python.languageServer": "Pylance",
-    "python.linting.flake8Args": [
-      "--max-line-length=120"
-    ],
+    "python.linting.flake8Args": ["--max-line-length=120"],
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Path": "~/.pyenv/versions/3.9.5/bin/flake8",
     "python.linting.mypyArgs": [],
@@ -77,7 +72,7 @@
     "terminal.integrated.fontFamily": "Hack Nerd Font",
     "window.title": "${activeEditorMedium}${separator}${rootName}${separator}${rootPath}",
     "window.zoomLevel": 0,
-    "workbench.colorTheme": "Noctis Azureus",
+    "workbench.colorTheme": "Better Solarized Dark Italics",
     "workbench.editor.enablePreview": false,
     "workbench.tree.indent": 24,
     "[dockerfile]": {
@@ -146,21 +141,21 @@
       ]
     },
     "workbench.colorCustomizations": {
-      "activityBar.activeBackground": "#7295b1",
-      "activityBar.activeBorder": "#e8d6e0",
-      "activityBar.background": "#7295b1",
+      "activityBar.activeBackground": "#3399ff",
+      "activityBar.activeBorder": "#bf0060",
+      "activityBar.background": "#3399ff",
       "activityBar.foreground": "#15202b",
       "activityBar.inactiveForeground": "#15202b99",
-      "activityBarBadge.background": "#e8d6e0",
-      "activityBarBadge.foreground": "#15202b",
-      "statusBar.background": "#557c9b",
+      "activityBarBadge.background": "#bf0060",
+      "activityBarBadge.foreground": "#e7e7e7",
+      "statusBar.background": "#007fff",
       "statusBar.foreground": "#e7e7e7",
-      "statusBarItem.hoverBackground": "#7295b1",
-      "titleBar.activeBackground": "#557c9b",
+      "statusBarItem.hoverBackground": "#3399ff",
+      "titleBar.activeBackground": "#007fff",
       "titleBar.activeForeground": "#e7e7e7",
-      "titleBar.inactiveBackground": "#557c9b99",
+      "titleBar.inactiveBackground": "#007fff99",
       "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.color": "#557c9b"
+    "peacock.color": "#007fff"
   }
 }
