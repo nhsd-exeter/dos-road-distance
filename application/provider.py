@@ -14,9 +14,9 @@ class Provider():
 
     url: str = ''
     request_id: str = ''
-    
+
     contracts_path: str = 'openapi_schemas/json/' # Path to the JSON contracts
-    contracts: dict = { 
+    contracts: dict = {
     # The contract file prefixes for provider request/response, and the Lamba (local) request.
         'provider': 'travel_time_api',
         'local': 'dos_road_distance_api',
