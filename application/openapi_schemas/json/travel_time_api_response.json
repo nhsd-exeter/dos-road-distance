@@ -15,8 +15,8 @@
       },
       "properties":{
         "search_id":{
-           "type":"string",
-           "description":"The id specified for departure_searches in the request"
+          "type":"string",
+          "description":"The id specified for departure_searches in the request"
         },
         "locations":{
           "type":"array",
@@ -58,13 +58,13 @@
         }
       }
     },
-     "unreachable":{
-        "type":"array",
-        "maxItems":2000,
-        "items":{
-          "type":"string",
-          "description":"Id of the location that has been deemed too distance to reach within travel_time"
-        }
-     }
+    "unreachable":{
+      "type":"array",
+      "maxItems":2000,
+      "items":{
+        "type":"string",
+        "description":"Id of the location that has been deemed too distance to reach within travel_time"
+      }
+    }
   }
 }
