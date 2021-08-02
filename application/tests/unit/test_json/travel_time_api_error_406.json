@@ -1,11 +1,11 @@
 {
-    "http_status": 406,
-    "error_code": 19,
-    "description": "Unsupported content type was specified in the Accept header. More information is available in additional_info attribute",
-    "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
-    "additional_info": {
-        "supported_content_types": [
-            "application/json"
-        ]
-    }
+  "http_status": 406,
+  "error_code": 19,
+  "description": "Unsupported content type was specified in the Accept header. More information is available in additional_info attribute",
+  "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
+  "additional_info": {
+    "supported_content_types": [
+      "application/json"
+    ]
+  }
 }

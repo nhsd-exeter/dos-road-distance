@@ -52,25 +52,25 @@
   ],
   "departure_searches": [
     {
-        "id": "Patient postcode centered",
-        "departure_location_id": "SA14 9DW",
-        "arrival_location_ids": [
-            "1385993720",
-            "1368524402",
-            "141557",
-            "135540",
-            "1427197950",
-            "1322478297"
-        ],
-        "transportation": {
-            "type": "driving",
-            "parking_time": 0
-        },
-        "departure_time": "2021-05-12T08:44:35.725283",
-        "properties": [
-            "distance"
-        ],
-        "travel_time": 7200
+      "id": "Patient postcode centered",
+      "departure_location_id": "SA14 9DW",
+      "arrival_location_ids": [
+        "1385993720",
+        "1368524402",
+        "141557",
+        "135540",
+        "1427197950",
+        "1322478297"
+      ],
+      "transportation": {
+        "type": "driving",
+        "parking_time": 0
+      },
+      "departure_time": "2021-05-12T08:44:35.725283",
+      "properties": [
+        "distance"
+      ],
+      "travel_time": 7200
     }
   ]
 }
