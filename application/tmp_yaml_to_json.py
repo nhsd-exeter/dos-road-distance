@@ -27,7 +27,6 @@ class Convert:
                     data = yaml.load(yaml_file.read(), Loader=Loader)
                     self.contract_data.update({key: self.fetch_content_from_schema(data)})
         except Exception as ex:
-            raise Exception('file not found')
             print('Exception: Unable to open file ' + file_name + '. {0}'.format(ex))
 
 
