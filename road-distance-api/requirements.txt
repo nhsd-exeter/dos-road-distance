@@ -1,3 +1,0 @@
-jsonschema=3.2.0
-pytest=6.4.2
-connexion=2.9.0
