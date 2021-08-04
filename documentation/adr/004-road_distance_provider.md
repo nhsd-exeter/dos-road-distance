@@ -1,8 +1,8 @@
-# ADR-002a: Road Distance - Provider
+# ADR-004: Road Distance Provider
 
 * Date: 2021/03/22
 * Status: Proposed
-* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefanuik, Tamara Goldschmidt, Declan Heard
+* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk, Tamara Goldschmidt, Declan Heard
 
 ## Context
 
