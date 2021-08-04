@@ -2,7 +2,7 @@
 
 * Date: 2021/08/04
 * Status: Proposed
-* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk, Tamara Goldschmidt
+* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk, Tamara Goldschmidt, Declan Heard
 
 ## Context
 This will describe the technology stack being used throughout the system. It is intended to be a broad overview of intended technology but will be modified to include any new decision taken during the project.

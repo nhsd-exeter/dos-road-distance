@@ -2,7 +2,7 @@
 
 * Date: 2021/03/22
 * Status: Proposed
-* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk
+* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk, Declan Heard
 
 ## Context
 

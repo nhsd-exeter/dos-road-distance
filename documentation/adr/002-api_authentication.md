@@ -2,7 +2,7 @@
 
 * Date: 2021/08/03
 * Status: Proposed
-* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk, Tamara Goldschmidt
+* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk, Tamara Goldschmidt, Declan Heard
 
 ## Context
 Our API needs to be kept private and accessible only to the authorised actors. For the purpose of the pilot version of Road Distance application we only have one actor, the DoS system. This document will additionally discuss other access protections.

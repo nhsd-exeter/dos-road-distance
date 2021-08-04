@@ -2,7 +2,7 @@
 
 * Date: 2021/08/03
 * Status: Proposed
-* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk, Tamara Goldschmidt
+* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk, Tamara Goldschmidt, Declan Heard
 
 ## Context
 The Check Capacity Summary (CCS) service interfaces with the Road Distances API via an AWS Lambda. This document describes some of the decisions made for development of this interaction.
