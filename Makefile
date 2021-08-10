@@ -86,6 +86,10 @@ run-security-test:
 	[ $$(make project-branch-sec-test) != true ] && exit 0
 	echo TODO: $(@)
 
+generate-contract-json:
+	cd application && \
+		python yaml_to_json.py
+
 # --------------------------------------
 
 remove-unused-environments:

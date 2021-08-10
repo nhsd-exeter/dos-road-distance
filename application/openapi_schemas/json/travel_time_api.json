@@ -26,11 +26,11 @@
             "properties": {
               "lat": {
                 "type": "number",
-                "description": "lat point of origin"
+                "description": "Latitude point of origin"
               },
               "lng": {
                 "type": "number",
-                "description": "lng point of origin"
+                "description": "Longitude point of origin"
               }
             },
             "required": [
@@ -43,7 +43,7 @@
     },
     "departure_searches": {
       "type": "array",
-      "description": "orgin and destination configuration",
+      "description": "Origin and destination configuration",
       "items": {
         "type": "object",
         "required": [
@@ -93,12 +93,10 @@
               }
             }
           },
-          "arrival_time_period": {
+          "departure_time": {
             "type": "string",
-            "enum": [
-              "weekday_morning"
-            ],
-            "description": "Date and time string representing the departure time in extended ISO-8601 format"
+            "description": "Extended ISO format datetime describing departure time",
+            "pattern": "^(20[234]\\d-[01]\\d-[0123]\\dT\\d{2}:\\d{2}:\\d{2}\\.\\d{6})$"
           },
           "properties": {
             "type": "array",
