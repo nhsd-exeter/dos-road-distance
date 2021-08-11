@@ -14,7 +14,6 @@ class Provider:
     response: dict = {}
     options: dict = {}
     url: str = ""
-    request_id: str = ""
     status_code: int = None
     contracts_path: str = "openapi_schemas/json/"
     contracts: dict = {
@@ -25,8 +24,8 @@ class Provider:
 
     def __init__(self, request):
         self.request = request
-        transaction_id = self.request['transactionid'] if 'transactionid' in self.request else None
-        self.logger = RDLogger('./log/', uuid.uuid4(), transaction_id)
+        transaction_id = str(self.request['transactionid']) if 'transactionid' in self.request else ''
+        self.logger = RDLogger('./log/', str(uuid.uuid4()), transaction_id)
 
     def process_request(self) -> None:
         if self.validate_against_schema(self.request, "local"):
