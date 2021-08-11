@@ -34,28 +34,39 @@
     Provider Response Success - Per returned service
     YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|success|reference=<serviceUid>|unreachable=<yes/no>|distance=####
 """
+from configparser import ConfigParser
 import logging
+import json
 import sys
 import os
-
 
 class RDLogger:
 
     logger = None
+    log_name: str = ""
     log_file_path: str = ""
 
-    def __init__(self, log_file_path: str, request_id: str, transaction_id: str):
-        self.log_file_path = log_file_path
+    def __init__(self, log_name: str, request_id: str, transaction_id: str):
+
+        log_config = ConfigParser()
+        log_config.read('logging.conf')
+
+        if log_name in log_config:
+            self.log_name = log_name
+            self.log_file_path = log_config[log_name]['Path']
+        else:
+            raise ValueError('Logging config: ' + self.log_name + ' is not valid')
+
         try:
             self.logger = logging.getLogger(__name__)
             logging_level = logging.INFO if os.environ.get("DEBUG", "false").lower() == "true" else logging.DEBUG
             self.logger.setLevel(logging_level)
 
             sh = logging.StreamHandler(sys.stdout)
-            formatter = logging.Formatter(self.__create_log_format(request_id, transaction_id), "%Y/%m/%d %H:%M:%S")
+            formatter = logging.Formatter(self.__create_log_format(request_id, transaction_id), log_config[self.log_name['DateFormat']])
             sh.setFormatter(formatter)
             self.logger.addHandler(sh)
-            self.logger.addHandler(self.__create_file_handler(log_file_path, formatter))
+            self.logger.addHandler(self.__create_file_handler(self.log_file_path, formatter))
         except Exception as ex:
             print(ex)
 
@@ -112,9 +123,9 @@ class RDLogger:
 
     def log(self, log_message: str, levelname: str = "info"):
         if levelname == "info":
-            self.logger.info(log_message)
+            self.logger.info(json.dumps(log_message))
         elif levelname == "error":
-            self.logger.error(log_message)
+            self.logger.error(json.dumps(log_message))
 
     def log_formatted(self, log_message: str, formatter: str, levelname: str = "info"):
         formatterfunc = f"format_{formatter}"

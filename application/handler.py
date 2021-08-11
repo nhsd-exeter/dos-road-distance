@@ -2,7 +2,7 @@ import json
 from application.provider import Provider
 
 def process_road_distance_request(event, context):
-    request = json.loads(event['body'])
+    request = json.loads(event)
     provider = Provider(request)
     provider.process_request()
     response = {

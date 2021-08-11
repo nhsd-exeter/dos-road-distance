@@ -5,8 +5,6 @@ from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
 from google.protobuf.json_format import Parse
 from application.rdlogger import RDLogger
-
-
 class Provider:
 
     logger: RDLogger = None
@@ -25,21 +23,24 @@ class Provider:
     def __init__(self, request):
         self.request = request
         transaction_id = str(self.request['transactionid']) if 'transactionid' in self.request else ''
-        self.logger = RDLogger('./log/', str(uuid.uuid4()), transaction_id)
+
+        log_name = os.environ.get("LOGGER", "Audit")
+        self.logger = RDLogger(log_name, str(uuid.uuid4()), transaction_id)
 
     def process_request(self) -> None:
         if self.validate_against_schema(self.request, "local"):
             try:
-                self.logger.log_formatted(self.request, 'format_ccs_request')
+                self.logger.log_formatted(json.dumps(self.request), 'ccs_request')
                 # build json -> protobuf
                 # send
                 # handle response
+                self.status_code = 200
             except Exception as ex:
                 self.status_code = 500
                 self.logger.log('dos-road-distance exception: ' + str(ex), 'error')
         else:
             self.status_code = 500
-            self.logger.log_ccs_error(self.status_code, self.request)
+            self.logger.log_ccs_error(str(self.status_code), json.dumps(self.request))
 
     def get_status_code(self) -> int:
         return self.status_code
@@ -58,4 +59,4 @@ class Provider:
             with open(self.contracts_path + file_name) as json_file:
                 return json.load(json_file)
         except Exception as ex:
-            print("Exception: Unable to open file " + self.contracts_path + file_name + ". {0}".format(ex))git
+            print("Exception: Unable to open file " + self.contracts_path + file_name + ". {0}".format(ex))
