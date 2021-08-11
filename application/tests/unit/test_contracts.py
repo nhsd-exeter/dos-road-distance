@@ -1,6 +1,4 @@
-import os
 import json
-import pytest
 from application.provider import Provider
 
 

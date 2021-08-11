@@ -1,12 +1,11 @@
 import os
 import json
-import pytest
 from application.provider import Provider
 
 
 class TestProvider:
 
-    provider = provider()
+    provider = Provider()
     json_path: str = "test_json/"
 
     def test_error_responses_handled_gracefully(self):
@@ -16,7 +15,7 @@ class TestProvider:
                 http_status = json["http_status"]
 
                 try:
-                    response = provider.format_response(json_content)
+                    response = self.provider.format_response(json_content)
                     response_content = json.loads(response)
 
                     assert response_content["http_status"] == http_status

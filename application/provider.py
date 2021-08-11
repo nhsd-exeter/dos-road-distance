@@ -1,10 +1,8 @@
 import os
 import json
 import uuid
-import logging
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
-from google.protobuf.json_format import Parse
 
 
 class Provider:
