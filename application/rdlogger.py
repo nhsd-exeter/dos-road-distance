@@ -63,7 +63,7 @@ class RDLogger:
             self.logger.setLevel(logging_level)
 
             sh = logging.StreamHandler(sys.stdout)
-            formatter = logging.Formatter(self.__create_log_format(request_id, transaction_id), log_config[self.log_name['DateFormat']])
+            formatter = logging.Formatter(self.__create_log_format(request_id, transaction_id), "%Y/%m/%d %H:%M:%S")
             sh.setFormatter(formatter)
             self.logger.addHandler(sh)
             self.logger.addHandler(self.__create_file_handler(self.log_file_path, formatter))
@@ -123,9 +123,9 @@ class RDLogger:
 
     def log(self, log_message: str, levelname: str = "info"):
         if levelname == "info":
-            self.logger.info(json.dumps(log_message))
+            self.logger.info(log_message)
         elif levelname == "error":
-            self.logger.error(json.dumps(log_message))
+            self.logger.error(log_message)
 
     def log_formatted(self, log_message: str, formatter: str, levelname: str = "info"):
         formatterfunc = f"format_{formatter}"

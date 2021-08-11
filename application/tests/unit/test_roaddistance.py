@@ -1,11 +1,11 @@
 import os
 import json
-from application.provider import Provider
+from application.main import RoadDistance
 
 
-class TestProvider:
+class TestRoadDistance:
 
-    provider = Provider()
+    road_distance = RoadDistance({})
     json_path: str = "test_json/"
 
     def test_error_responses_handled_gracefully(self):
@@ -15,7 +15,7 @@ class TestProvider:
                 http_status = json["http_status"]
 
                 try:
-                    response = self.provider.format_response(json_content)
+                    response = self.road_distance.format_response(json_content)
                     response_content = json.loads(response)
 
                     assert response_content["http_status"] == http_status

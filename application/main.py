@@ -5,7 +5,8 @@ from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
 from google.protobuf.json_format import Parse
 from application.rdlogger import RDLogger
-class Provider:
+
+class RoadDistance:
 
     logger: RDLogger = None
     request: dict = {}
@@ -30,7 +31,7 @@ class Provider:
     def process_request(self) -> None:
         if self.validate_against_schema(self.request, "local"):
             try:
-                self.logger.log_formatted(json.dumps(self.request), 'ccs_request')
+                self.logger.log_formatted(str(self.request), 'ccs_request')
                 # build json -> protobuf
                 # send
                 # handle response
@@ -40,9 +41,8 @@ class Provider:
                 self.logger.log('dos-road-distance exception: ' + str(ex), 'error')
         else:
             self.status_code = 500
-            self.logger.log_ccs_error(str(self.status_code), json.dumps(self.request))
+            self.logger.log_ccs_error(str(self.status_code), str(self.request))
 
-    def get_status_code(self) -> int:
         return self.status_code
 
     def validate_against_schema(self, json: dict, schema_name: str) -> bool:

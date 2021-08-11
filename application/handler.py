@@ -1,12 +1,10 @@
 import json
-from application.provider import Provider
+from application.main import RoadDistance
 
 def process_road_distance_request(event, context):
-    request = json.loads(event)
-    provider = Provider(request)
-    provider.process_request()
+    road_distance = RoadDistance(json.loads(event))
     response = {
-        "status_code": provider.get_status_code(),
+        "status_code": road_distance.process_request(),
     }
 
     return response

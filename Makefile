@@ -80,6 +80,9 @@ run-logging-test: # Run logging only unit tests, add NAME="xxx" or NAME="xxx or 
 run-handler-test:
 	make run-unit-test TEST_FILE=test_handler.py
 
+run-roaddistance-test:
+	make run-unit-test TEST_FILE=test_roaddistance.py
+
 run-functional-test:
 	[ $$(make project-branch-func-test) != true ] && exit 0
 	echo TODO: $(@)
