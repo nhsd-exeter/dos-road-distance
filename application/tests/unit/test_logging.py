@@ -174,4 +174,4 @@ class TestLogging:
 
     def test_invalid_log_name_raises_value_error(self):
         with pytest.raises(ValueError):
-            bad_rdlogger = rdlogger = RDLogger("DoesNotExist", self.request_id, self.transaction_id)
+            RDLogger("DoesNotExist", self.request_id, self.transaction_id)

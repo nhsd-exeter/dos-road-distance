@@ -13,7 +13,7 @@ class RoadDistance:
     response: dict = {}
     options: dict = {}
     url: str = ""
-    status_code: int = None
+    status_code: int
     contracts_path: str = "openapi_schemas/json/"
     contracts: dict = {
         "provider": "travel_time_api",
