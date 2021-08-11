@@ -6,13 +6,13 @@ from application.main import RoadDistance
 class TestRoadDistance:
 
     road_distance = RoadDistance({})
-    json_path: str = "test_json/"
+    json_path: str = "tests/unit/test_json/"
 
     def test_error_responses_handled_gracefully(self):
-        for file in sorted(os.listdir(self.jsonPath)):
+        for file in sorted(os.listdir(self.json_path)):
             if file.lower().find("_error_") != -1:
                 json_content = self.fetch_json(file)
-                http_status = json["http_status"]
+                http_status = json_content["http_status"]
 
                 try:
                     response = self.road_distance.format_response(json_content)
