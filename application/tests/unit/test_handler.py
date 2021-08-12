@@ -1,6 +1,5 @@
 import os
 import json
-import pytest
 import application.handler as handler
 
 

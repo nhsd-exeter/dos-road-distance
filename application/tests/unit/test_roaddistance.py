@@ -1,6 +1,7 @@
 import os
 import json
 from application.main import RoadDistance
+from application.rdlogger import RDLogger
 
 
 class TestRoadDistance:
@@ -8,10 +9,18 @@ class TestRoadDistance:
     road_distance = RoadDistance({})
     json_path: str = "tests/unit/test_json/"
 
+    def test_valid_request(self):
+        json_content: dict = self.__fetch_json("dos_road_distance_api_happy.json")
+        road_distance = RoadDistance(json_content)
+        rdlogger = RDLogger("Test", road_distance.request_id, json_content["transactionid"])
+        rdlogger.purge()
+        status_code = road_distance.process_request()
+        assert status_code == 200
+
     def test_error_responses_handled_gracefully(self):
         for file in sorted(os.listdir(self.json_path)):
             if file.lower().find("_error_") != -1:
-                json_content = self.fetch_json(file)
+                json_content = self.__fetch_json(file)
                 http_status = json_content["http_status"]
 
                 try:
@@ -28,7 +37,7 @@ class TestRoadDistance:
                     print(ex)
                     assert False
 
-    def fetch_json(self, file_name: str):
+    def __fetch_json(self, file_name: str):
         try:
             with open(self.json_path + file_name) as json_file:
                 return json.load(json_file)
