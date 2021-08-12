@@ -1,6 +1,7 @@
 import re
 import uuid
 import json
+from jsonschema.exceptions import STRONG_MATCHES
 import pytest
 from application.rdlogger import RDLogger
 
@@ -20,17 +21,22 @@ class TestLogging:
     YYYY/MM/DD 00:00:00.000000+0100|<info|debug|error>|lambda|<request_id>|<transaction_id>|roaddistancepilot|<request|response>|<success|fail>|<error=|message=>|<additional>
     """
 
+    STR_LOG_LAMBDA = "lambda"
+    STR_LOG_CCSREQUEST = "ccsrequest"
+    STR_LOG_PROVIDERREQUEST = "providerrequest"
+    STR_LOG_PROVIDERRESPONSE = "providerresponse"
+
     LOG1_DATETIME = r"(20[234]\d\/[01]\d\/[0123]\d \d{2}:\d{2}:\d{2}\.(\d{6}\+\d{4}|\d{3}))"
-    LOG2_INFO_PREFIX = r"\|INFO\|lambda"
-    LOG2_FAILURE_PREFIX = r"\|ERROR\|lambda"
+    LOG2_INFO_PREFIX = r"\|INFO\|{}".format(STR_LOG_LAMBDA)
+    LOG2_FAILURE_PREFIX = r"\|ERROR\|{}".format(STR_LOG_LAMBDA)
     LOG3_SECOND_PREFIX = r"\|([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12})\|([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}|)\|roaddistancepilot"
     LOG4_DETAILS_BASIC = r"\|([^\|]+)"
     LOG4_DETAILS_STATUS = r"\|system\|success\|message=([^\|]*)"
-    LOG4_DETAILS_RAW = r"\|(ccsrequest|providerrequest|providerresponse)\|.*"
-    LOG4_CCS_FAILURE = r"\|ccsrequest\|failed\|statuscode=([^\|]*)|error=([^\|]*)"
-    LOG4_PROVIDER_FAILURE = r"\|providerresponse\|failed\|statuscode=([^\|]*)|error=([^\|]*)"
-    LOG4_PROVIDER_RESPONSE = (
-        r"\|providerresponse\|success\|reference=([^\|]*)\|unreachable=(yes|no)\|distance=([\d.]+)?"
+    LOG4_DETAILS_RAW = r"\|({}|{}|{})\|.*".format(STR_LOG_CCSREQUEST, STR_LOG_PROVIDERREQUEST, STR_LOG_PROVIDERRESPONSE)
+    LOG4_CCS_FAILURE = r"\|{}\|failed\|statuscode=([^\|]*)|error=([^\|]*)".format(STR_LOG_CCSREQUEST)
+    LOG4_PROVIDER_FAILURE = r"\|{}\|failed\|statuscode=([^\|]*)|error=([^\|]*)".format(STR_LOG_PROVIDERRESPONSE)
+    LOG4_PROVIDER_RESPONSE = r"\|{}\|success\|reference=([^\|]*)\|unreachable=(yes|no)\|distance=([\d.]+)?".format(
+        STR_LOG_PROVIDERRESPONSE
     )
 
     TEST_PAYLOAD = "This is a test payload/message"
@@ -129,7 +135,11 @@ class TestLogging:
         print(json_content)
         self.rdlogger.purge()
         self.rdlogger.log_formatted(json_content, "ccs_request")
-        compare = "ccsrequest|" + json_content
+        compare = "{}|".format(self.STR_LOG_CCSREQUEST) + json_content
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
+        compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
@@ -139,7 +149,11 @@ class TestLogging:
         print(json_content)
         self.rdlogger.purge()
         self.rdlogger.log_formatted(json_content, "provider_request")
-        compare = "providerrequest|" + json_content
+        compare = "{}|".format(self.STR_LOG_PROVIDERREQUEST) + json_content
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
+        compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
@@ -149,7 +163,11 @@ class TestLogging:
         print(json_content)
         self.rdlogger.purge()
         self.rdlogger.log_formatted(json_content, "provider_response")
-        compare = "providerresponse|" + json_content
+        compare = "{}|".format(self.STR_LOG_PROVIDERRESPONSE) + json_content
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
+        compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
@@ -157,7 +175,11 @@ class TestLogging:
     def test_content_provider_response_success_per_destination(self):
         self.rdlogger.purge()
         self.rdlogger.log_provider_success("1000001", "yes", "1000")
-        compare = "providerresponse|success|reference=1000001|unreachable=yes|distance=1000"
+        compare = "{}|success|reference=1000001|unreachable=yes|distance=1000".format(self.STR_LOG_PROVIDERRESPONSE)
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
+        compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
@@ -167,7 +189,11 @@ class TestLogging:
         print(json_content)
         self.rdlogger.purge()
         self.rdlogger.log_provider_error("500", json_content)
-        compare = "providerresponse|failed|statuscode=500|error=" + json_content
+        compare = "{}|failed|statuscode=500|error=".format(self.STR_LOG_PROVIDERRESPONSE) + json_content
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
+        compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1

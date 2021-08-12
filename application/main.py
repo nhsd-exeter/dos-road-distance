@@ -3,8 +3,8 @@ import json
 import uuid
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
-from google.protobuf.json_format import Parse
 from application.rdlogger import RDLogger
+
 
 class RoadDistance:
 
@@ -20,25 +20,26 @@ class RoadDistance:
         "local": "dos_road_distance_api",
         "provider-response": "travel_time_api_response",
     }
+    request_id: str = ""
 
     def __init__(self, request):
         self.request = request
-        transaction_id = str(self.request['transactionid']) if 'transactionid' in self.request else ''
-
+        transaction_id = str(self.request["transactionid"]) if "transactionid" in self.request else ""
+        self.request_id = str(uuid.uuid4())
         log_name = os.environ.get("LOGGER", "Audit")
-        self.logger = RDLogger(log_name, str(uuid.uuid4()), transaction_id)
+        self.logger = RDLogger(log_name, self.request_id, transaction_id)
 
     def process_request(self) -> int:
         if self.validate_against_schema(self.request, "local"):
             try:
-                self.logger.log_formatted(str(self.request), 'ccs_request')
+                self.logger.log_formatted(str(self.request), "ccs_request")
                 # build json -> protobuf
                 # send
                 # handle response
                 self.status_code = 200
             except Exception as ex:
                 self.status_code = 500
-                self.logger.log('dos-road-distance exception: ' + str(ex), 'error')
+                self.logger.log("dos-road-distance exception: " + str(ex), "error")
         else:
             self.status_code = 500
             self.logger.log_ccs_error(str(self.status_code), str(self.request))
