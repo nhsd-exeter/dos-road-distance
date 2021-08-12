@@ -1,6 +1,7 @@
 import re
 import uuid
 import json
+import pytest
 from application.rdlogger import RDLogger
 
 
@@ -39,7 +40,7 @@ class TestLogging:
     json_path: str = "tests/unit/test_json/"
     request_id: str = str(uuid.uuid4())
     transaction_id: str = str(uuid.uuid4())
-    rdlogger = RDLogger(test_log_path + test_log_file, request_id, transaction_id)
+    rdlogger = RDLogger("Test", request_id, transaction_id)
 
     def __fetch_json(self, file_name: str):
         try:
@@ -170,3 +171,7 @@ class TestLogging:
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
+
+    def test_invalid_log_name_raises_value_error(self):
+        with pytest.raises(ValueError):
+            RDLogger("DoesNotExist", self.request_id, self.transaction_id)

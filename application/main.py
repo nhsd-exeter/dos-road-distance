@@ -3,15 +3,17 @@ import json
 import uuid
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
+from google.protobuf.json_format import Parse
+from application.rdlogger import RDLogger
 
+class RoadDistance:
 
-class Provider:
-
+    logger: RDLogger = None
     request: dict = {}
     response: dict = {}
     options: dict = {}
     url: str = ""
-    request_id: str = ""
+    status_code: int
     contracts_path: str = "openapi_schemas/json/"
     contracts: dict = {
         "provider": "travel_time_api",
@@ -20,12 +22,28 @@ class Provider:
     }
 
     def __init__(self, request):
-        print(os.getcwd())
         self.request = request
-        self.create_request_id()
+        transaction_id = str(self.request['transactionid']) if 'transactionid' in self.request else ''
 
-    def create_request_id(self):
-        self.request_id = uuid.uuid4()
+        log_name = os.environ.get("LOGGER", "Audit")
+        self.logger = RDLogger(log_name, str(uuid.uuid4()), transaction_id)
+
+    def process_request(self) -> int:
+        if self.validate_against_schema(self.request, "local"):
+            try:
+                self.logger.log_formatted(str(self.request), 'ccs_request')
+                # build json -> protobuf
+                # send
+                # handle response
+                self.status_code = 200
+            except Exception as ex:
+                self.status_code = 500
+                self.logger.log('dos-road-distance exception: ' + str(ex), 'error')
+        else:
+            self.status_code = 500
+            self.logger.log_ccs_error(str(self.status_code), str(self.request))
+
+        return self.status_code
 
     def validate_against_schema(self, json: dict, schema_name: str) -> bool:
         try:
@@ -36,7 +54,7 @@ class Provider:
             print(error)
             return False
 
-    def fetch_json(self, file_name: str):
+    def fetch_json(self, file_name: str) -> dict:
         try:
             with open(self.contracts_path + file_name) as json_file:
                 return json.load(json_file)
