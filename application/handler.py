@@ -10,7 +10,7 @@ def process_road_distance_request(event, context):
         status_code = 500
 
     response = {
-        "status_code": status_code,
+        "statusCode": status_code,
     }
 
     return response
