@@ -36,9 +36,9 @@
 """
 from configparser import ConfigParser
 import logging
-import json
 import sys
 import os
+
 
 class RDLogger:
 
@@ -49,13 +49,13 @@ class RDLogger:
     def __init__(self, log_name: str, request_id: str, transaction_id: str):
 
         log_config = ConfigParser()
-        log_config.read('logging.conf')
+        log_config.read("logging.conf")
 
         if log_name in log_config:
             self.log_name = log_name
-            self.log_file_path = log_config[log_name]['Path']
+            self.log_file_path = log_config[log_name]["Path"]
         else:
-            raise ValueError('Logging config: ' + self.log_name + ' is not valid')
+            raise ValueError("Logging config: " + self.log_name + " is not valid")
 
         try:
             self.logger = logging.getLogger(__name__)
