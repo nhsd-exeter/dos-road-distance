@@ -16,6 +16,15 @@ class TestRoadDistance:
         rdlogger.purge()
         status_code = road_distance.process_request()
         assert status_code == 200
+        compare = "ccsrequest|" + str(json_content)
+        result = rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
+        json_response: dict = self.road_distance.get_response()
+        compare = "providerresponse|" + str(json_response)
+        result = rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
 
     def test_error_responses_handled_gracefully(self):
         for file in sorted(os.listdir(self.json_path)):
