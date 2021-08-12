@@ -28,7 +28,7 @@ class RoadDistance:
         log_name = os.environ.get("LOGGER", "Audit")
         self.logger = RDLogger(log_name, str(uuid.uuid4()), transaction_id)
 
-    def process_request(self) -> None:
+    def process_request(self) -> int:
         if self.validate_against_schema(self.request, "local"):
             try:
                 self.logger.log_formatted(str(self.request), 'ccs_request')
