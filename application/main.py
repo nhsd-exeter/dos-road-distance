@@ -21,14 +21,13 @@ class RoadDistance:
         "provider-response": "travel_time_api_response",
     }
     request_id: str = ""
-    transaction_id: str = ""
 
     def __init__(self, request):
         self.request = request
-        self.transaction_id = str(self.request["transactionid"]) if "transactionid" in self.request else ""
+        transaction_id = str(self.request["transactionid"]) if "transactionid" in self.request else ""
         self.request_id = str(uuid.uuid4())
         log_name = os.environ.get("LOGGER", "Audit")
-        self.logger = RDLogger(log_name, self.request_id, self.transaction_id)
+        self.logger = RDLogger(log_name, self.request_id, transaction_id)
 
     def process_request(self) -> int:
         if self.validate_against_schema(self.request, "local"):
