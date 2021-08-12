@@ -20,6 +20,7 @@ class TestRoadDistance:
         result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
+        rdlogger.purge()
         json_response: dict = self.road_distance.get_response()
         compare = "providerresponse|" + str(json_response)
         result = rdlogger.read_log_output().find(compare)
