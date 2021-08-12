@@ -133,6 +133,10 @@ class TestLogging:
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
+        compare = "lambda|" + self.request_id + "|" + self.transaction_id + "|"
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
 
     def test_content_raw_provider_request(self):
         json_content = self.__fetch_json("travel_time_api_happy.json")
@@ -140,6 +144,10 @@ class TestLogging:
         self.rdlogger.purge()
         self.rdlogger.log_formatted(json_content, "provider_request")
         compare = "providerrequest|" + json_content
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
+        compare = "lambda|" + self.request_id + "|" + self.transaction_id + "|"
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
@@ -153,11 +161,19 @@ class TestLogging:
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
+        compare = "lambda|" + self.request_id + "|" + self.transaction_id + "|"
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
 
     def test_content_provider_response_success_per_destination(self):
         self.rdlogger.purge()
         self.rdlogger.log_provider_success("1000001", "yes", "1000")
         compare = "providerresponse|success|reference=1000001|unreachable=yes|distance=1000"
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
+        compare = "lambda|" + self.request_id + "|" + self.transaction_id + "|"
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
@@ -168,6 +184,10 @@ class TestLogging:
         self.rdlogger.purge()
         self.rdlogger.log_provider_error("500", json_content)
         compare = "providerresponse|failed|statuscode=500|error=" + json_content
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
+        compare = "lambda|" + self.request_id + "|" + self.transaction_id + "|"
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
