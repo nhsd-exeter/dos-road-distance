@@ -60,7 +60,7 @@ python-code-format: ### Format Python code with 'black' - optional: FILES=[direc
 	make docker-run-tools CMD=" \
 		black \
 			--line-length 120 \
-			$(or $(FILES), $(APPLICATION_DIR)) \
+			$(or $(FILES), $(APPLICATION_DIR_REL)) \
 	"
 
 python-code-check: ### Check Python code with 'flake8' - optional: FILES=[directory, file or pattern],EXCLUDE=[comma-separated list]
@@ -68,13 +68,13 @@ python-code-check: ### Check Python code with 'flake8' - optional: FILES=[direc
 		flake8 \
 			--max-line-length=120 \
 			--exclude */tests/__init__.py,$(EXCLUDE) \
-			$(or $(FILES), $(APPLICATION_DIR)) \
+			$(or $(FILES), $(APPLICATION_DIR_REL)) \
 	"
 
 python-code-coverage: ### Test Python code with 'coverage' - mandatory: CMD=[test program]; optional: FILES=[directory, file or pattern],EXCLUDE=[comma-separated list]
 	make docker-run-tools SH=y CMD=" \
 		coverage run \
-			--source=$(or $(FILES), $(APPLICATION_DIR)) \
+			--source=$(or $(FILES), $(APPLICATION_DIR_REL)) \
 			--omit=*/tests/*,$(EXCLUDE) \
 			$(CMD) &&
 		coverage report -m && \
