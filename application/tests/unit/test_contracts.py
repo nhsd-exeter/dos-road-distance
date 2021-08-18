@@ -33,9 +33,7 @@ class TestContracts:
         assert self.road_distance.validate_against_schema(json_content, "provider") == False
 
     def test_contract_lambda_to_provider_bad_response(self):
-        json_content = self.fetch_json(
-            self.road_distance.contracts["provider"] + "_response_invalid_missing_element.json"
-        )
+        json_content = self.fetch_json(self.road_distance.contracts["provider"] + "_response_invalid_missing_element.json")
         assert self.road_distance.validate_against_schema(json_content, "provider-response") == False
 
     def fetch_json(self, file_name: str):

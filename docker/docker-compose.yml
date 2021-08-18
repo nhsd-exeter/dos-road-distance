@@ -1,9 +1,9 @@
-version: "2"
+version: '2'
 services:
   application:
     build:
-      - context: application
-      - dockerfile: Dockerfile
+	  - context: application
+	  - dockerfile: Dockerfile
     volumes:
       - ../application:/usr/src/app
     privileged: true
