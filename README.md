@@ -80,6 +80,7 @@ Generate and trust a self-signed certificate that will be used locally to enable
 
 ### Local Project Setup
 
+    make setup
     make build
     make start log
     open https://ui.project.local:8443

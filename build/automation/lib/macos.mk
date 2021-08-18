@@ -21,7 +21,8 @@ macos-prepare:: ### Prepare for installation and configuration of the developmen
 macos-update:: ### Update all currently installed development dependencies
 	xcode-select --install 2> /dev/null ||:
 	which mas > /dev/null 2>&1 || brew install mas
-	mas upgrade $$(mas list | grep -i xcode | awk '{ print $$1 }')
+	sudo xcodebuild -license accept ||:; mas list | grep Xcode || ( mas install $$(mas search Xcode | head -n 1 | awk '{ print $$1 }') && mas upgrade $$(mas list | grep Xcode | awk '{ print $$1 }') ) ||:
+	[ $(SYSTEM_ARCH_NAME) == arm64 ] && sudo softwareupdate --install-rosetta --agree-to-license ||:
 	brew update
 	brew upgrade ||:
 	brew tap buo/cask-upgrade
@@ -73,14 +74,18 @@ macos-install-essential:: ### Install essential development dependencies - optio
 	brew $$install mas ||:
 	brew $$install minikube ||:
 	brew $$install nvm ||:
+	brew $$install openssl ||:
 	brew $$install pyenv ||:
 	brew $$install pyenv-virtualenv ||:
 	brew $$install pyenv-which-ext ||:
 	brew $$install python@$(PYTHON_VERSION_MAJOR).$(PYTHON_VERSION_MINOR) ||:
+	brew $$install readline ||:
 	brew $$install shellcheck ||:
+	brew $$install sqlite3 ||:
 	brew $$install tmux ||:
 	brew $$install tree ||:
 	brew $$install warrensbox/tap/tfswitch || brew uninstall --force terrafrom && brew reinstall --force warrensbox/tap/tfswitch ||:
+	brew $$install xz ||:
 	brew $$install yq ||:
 	brew $$install zlib ||:
 	brew $$install zsh ||:
@@ -179,63 +184,6 @@ macos-install-recommended:: ### Install recommended dependencies - optional: REI
 	brew $$install --cask vlc ||:
 	brew $$install --cask wifi-explorer ||:
 
-macos-check:: ### Check if the development dependencies are installed
-	# Essential dependencies
-	mas list | grep -i "xcode" ||:
-	brew list ack ||:
-	brew list amazon-ecs-cli ||:
-	brew list aws-iam-authenticator ||:
-	brew list awscli ||:
-	brew list bash ||:
-	brew list coreutils ||:
-	brew list ctop ||:
-	brew list dive ||:
-	brew list findutils ||:
-	brew list gawk ||:
-	brew list git ||:
-	brew list git-crypt ||:
-	brew list git-secrets ||:
-	brew list gnu-sed ||:
-	brew list gnu-tar ||:
-	brew list gnutls ||:
-	brew list go ||:
-	brew list google-authenticator-libpam ||:
-	brew list google-java-format ||:
-	brew list gpg ||:
-	brew list gradle ||:
-	brew list graphviz ||:
-	brew list grep ||:
-	brew list helm ||:
-	brew list httpie ||:
-	brew list jenv ||:
-	brew list jq ||:
-	brew list kns ||:
-	brew list kubetail ||:
-	brew list kustomize ||:
-	brew list make ||:
-	brew list mas ||:
-	brew list maven ||:
-	brew list nvm ||:
-	brew list pyenv ||:
-	brew list pyenv-virtualenv ||:
-	brew list pyenv-which-ext ||:
-	brew list python@$(PYTHON_VERSION_MAJOR).$(PYTHON_VERSION_MINOR) ||:
-	brew list shellcheck ||:
-	brew list tmux ||:
-	brew list tree ||:
-	brew list warrensbox/tap/tfswitch ||:
-	brew list yq ||:
-	brew list zlib ||:
-	brew list zsh ||:
-	brew list zsh-autosuggestions ||:
-	brew list zsh-completions ||:
-	brew list zsh-syntax-highlighting ||:
-	brew list --cask adoptopenjdk$(JAVA_VERSION) ||:
-	brew list --cask docker ||:
-	brew list --cask font-hack-nerd-font ||:
-	brew list --cask iterm2 ||:
-	brew list --cask visual-studio-code ||:
-
 macos-config:: ### Configure development dependencies
 	make \
 		_macos-config-mac \
@@ -295,6 +243,7 @@ _macos-config-oh-my-zsh:
 	make file-remove-content FILE=~/.zshrc CONTENT="\nsource (.)*/oh-my-zsh.sh\n"
 	make file-remove-content FILE=~/.zshrc CONTENT="\n# BEGIN: Custom configuration(.)*# END: Custom configuration\n"
 	echo -e "\n# BEGIN: Custom configuration" >> ~/.zshrc
+	echo "export PATH=\$$HOME/bin:$(PATH_HOMEBREW):$(PATH_SYSTEM)" >> ~/.zshrc
 	echo "plugins=(" >> ~/.zshrc
 	echo "    git" >> ~/.zshrc
 	echo "    docker" >> ~/.zshrc
@@ -342,7 +291,7 @@ _macos-config-oh-my-zsh-make-devops:
 		echo "for file in \$$HOME/usr/*-aliases; do source \$$file; done"
 		echo
 		echo "# Variables"
-		echo "export PATH=\$$HOME/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gnu-tar/libexec/gnubin:/usr/local/opt/grep/libexec/gnubin:/usr/local/opt/make/libexec/gnubin:/usr/local/Cellar/python/$$(python3 --version | grep -Eo '[0-9.]*')/Frameworks/Python.framework/Versions/Current/bin:\$$PATH"
+		echo "export PATH=\$$HOME/bin:$(PATH_HOMEBREW):$(PATH_SYSTEM)"
 		echo "export GPG_TTY=\$$(tty)"
 		echo "export KUBECONFIG=~/.kube/configs/lk8s-nonprod-kubeconfig 2> /dev/null"
 		echo
@@ -356,12 +305,12 @@ _macos-config-oh-my-zsh-make-devops:
 		echo "# env: Go"
 		echo ". $$HOME/.gvm/scripts/gvm"
 		echo "# env: Java"
-		echo "export JAVA_HOME=$$(/usr/libexec/java_home -v$(JAVA_VERSION))"
+		echo "export JAVA_HOME=\$$(/usr/libexec/java_home -v$(JAVA_VERSION))"
 		echo "eval \"\$$(jenv init -)\""
 		echo "# env: Node"
 		echo "export NVM_DIR=\$$HOME/.nvm"
-		echo ". /usr/local/opt/nvm/nvm.sh"
-		# echo ". /usr/local/opt/nvm/etc/bash_completion.d/nvm"
+		echo ". \$$(brew --prefix)/opt/nvm/nvm.sh"
+		# echo ". \$$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm"
 		# echo "autoload -U add-zsh-hook"
 		# echo "load-nvmrc() {"
 		# echo "  ("
@@ -383,7 +332,7 @@ _macos-config-oh-my-zsh-make-devops:
 		# echo "add-zsh-hook chpwd load-nvmrc"
 		# echo "load-nvmrc"
 		echo "# env: Serverless"
-		echo "export PATH=\"$$HOME/.serverless/bin:$$PATH\""
+		echo "export PATH=\"$$HOME/.serverless/bin:\$$PATH\""
 		echo
 		echo "export EDITOR=\"code --wait\""
 		echo
@@ -399,27 +348,11 @@ _macos-config-oh-my-zsh-aws:
 
 _macos-config-command-line:
 	sudo chown -R $$(id -u) $$(brew --prefix)/*
-	# configure Python
-	brew unlink python@$(PYTHON_VERSION_MAJOR).$(PYTHON_VERSION_MINOR) ||: && brew link --overwrite --force python@$(PYTHON_VERSION_MAJOR).$(PYTHON_VERSION_MINOR)
-	rm -f $$(brew --prefix)/bin/python
-	ln $$(brew --prefix)/bin/python3 $$(brew --prefix)/bin/python
-	curl -s https://bootstrap.pypa.io/get-pip.py | $$(brew --prefix)/bin/python3
-	$$(brew --prefix)/bin/pip3 install $(PYTHON_BASE_PACKAGES)
-	(
-		export LDFLAGS="-L/usr/local/opt/zlib/lib"
-		export CPPFLAGS="-I/usr/local/opt/zlib/include"
-		export PKG_CONFIG_PATH="/usr/local/opt/zlib/lib/pkgconfig"
-		pyenv install --skip-existing $(PYTHON_VERSION)
-	)
-	pyenv global system
+	make \
+		python-install \
+		java-install
 	# configure Go
 	curl -sSL https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer | bash ||:
-	# configure Java
-	eval "$$(jenv init -)"
-	jenv enable-plugin export
-	jenv add /Library/Java/JavaVirtualMachines/adoptopenjdk-$(JAVA_VERSION).jdk/Contents/Home
-	jenv versions # ls -1 /Library/Java/JavaVirtualMachines
-	jenv global $(JAVA_VERSION)
 	# configure Terraform
 	tfswitch $(TERRAFORM_VERSION)
 	# configure shell
@@ -452,13 +385,18 @@ _macos-config-iterm2:
 	rm /tmp/com.googlecode.iterm2.plist
 
 _macos-config-visual-studio-code:
-	# Install extensions
+	#
+	# *** Install extensions ***
+	#
+	# PHP
+	code --force --install-extension bmewburn.vscode-intelephense-client # PHP support
+	code --force --install-extension felixfbecker.php-debug # PHP support
+	#
 	code --force --install-extension alefragnani.bookmarks
 	code --force --install-extension alefragnani.project-manager
 	code --force --install-extension alexkrechik.cucumberautocomplete
 	code --force --install-extension amazonwebservices.aws-toolkit-vscode
 	code --force --install-extension ban.spellright
-	code --force --install-extension bmewburn.vscode-intelephense-client # PHP support
 	code --force --install-extension christian-kohler.npm-intellisense
 	code --force --install-extension christian-kohler.path-intellisense
 	code --force --install-extension coenraads.bracket-pair-colorizer
@@ -471,8 +409,6 @@ _macos-config-visual-studio-code:
 	code --force --install-extension eg2.vscode-npm-script
 	code --force --install-extension emeraldwalk.runonsave
 	code --force --install-extension esbenp.prettier-vscode
-	code --force --install-extension felixfbecker.php-debug # PHP support
-	code --force --install-extension felixfbecker.php-intellisense # PHP support
 	code --force --install-extension ffaraone.pyfilesgen
 	code --force --install-extension formulahendry.code-runner
 	code --force --install-extension fosshaas.fontsize-shortcuts
@@ -515,7 +451,9 @@ _macos-config-visual-studio-code:
 	code --force --install-extension xabikos.javascriptsnippets
 	code --force --install-extension yzhang.dictionary-completion
 	code --force --install-extension yzhang.markdown-all-in-one
-	# Install themes
+	#
+	# *** Install themes ***
+	#
 	code --force --install-extension ahmadawais.shades-of-purple
 	code --force --install-extension akamud.vscode-theme-onedark
 	code --force --install-extension arcticicestudio.nord-visual-studio-code
@@ -533,7 +471,7 @@ _macos-config-visual-studio-code:
 	# List them all
 	code --list-extensions --show-versions
 	# Copy user key bindings
-	cp ~/Library/Application\ Support/Code/User/keybindings.json ~/Library/Application\ Support/Code/User/keybindings.json.bak.$$(date -u +"%Y%m%d%H%M%S") ||:
+	cp ~/Library/Application\ Support/Code/User/keybindings.json ~/Library/Application\ Support/Code/User/keybindings.json.bak.$$(date -u +"%Y%m%d%H%M%S") 2> /dev/null ||:
 	find ~/Library/Application\ Support/Code/User -maxdepth 1 -type f -mtime +7 -name 'keybindings.json.bak.*' -execdir rm -- '{}' \;
 	cp -fv $(PROJECT_DIR)/build/automation/lib/macos/vscode-keybindings.json ~/Library/Application\ Support/Code/User/keybindings.json
 
@@ -564,15 +502,14 @@ _macos-config-firefox:
 	# 	redux_devtools.xpi ||:
 
 _macos-disable-gatekeeper:
-	sudo spctl --master-disable
+	sudo spctl --master-disable 2> /dev/null # Works only on an Intel-based silicon
 
 _macos-enable-gatekeeper:
-	sudo spctl --master-enable
+	sudo spctl --master-enable 2> /dev/null # Works only on an Intel-based silicon
 
 # ==============================================================================
 
 .SILENT: \
-	macos-check \
 	macos-config \
 	macos-info \
 	macos-install-additional \
