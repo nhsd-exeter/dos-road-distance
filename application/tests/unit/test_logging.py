@@ -18,7 +18,6 @@ class TestLogging:
     http status code=###
     road_distance_pilot|error=' + error description
 
-    YYYY/MM/DD 00:00:00.000000+0100|<info|debug|error>|lambda|<request_id>|<transaction_id>|roaddistancepilot|<request|response>|<success|fail>|<error=|message=>|<additional>
     """
 
     STR_LOG_LAMBDA = "lambda"
@@ -29,7 +28,8 @@ class TestLogging:
     LOG1_DATETIME = r"(20[234]\d\/[01]\d\/[0123]\d \d{2}:\d{2}:\d{2}\.(\d{6}\+\d{4}|\d{3}))"
     LOG2_INFO_PREFIX = r"\|INFO\|{}".format(STR_LOG_LAMBDA)
     LOG2_FAILURE_PREFIX = r"\|ERROR\|{}".format(STR_LOG_LAMBDA)
-    LOG3_SECOND_PREFIX = r"\|([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12})\|([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}|)\|roaddistancepilot"
+    LOG3_SECOND_PREFIX = r"\|([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12})\|([a-z0-9]{8}-[a-z0-9]{4}"
+    +r"-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}|)\|roaddistancepilot"
     LOG4_DETAILS_BASIC = r"\|([^\|]+)"
     LOG4_DETAILS_STATUS = r"\|system\|success\|message=([^\|]*)"
     LOG4_DETAILS_RAW = r"\|({}|{}|{})\|.*".format(STR_LOG_CCSREQUEST, STR_LOG_PROVIDERREQUEST, STR_LOG_PROVIDERRESPONSE)

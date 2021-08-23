@@ -6,13 +6,11 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
+import RequestsCommon_pb2 as RequestsCommon__pb2
 
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
-
-
-import RequestsCommon_pb2 as RequestsCommon__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -21,7 +19,17 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax="proto3",
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_pb=b'\n\x1bTimeFilterFastRequest.proto\x12)com.igeolise.traveltime.rabbitmq.requests\x1a\x14RequestsCommon.proto"\xaf\x04\n\x15TimeFilterFastRequest\x12\x64\n\x10oneToManyRequest\x18\x01 \x01(\x0b\x32J.com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.OneToMany\x1a\x89\x03\n\tOneToMany\x12L\n\x11\x64\x65partureLocation\x18\x01 \x01(\x0b\x32\x31.com.igeolise.traveltime.rabbitmq.requests.Coords\x12\x16\n\x0elocationDeltas\x18\x02 \x03(\x11\x12Q\n\x0etransportation\x18\x03 \x01(\x0b\x32\x39.com.igeolise.traveltime.rabbitmq.requests.Transportation\x12P\n\x11\x61rrivalTimePeriod\x18\x04 \x01(\x0e\x32\x35.com.igeolise.traveltime.rabbitmq.requests.TimePeriod\x12\x12\n\ntravelTime\x18\x05 \x01(\x11\x12]\n\nproperties\x18\x06 \x03(\x0e\x32I.com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.Property"$\n\x08Property\x12\t\n\x05\x46\x41RES\x10\x00\x12\r\n\tDISTANCES\x10\x01\x62\x06proto3',
+    serialized_pb=b"\n\x1bTimeFilterFastRequest.proto\x12)com.igeolise.traveltime.rabbitmq.requests\x1a"
+    + b'\x14RequestsCommon.proto"\xaf\x04\n\x15TimeFilterFastRequest\x12\x64\n\x10oneToManyRequest\x18'
+    + b"\x01 \x01(\x0b\x32J.com.igeolise.traveltime.rabbitmq.requests.TimeFilterFastRequest.OneToMany\x1a"
+    + b"\x89\x03\n\tOneToMany\x12L\n\x11\x64\x65partureLocation\x18\x01 \x01(\x0b\x32"
+    + b"\x31.com.igeolise.traveltime.rabbitmq.requests.Coords\x12\x16\n\x0elocationDeltas\x18\x02 \x03"
+    + b"(\x11\x12Q\n\x0etransportation\x18\x03 \x01(\x0b\x32"
+    + b"\x39.com.igeolise.traveltime.rabbitmq.requests.Transportation\x12P\n\x11\x61rrivalTimePeriod\x18"
+    + b"\x04 \x01(\x0e\x32\x35.com.igeolise.traveltime.rabbitmq.requests.TimePeriod\x12\x12\n\ntravelTime"
+    + b"\x18\x05 \x01(\x11\x12]\n\nproperties\x18\x06 \x03(\x0e\x32I.com.igeolise.traveltime.rabbitmq."
+    + b'requests.TimeFilterFastRequest.Property"$\n\x08Property\x12\t\n\x05\x46\x41RES\x10\x00\x12'
+    + b"\r\n\tDISTANCES\x10\x01\x62\x06proto3",
     dependencies=[
         RequestsCommon__pb2.DESCRIPTOR,
     ],

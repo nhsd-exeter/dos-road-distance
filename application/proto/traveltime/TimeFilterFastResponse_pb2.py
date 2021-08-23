@@ -18,7 +18,20 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax="proto3",
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_pb=b'\n\x1cTimeFilterFastResponse.proto\x12*com.igeolise.traveltime.rabbitmq.responses"\xbf\x06\n\x16TimeFilterFastResponse\x12W\n\x05\x65rror\x18\x01 \x01(\x0b\x32H.com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Error\x12\x61\n\nproperties\x18\x02 \x01(\x0b\x32M.com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Properties\x1aJ\n\nProperties\x12\x13\n\x0btravelTimes\x18\x01 \x03(\x11\x12\x14\n\x0cmonthlyFares\x18\x02 \x03(\x05\x12\x11\n\tdistances\x18\x03 \x03(\x05\x1a\x63\n\x05\x45rror\x12Z\n\x04type\x18\x01 \x01(\x0e\x32L.com.igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.ErrorType"\xb7\x03\n\tErrorType\x12\x0b\n\x07UNKNOWN\x10\x00\x12 \n\x1cONE_TO_MANY_MUST_NOT_BE_NULL\x10\x01\x12\x1b\n\x17SOURCE_MUST_NOT_BE_NULL\x10\x02\x12#\n\x1fTRANSPORTATION_MUST_NOT_BE_NULL\x10\x03\x12\x1a\n\x16SOURCE_NOT_IN_GEOMETRY\x10\x04\x12$\n UNRECOGNIZED_TRANSPORTATION_MODE\x10\x05\x12\x1d\n\x19TRAVEL_TIME_LIMIT_TOO_LOW\x10\x06\x12\x1e\n\x1aTRAVEL_TIME_LIMIT_TOO_HIGH\x10\x07\x12\x19\n\x15\x41UTH_ERROR_NO_USER_ID\x10\x08\x12.\n*SERVICE_MISMATCH_WRONG_TRANSPORTATION_MODE\x10\t\x12\x17\n\x13SOURCE_OUT_OF_REACH\x10\n\x12/\n+INTERLEAVED_DELTAS_INVALID_COORDINATE_PAIRS\x10\x0b\x12#\n\x1f\x44ISTANCE_PROPERTY_NOT_SUPPORTED\x10\x0c\x62\x06proto3',
+    serialized_pb=b'\n\x1cTimeFilterFastResponse.proto\x12*com.igeolise.traveltime.rabbitmq.responses"\xbf\x06'
+    + b"\n\x16TimeFilterFastResponse\x12W\n\x05\x65rror\x18\x01 \x01(\x0b\x32H.com.igeolise.traveltime."
+    + b"rabbitmq.responses.TimeFilterFastResponse.Error\x12\x61\n\nproperties\x18\x02 \x01(\x0b\x32M.com."
+    + b"igeolise.traveltime.rabbitmq.responses.TimeFilterFastResponse.Properties\x1aJ\n\nProperties\x12\x13\n"
+    + b"\x0btravelTimes\x18\x01 \x03(\x11\x12\x14\n\x0cmonthlyFares\x18\x02 \x03(\x05\x12\x11\n\tdistances\x18"
+    + b"\x03 \x03(\x05\x1a\x63\n\x05\x45rror\x12Z\n\x04type\x18\x01 \x01(\x0e\x32L.com.igeolise.traveltime."
+    + b'rabbitmq.responses.TimeFilterFastResponse.ErrorType"\xb7\x03\n\tErrorType\x12\x0b\n\x07UNKNOWN\x10\x00'
+    + b"\x12 \n\x1cONE_TO_MANY_MUST_NOT_BE_NULL\x10\x01\x12\x1b\n\x17SOURCE_MUST_NOT_BE_NULL\x10\x02\x12#\n"
+    + b"\x1fTRANSPORTATION_MUST_NOT_BE_NULL\x10\x03\x12\x1a\n\x16SOURCE_NOT_IN_GEOMETRY\x10\x04\x12$"
+    + b"\n UNRECOGNIZED_TRANSPORTATION_MODE\x10\x05\x12\x1d\n\x19TRAVEL_TIME_LIMIT_TOO_LOW\x10\x06\x12\x1e\n"
+    + b"\x1aTRAVEL_TIME_LIMIT_TOO_HIGH\x10\x07\x12\x19\n\x15\x41UTH_ERROR_NO_USER_ID\x10\x08\x12."
+    + b"\n*SERVICE_MISMATCH_WRONG_TRANSPORTATION_MODE\x10\t\x12\x17\n\x13SOURCE_OUT_OF_REACH\x10\n\x12/"
+    + b"\n+INTERLEAVED_DELTAS_INVALID_COORDINATE_PAIRS\x10\x0b\x12#\n\x1f"
+    + b"\x44ISTANCE_PROPERTY_NOT_SUPPORTED\x10\x0c\x62\x06proto3",
 )
 
 

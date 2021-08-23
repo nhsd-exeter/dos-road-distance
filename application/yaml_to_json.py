@@ -1,11 +1,5 @@
 import os
 import json
-import yaml
-
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
 
 json_path: str = "openapi_schemas/json/"
 yaml_path: str = "openapi_schemas/yaml/"

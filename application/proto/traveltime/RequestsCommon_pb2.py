@@ -19,7 +19,12 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax="proto3",
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_pb=b'\n\x14RequestsCommon.proto\x12)com.igeolise.traveltime.rabbitmq.requests""\n\x06\x43oords\x12\x0b\n\x03lat\x18\x01 \x01(\x02\x12\x0b\n\x03lng\x18\x02 \x01(\x02"]\n\x0eTransportation\x12K\n\x04type\x18\x01 \x01(\x0e\x32=.com.igeolise.traveltime.rabbitmq.requests.TransportationType*}\n\x12TransportationType\x12\x14\n\x10PUBLIC_TRANSPORT\x10\x00\x12\x0b\n\x07\x44RIVING\x10\x01\x12 \n\x1c\x44RIVING_AND_PUBLIC_TRANSPORT\x10\x02\x12\x15\n\x11\x44RIVING_AND_FERRY\x10\x03\x12\x0b\n\x07WALKING\x10\x04*!\n\nTimePeriod\x12\x13\n\x0fWEEKDAY_MORNING\x10\x00\x62\x06proto3',
+    serialized_pb=b'\n\x14RequestsCommon.proto\x12)com.igeolise.traveltime.rabbitmq.requests""\n\x06\x43oords\x12\x0b'
+    + b'\n\x03lat\x18\x01 \x01(\x02\x12\x0b\n\x03lng\x18\x02 \x01(\x02"]\n\x0eTransportation\x12K\n\x04type\x18'
+    + b"\x01 \x01(\x0e\x32=.com.igeolise.traveltime.rabbitmq.requests.TransportationType*}\n\x12TransportationType"
+    + b"\x12\x14\n\x10PUBLIC_TRANSPORT\x10\x00\x12\x0b\n\x07\x44RIVING\x10\x01\x12 \n\x1c"
+    + b"\x44RIVING_AND_PUBLIC_TRANSPORT\x10\x02\x12\x15\n\x11\x44RIVING_AND_FERRY\x10\x03\x12\x0b\n\x07WALKING"
+    + b"\x10\x04*!\n\nTimePeriod\x12\x13\n\x0fWEEKDAY_MORNING\x10\x00\x62\x06proto3",
 )
 
 _TRANSPORTATIONTYPE = _descriptor.EnumDescriptor(
