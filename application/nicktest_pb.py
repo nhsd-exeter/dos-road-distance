@@ -26,8 +26,8 @@ print(properties)
 oneToMany = TimeFilterFastRequest.TimeFilterFastRequest().OneToMany()
 oneToMany.departureLocation.CopyFrom(coords)
 oneToMany.transportation.CopyFrom(transportation)
-oneToMany.locationDeltas.extend(locationDeltas)
-oneToMany.properties.extend(properties)
+oneToMany.locationDeltas[:] = locationDeltas
+oneToMany.properties[:] = properties
 oneToMany.travelTime = 7200
 print("oneToMany")
 print(oneToMany)
@@ -36,3 +36,4 @@ request.oneToManyRequest.CopyFrom(oneToMany)
 
 print("request")
 print(request)
+print(request.SerializeToString())
