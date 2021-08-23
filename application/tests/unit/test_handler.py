@@ -29,7 +29,7 @@ class TestHandler:
         request = self.fetch_json("dos_road_distance_api_invalid_missing_element.json")
         response = handler.process_road_distance_request(request, None)
         assert response["statusCode"] == 500
-        assert os.path.isfile(self.log_path) == False
+        assert not os.path.isfile(self.log_path)
 
     def purge_test_logs(self):
         if os.path.isfile(self.log_path):

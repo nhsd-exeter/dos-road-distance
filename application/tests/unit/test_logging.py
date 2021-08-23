@@ -1,7 +1,6 @@
 import re
 import uuid
 import json
-from jsonschema.exceptions import STRONG_MATCHES
 import pytest
 from application.rdlogger import RDLogger
 

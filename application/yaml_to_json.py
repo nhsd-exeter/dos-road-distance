@@ -1,5 +1,7 @@
 import os
 import json
+import yaml
+from yaml.loader import Loader
 
 json_path: str = "openapi_schemas/json/"
 yaml_path: str = "openapi_schemas/yaml/"
