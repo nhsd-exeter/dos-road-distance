@@ -12,7 +12,7 @@ Mac:
 
     brew install protobuf
 
-Linux:
+Linux
 
     sudo apt install protobuf-compiler
 
@@ -22,8 +22,12 @@ If errors occur during installation try:
 
 ## Generating python classes
 
-    # Run the following command from the directory containing the .proto files
-    # This is to accommodate imports between .proto files
+There is a Makefile target from the root as follows:
+
+	make generate-proto-python
+
+This is effectively the same as using the following command from the directory containing the .proto files
+
     protoc -I=. --python_out=.  •.proto
 
 Re-generating the Python classes will only be required if there are changes to the protobuf definitions (.proto files), which would most likely mean wider changes to the application.
