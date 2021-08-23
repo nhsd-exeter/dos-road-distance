@@ -100,9 +100,16 @@ run-security-test:
 	[ $$(make project-branch-sec-test) != true ] && exit 0
 	echo TODO: $(@)
 
-generate-contract-json:
+generate-contract-json: # Generate the JSON files used for contract testing
 	cd application && \
 		python yaml_to_json.py
+
+generate-proto-python: # Generate the Python code from the protobuf proto files
+	SRC_DIR=application/proto/traveltime && \
+	DST_DIR=application/proto/traveltime&& \
+	protoc -I=$$SRC_DIR --python_out=$$DST_DIR $$SRC_DIR/*.proto && \
+	ls -l $$SRC_DIR/*.py
+
 
 # --------------------------------------
 
