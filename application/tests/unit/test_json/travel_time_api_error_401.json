@@ -1,7 +1,7 @@
 {
-  "http_status": 401,
-  "error_code": 5,
-  "description": "Application Id was not set, specify it in X-Application-Id header",
-  "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
-  "additional_info": {}
+    "http_status": 401,
+    "error_code": 5,
+    "description": "Application Id was not set, specify it in X-Application-Id header",
+    "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
+    "additional_info": {}
 }

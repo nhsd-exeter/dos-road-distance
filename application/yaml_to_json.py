@@ -1,6 +1,7 @@
 import os
 import json
 import yaml
+
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
@@ -9,20 +10,17 @@ except ImportError:
 json_path: str = "openapi_schemas/json/"
 yaml_path: str = "openapi_schemas/yaml/"
 contract_infile: dict = {
-        "local": "dos_road_distance_api",
-        "provider": "travel_time_api",
-        "provider_response": "travel_time_api"
-    }
+    "local": "dos_road_distance_api",
+    "provider": "travel_time_api",
+    "provider_response": "travel_time_api",
+}
 contract_outfile: dict = {
-        "local": "dos_road_distance_api",
-        "provider": "travel_time_api",
-        "provider_response": "travel_time_api_response"
-    }
-schema_keys: dict = {
-        "local": ["schema"],
-        "provider": ["schema"],
-        "provider_response": ["responses", 200, "schema"]
-    }
+    "local": "dos_road_distance_api",
+    "provider": "travel_time_api",
+    "provider_response": "travel_time_api_response",
+}
+schema_keys: dict = {"local": ["schema"], "provider": ["schema"], "provider_response": ["responses", 200, "schema"]}
+
 
 def generate_contract_json():
     try:
@@ -40,11 +38,13 @@ def generate_contract_json():
     except Exception as ex:
         print("Exception: Unable to open file " + file_name + ". {0}".format(ex))
 
+
 def parse_keys(keys: list, data: dict):
     content = data
     for key in keys:
         content = fetch_content_from_schema(content, key)
     return content
+
 
 def fetch_content_from_schema(data: dict, schema_key: str):
     for key, value in data.items():
@@ -55,9 +55,11 @@ def fetch_content_from_schema(data: dict, schema_key: str):
             if isinstance(rec, dict):
                 return rec
 
+
 def create_json(file_name: str, contract_data: dict):
     with open(json_path + file_name + ".json", "w", encoding="utf-8") as f:
         json.dump(contract_data, f, ensure_ascii=False, indent=2)
+
 
 if __name__ == "__main__":
     generate_contract_json()

@@ -1,76 +1,73 @@
 {
-  "locations": [
-    {
-      "id": "SA14 9DW",
-      "coords": {
-        "lat": 51.680372,
-        "lng": -4.121095
-      }
-    },
-    {
-      "id": "1385993720",
-      "coords": {
-        "lat": 51.609035,
-        "lng": -3.984778
-      }
-    },
-    {
-      "id": "1368524402",
-      "coords": {
-        "lat": 51.232193,
-        "lng": -3.837206
-      }
-    },
-    {
-      "id": "141557",
-      "coords": {
-        "lat": 51.206295,
-        "lng": -3.477139
-      }
-    },
-    {
-      "id": "135540",
-      "coords": {
-        "lat": 51.181343,
-        "lng": -3.330617
-      }
-    },
-    {
-      "id": "1427197950",
-      "coords": {
-        "lat": 51.149021,
-        "lng": -3.98286
-      }
-    },
-    {
-      "id": "1322478297",
-      "coords": {
-        "lat": 51.198603,
-        "lng": -3.468119
-      }
-    }
-  ],
-  "departure_searches": [
-    {
-      "id": "Patient postcode centered",
-      "departure_location_id": "SA14 9DW",
-      "arrival_location_ids": [
-        "1385993720",
-        "1368524402",
-        "141557",
-        "135540",
-        "1427197950",
-        "1322478297"
-      ],
-      "transportation": {
-        "type": "driving",
-        "parking_time": 0
-      },
-      "departure_time": "2021-05-12T08:44:35.725283",
-      "properties": [
-        "distance"
-      ],
-      "travel_time": 7200
-    }
-  ]
+    "locations": [{
+            "id": "SA14 9DW",
+            "coords": {
+                "lat": 51.680372,
+                "lng": -4.121095
+            }
+        },
+        {
+            "id": "1385993720",
+            "coords": {
+                "lat": 51.609035,
+                "lng": -3.984778
+            }
+        },
+        {
+            "id": "1368524402",
+            "coords": {
+                "lat": 51.232193,
+                "lng": -3.837206
+            }
+        },
+        {
+            "id": "141557",
+            "coords": {
+                "lat": 51.206295,
+                "lng": -3.477139
+            }
+        },
+        {
+            "id": "135540",
+            "coords": {
+                "lat": 51.181343,
+                "lng": -3.330617
+            }
+        },
+        {
+            "id": "1427197950",
+            "coords": {
+                "lat": 51.149021,
+                "lng": -3.98286
+            }
+        },
+        {
+            "id": "1322478297",
+            "coords": {
+                "lat": 51.198603,
+                "lng": -3.468119
+            }
+        }
+    ],
+    "departure_searches": [{
+        "id": "Patient postcode centered",
+        "departure_location_id": "SA14 9DW",
+        "arrival_location_ids": [
+            "1385993720",
+            "1368524402",
+            "141557",
+            "135540",
+            "1427197950",
+            "1322478297"
+        ],
+        "transportation": {
+            "type": "driving",
+            "parking_time": 0
+        },
+        "departure_time": "2021-05-12T08:44:35.725283",
+        "properties": [
+            "distance"
+        ],
+        "travel_time": 7200
+    }]
 }

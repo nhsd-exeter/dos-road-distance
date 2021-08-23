@@ -1,7 +1,7 @@
 {
-  "http_status": 415,
-  "error_code": 4,
-  "description": "Expected content-type of application/json",
-  "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
-  "additional_info": {}
+    "http_status": 415,
+    "error_code": 4,
+    "description": "Expected content-type of application/json",
+    "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
+    "additional_info": {}
 }

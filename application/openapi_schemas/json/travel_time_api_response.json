@@ -1,70 +1,70 @@
 {
-  "type": "object",
-  "required": [
-    "results"
-  ],
-  "properties": {
-    "results": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "search_id"
-        ],
-        "description": "Results wrapper",
-        "properties": {
-          "search_id": {
-            "type": "string",
-            "description": "The id specified for departure_searches in the request"
-          },
-          "locations": {
+    "type": "object",
+    "required": [
+        "results"
+    ],
+    "properties": {
+        "results": {
             "type": "array",
-            "minItems": 1,
-            "maxItems": 2000,
             "items": {
-              "type": "object",
-              "description": "Details for each returned locations",
-              "required": [
-                "id",
-                "properties"
-              ],
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "description": "The id provided in the request for the given location"
-                },
+                "type": "object",
+                "required": [
+                    "search_id"
+                ],
+                "description": "Results wrapper",
                 "properties": {
-                  "type": "array",
-                  "description": "A list of any data attributes requested in departure_searches.properties",
-                  "minItems": 1,
-                  "maxItems": 1,
-                  "items": {
-                    "type": "object",
-                    "description": "Requested data attributes",
-                    "required": [
-                      "distance"
-                    ],
-                    "properties": {
-                      "distance": {
-                        "type": "integer",
-                        "description": "Distance from destination to this location in meters"
-                      }
+                    "search_id": {
+                        "type": "string",
+                        "description": "The id specified for departure_searches in the request"
+                    },
+                    "locations": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 2000,
+                        "items": {
+                            "type": "object",
+                            "description": "Details for each returned locations",
+                            "required": [
+                                "id",
+                                "properties"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "description": "The id provided in the request for the given location"
+                                },
+                                "properties": {
+                                    "type": "array",
+                                    "description": "A list of any data attributes requested in departure_searches.properties",
+                                    "minItems": 1,
+                                    "maxItems": 1,
+                                    "items": {
+                                        "type": "object",
+                                        "description": "Requested data attributes",
+                                        "required": [
+                                            "distance"
+                                        ],
+                                        "properties": {
+                                            "distance": {
+                                                "type": "integer",
+                                                "description": "Distance from destination to this location in meters"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                  }
                 }
-              }
+            },
+            "unreachable": {
+                "type": "array",
+                "maxItems": 2000,
+                "items": {
+                    "type": "string",
+                    "description": "Id of the location that has been deemed too distance to reach within travel_time"
+                }
             }
-          }
         }
-      },
-      "unreachable": {
-        "type": "array",
-        "maxItems": 2000,
-        "items": {
-          "type": "string",
-          "description": "Id of the location that has been deemed too distance to reach within travel_time"
-        }
-      }
     }
-  }
 }
