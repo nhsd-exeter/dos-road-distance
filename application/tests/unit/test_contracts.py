@@ -1,8 +1,9 @@
 import json
+from application.tests.unit.common import Common
 from application.main import RoadDistance
 
 
-class TestContracts:
+class TestContracts(Common):
 
     """
     contracts are defined in openapi3 specification
@@ -10,7 +11,6 @@ class TestContracts:
     """
 
     road_distance = RoadDistance({})
-    json_path: str = "tests/unit/test_json/"
 
     def test_css_to_lambda_contract_happy(self):
         json_content = self.fetch_json("dos_road_distance_api_happy.json")
@@ -39,8 +39,4 @@ class TestContracts:
         assert not self.road_distance.validate_against_schema(json_content, "provider-response")
 
     def fetch_json(self, file_name: str):
-        try:
-            with open(self.json_path + file_name) as json_file:
-                return json.load(json_file)
-        except Exception as ex:
-            print("Exception: Unable to open file " + file_name + ". {0}".format(ex))
+        return super().fetch_json(file_name)

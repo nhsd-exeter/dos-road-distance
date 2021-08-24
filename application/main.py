@@ -5,8 +5,8 @@ import uuid
 # import google.protobuf.json_format as protobuf
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
-from rdlogger import RDLogger
-from traveltime_request import TravelTimeRequest
+from application.rdlogger import RDLogger
+from application.traveltime_request import TravelTimeRequest
 
 
 class RoadDistance:
@@ -36,9 +36,7 @@ class RoadDistance:
         if self.validate_against_schema(self.request, "local"):
             try:
                 self.logger.log_formatted(str(self.request), "ccs_request")
-                request = self.build_request()
                 self.status_code = 200
-                return request
             except Exception as ex:
                 self.status_code = 500
                 self.logger.log("dos-road-distance exception: " + str(ex), "error")

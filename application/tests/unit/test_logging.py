@@ -2,10 +2,11 @@ import re
 import uuid
 import json
 import pytest
+from application.tests.unit.common import Common
 from application.rdlogger import RDLogger
 
 
-class TestLogging:
+class TestLogging(Common):
 
     """
     All logs will contain:
@@ -42,17 +43,12 @@ class TestLogging:
 
     test_log_path: str = "./tests/unit/test_log/"
     test_log_file: str = "rd.log"
-    json_path: str = "tests/unit/test_json/"
     request_id: str = str(uuid.uuid4())
     transaction_id: str = str(uuid.uuid4())
     rdlogger = RDLogger("Test", request_id, transaction_id)
 
     def __fetch_json(self, file_name: str):
-        try:
-            with open(self.json_path + file_name) as json_file:
-                return str(json.load(json_file))
-        except Exception as ex:
-            print("Exception: Unable to open file " + file_name + ". {0}".format(ex))
+        return str(super().fetch_json(file_name))
 
     def test_basic_log_success(self):
         rx = self.LOG1_DATETIME + self.LOG2_INFO_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_DETAILS_BASIC

@@ -1,10 +1,11 @@
 import os
 import json
+from application.tests.unit.common import Common
 from application.main import RoadDistance
 from application.rdlogger import RDLogger
 
 
-class TestRoadDistance:
+class TestRoadDistance(Common):
 
     road_distance = RoadDistance({})
     json_path: str = "tests/unit/test_json/"
@@ -55,8 +56,4 @@ class TestRoadDistance:
                     assert False
 
     def __fetch_json(self, file_name: str):
-        try:
-            with open(self.json_path + file_name) as json_file:
-                return json.load(json_file)
-        except Exception as ex:
-            print("Exception: Unable to open file " + file_name + ". {0}".format(ex))
+        return super().fetch_json(file_name)

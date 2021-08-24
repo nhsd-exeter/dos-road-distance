@@ -1,5 +1,5 @@
-import proto.traveltime.RequestsCommon_pb2 as RequestsCommon
-import proto.traveltime.TimeFilterFastRequest_pb2 as TimeFilterFastRequest
+import application.proto.traveltime.RequestsCommon_pb2 as RequestsCommon
+import application.proto.traveltime.TimeFilterFastRequest_pb2 as TimeFilterFastRequest
 
 
 class TravelTimeRequest:
