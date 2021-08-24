@@ -1,4 +1,3 @@
-import json
 from application.tests.unit.common import Common
 from application.main import RoadDistance
 

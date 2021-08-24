@@ -1,6 +1,5 @@
 import re
 import uuid
-import json
 import pytest
 from application.tests.unit.common import Common
 from application.rdlogger import RDLogger

@@ -68,8 +68,7 @@ class RoadDistance:
             contract = self.fetch_json(self.contracts[schema_name] + ".json")
             validate(instance=json, schema=contract)
             return True
-        except (ValidationError, SchemaError, Exception) as error:
-            print(error)
+        except (ValidationError, SchemaError, Exception):
             return False
 
     def fetch_json(self, file_name: str) -> dict:
@@ -77,4 +76,7 @@ class RoadDistance:
             with open(self.contracts_path + file_name) as json_file:
                 return json.load(json_file)
         except Exception as ex:
-            print("Exception: Unable to open file " + self.contracts_path + file_name + ". {0}".format(ex))
+            self.logger.log(
+                "Exception: Unable to open file " + self.contracts_path + file_name + ". {0}".format(ex), "error"
+            )
+            raise ex
