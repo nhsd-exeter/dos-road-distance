@@ -82,10 +82,10 @@ run-contract-test: # Run contract only unit tests, add NAME="xxx" or NAME="xxx o
 run-logging-test: # Run logging only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_logging.py
 
-run-handler-test:
+run-handler-test: # Run handler only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_handler.py
 
-run-roaddistance-test:
+run-roaddistance-test: # Run road distance only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_roaddistance.py
 
 run-functional-test:
