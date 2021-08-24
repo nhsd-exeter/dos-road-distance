@@ -53,27 +53,34 @@ class TestRoadDistance(Common):
     def test_valid_request(self):
         json_content: dict = self.__fetch_json("dos_road_distance_api_happy.json")
         road_distance = RoadDistance(json_content)
-        rdlogger = RDLogger("Test", road_distance.request_id, json_content["transactionid"])
-        rdlogger.purge()
+        road_distance.logger.purge()
         status_code = road_distance.process_request()
         assert status_code == 200
         compare = "ccsrequest|" + str(json_content)
-        result = rdlogger.read_log_output().find(compare)
-        print(result)
-        assert result is not -1
-        rdlogger.purge()
-        json_response: dict = self.road_distance.get_response()
         compare = (
             "|"
             + road_distance.request_id
             + "|"
             + json_content["transactionid"]
-            + "|roaddistancepilot|providerresponse|"
-            + str(json_response)
+            + "|roaddistancepilot|ccsrequest|"
+            + str(json_content)
         )
-        result = rdlogger.read_log_output().find(compare)
-        print(result)
+        result = road_distance.logger.read_log_output().find(compare)
+        print("result: " + str(result))
         assert result is not -1
+        # road_distance.logger.purge()
+        # json_response: dict = self.road_distance.get_response()
+        # compare = (
+        #     "|"
+        #     + road_distance.request_id
+        #     + "|"
+        #     + json_content["transactionid"]
+        #     + "|roaddistancepilot|providerresponse|"
+        #     + str(json_response)
+        # )
+        # result = road_distance.logger.read_log_output().find(compare)
+        # print(result)
+        # assert result is not -1
 
     def test_error_responses_handled_gracefully(self):
         for file in sorted(os.listdir(self.json_path)):
