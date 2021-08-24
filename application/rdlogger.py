@@ -1,16 +1,17 @@
-"""Provides a common, bespoke logger abstraction for use by Road Distance
+"""
+    Provides a common, bespoke logger abstraction for use by Road Distance
 
-  Typical usage example:
+    Typical usage example:
 
-  from rdlogger import RDLogger
-  rdlogger = RDLogger()
-  rdlogger.log("Put your info log message here")
-  rdlogger.log_formatted(request, "ccs_request")
-  rdlogger.log_ccs_error("422", "there was an error")
-  rdlogger.log_provider_success("1000001", "yes", "1000")
-  rdlogger.log_provider_error("422", "there was an error")
+    from rdlogger import RDLogger
+    rdlogger = RDLogger()
+    rdlogger.log("Put your info log message here")
+    rdlogger.log_formatted(request, "ccs_request")
+    rdlogger.log_ccs_error("422", "there was an error")
+    rdlogger.log_provider_success("1000001", "yes", "1000")
+    rdlogger.log_provider_error("422", "there was an error")
 
-  See README for more information including log output formats
+    See README for more information including log output formats
 """
 from configparser import ConfigParser
 import logging

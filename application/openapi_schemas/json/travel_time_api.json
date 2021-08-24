@@ -1,156 +1,142 @@
 {
-    "type": "object",
-    "required": [
-        "locations",
-        "departure_searches"
-    ],
-    "properties": {
-        "locations": {
+  "type": "object",
+  "required": ["locations", "departure_searches"],
+  "properties": {
+    "locations": {
+      "type": "array",
+      "description": "List of point locations",
+      "minItems": 1,
+      "maxItems": 2000,
+      "items": {
+        "type": "object",
+        "required": ["id", "coords"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique reference to identify item in response"
+          },
+          "coords": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "description": "Latitude point of origin"
+              },
+              "lng": {
+                "type": "number",
+                "description": "Longitude point of origin"
+              }
+            },
+            "required": ["lat", "lng"]
+          }
+        }
+      }
+    },
+    "departure_searches": {
+      "type": "array",
+      "description": "Origin and destination configuration",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "departure_location_id",
+          "arrival_location_ids",
+          "transportation",
+          "departure_time",
+          "properties",
+          "travel_time"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Name of request"
+          },
+          "departure_location_id": {
+            "type": "string",
+            "description": "Id from the locations array that identifies the origin location"
+          },
+          "arrival_location_ids": {
             "type": "array",
-            "description": "List of point locations",
+            "description": "Array of ids from the locations array that identify one or more destination locations",
             "minItems": 1,
             "maxItems": 2000,
             "items": {
-                "type": "object",
-                "required": [
-                    "id",
-                    "coords"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "description": "Unique reference to identify item in response"
-                    },
-                    "coords": {
-                        "type": "object",
-                        "properties": {
-                            "lat": {
-                                "type": "number",
-                                "description": "Latitude point of origin"
-                            },
-                            "lng": {
-                                "type": "number",
-                                "description": "Longitude point of origin"
-                            }
-                        },
-                        "required": [
-                            "lat",
-                            "lng"
-                        ]
-                    }
-                }
+              "type": "string"
             }
-        },
-        "departure_searches": {
+          },
+          "transportation": {
+            "type": "object",
+            "description": "Details transportation method",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Type of transport - limited to 'driving'",
+                "enum": ["driving"]
+              },
+              "parking_time": {
+                "type": "integer",
+                "enum": [0],
+                "description": "Time in minutes to account for parking - limited to 0"
+              }
+            }
+          },
+          "departure_time": {
+            "type": "string",
+            "description": "Extended ISO format datetime describing departure time",
+            "pattern": "^(20[234]\\d-[01]\\d-[0123]\\dT\\d{2}:\\d{2}:\\d{2}\\.\\d{6})$"
+          },
+          "properties": {
             "type": "array",
-            "description": "Origin and destination configuration",
+            "description": "Data attributes to return - limited to 'distance'",
+            "minItems": 1,
+            "maxItems": 1,
             "items": {
-                "type": "object",
-                "required": [
-                    "id",
-                    "departure_location_id",
-                    "arrival_location_ids",
-                    "transportation",
-                    "departure_time",
-                    "properties",
-                    "travel_time"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "description": "Name of request"
-                    },
-                    "departure_location_id": {
-                        "type": "string",
-                        "description": "Id from the locations array that identifies the origin location"
-                    },
-                    "arrival_location_ids": {
-                        "type": "array",
-                        "description": "Array of ids from the locations array that identify one or more destination locations",
-                        "minItems": 1,
-                        "maxItems": 2000,
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "transportation": {
-                        "type": "object",
-                        "description": "Details transportation method",
-                        "properties": {
-                            "type": {
-                                "type": "string",
-                                "description": "Type of transport - limited to 'driving'",
-                                "enum": [
-                                    "driving"
-                                ]
-                            },
-                            "parking_time": {
-                                "type": "integer",
-                                "enum": [
-                                    0
-                                ],
-                                "description": "Time in minutes to account for parking - limited to 0"
-                            }
-                        }
-                    },
-                    "departure_time": {
-                        "type": "string",
-                        "description": "Extended ISO format datetime describing departure time",
-                        "pattern": "^(20[234]\\d-[01]\\d-[0123]\\dT\\d{2}:\\d{2}:\\d{2}\\.\\d{6})$"
-                    },
-                    "properties": {
-                        "type": "array",
-                        "description": "Data attributes to return - limited to 'distance'",
-                        "minItems": 1,
-                        "maxItems": 1,
-                        "items": {
-                            "type": "string",
-                            "enum": [
-                                "distance"
-                            ]
-                        }
-                    },
-                    "travel_time": {
-                        "type": "integer",
-                        "minItems": 60,
-                        "maxItems": 7200,
-                        "description": "Maximum time in seconds to reach destinations. Locations deemed a further travel time than this are return as unreachable"
-                    }
-                }
+              "type": "string",
+              "enum": ["distance"]
             }
+          },
+          "travel_time": {
+            "type": "integer",
+            "minItems": 60,
+            "maxItems": 7200,
+            "description": "Maximum time in seconds to reach destinations. Locations deemed a further travel time than this are return as unreachable"
+          }
         }
-    },
-    "example": {
-        "locations": [{
-                "id": "1001",
-                "coords": {
-                    "lat": 50.72179229048227,
-                    "lng": -3.525942582444856
-                }
-            },
-            {
-                "id": "1002",
-                "coords": {
-                    "lat": 50.72179229048227,
-                    "lng": -3.525942582444856
-                }
-            }
-        ],
-        "departure_searches": [{
-            "id": "description of search",
-            "departure_location_id": "1001",
-            "arrival_location_ids": [
-                "1002"
-            ],
-            "transportation": [{
-                "type": "driving",
-                "parking_time": 0
-            }],
-            "arrival_time_period": "weekday_morning",
-            "properties": [
-                "distance"
-            ],
-            "travel_time": 7200
-        }]
+      }
     }
+  },
+  "example": {
+    "locations": [
+      {
+        "id": "1001",
+        "coords": {
+          "lat": 50.72179229048227,
+          "lng": -3.525942582444856
+        }
+      },
+      {
+        "id": "1002",
+        "coords": {
+          "lat": 50.72179229048227,
+          "lng": -3.525942582444856
+        }
+      }
+    ],
+    "departure_searches": [
+      {
+        "id": "description of search",
+        "departure_location_id": "1001",
+        "arrival_location_ids": ["1002"],
+        "transportation": [
+          {
+            "type": "driving",
+            "parking_time": 0
+          }
+        ],
+        "arrival_time_period": "weekday_morning",
+        "properties": ["distance"],
+        "travel_time": 7200
+      }
+    ]
+  }
 }

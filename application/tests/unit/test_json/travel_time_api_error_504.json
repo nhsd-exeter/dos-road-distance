@@ -1,7 +1,7 @@
 {
-    "http_status": 504,
-    "error_code": 12,
-    "description": "Our servers have timed out while processing your request. If the problem persists, you can try splitting the current request into multiple smaller requests",
-    "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
-    "additional_info": {}
+  "http_status": 504,
+  "error_code": 12,
+  "description": "Our servers have timed out while processing your request. If the problem persists, you can try splitting the current request into multiple smaller requests",
+  "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
+  "additional_info": {}
 }

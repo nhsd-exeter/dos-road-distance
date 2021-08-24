@@ -24,7 +24,7 @@ If errors occur during installation try:
 
 There is a Makefile target from the root as follows:
 
-	make generate-proto-python
+    make generate-proto-python
 
 This is effectively the same as using the following command from the directory containing the .proto files
 
