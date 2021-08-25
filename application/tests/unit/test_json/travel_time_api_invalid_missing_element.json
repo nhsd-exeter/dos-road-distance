@@ -67,9 +67,7 @@
           "parking_time": 0
         },
         "arrival_time_period": "weekday_morning",
-        "properties": [
-          "distance"
-        ],
+        "properties": ["distance"],
         "travel_time": 7200
       }
     ]

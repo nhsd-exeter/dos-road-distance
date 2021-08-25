@@ -4,6 +4,7 @@ import uuid
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
 from application.rdlogger import RDLogger
+from application.traveltime_request import TravelTimeRequest
 
 
 class RoadDistance:
@@ -33,9 +34,6 @@ class RoadDistance:
         if self.validate_against_schema(self.request, "local"):
             try:
                 self.logger.log_formatted(str(self.request), "ccs_request")
-                # build json -> protobuf
-                # send
-                # handle response
                 self.status_code = 200
             except Exception as ex:
                 self.status_code = 500
@@ -46,13 +44,29 @@ class RoadDistance:
 
         return self.status_code
 
+    def build_request(self):
+        origin = self.fetch_coords(self.request["origin"])
+        destinations = self.fetch_destinations(self.request["destinations"])
+
+        request = TravelTimeRequest()
+        return request.build_request_proto(origin, destinations)
+
+    def fetch_destinations(self, locations: list) -> list:
+        destinations = []
+        for location in locations:
+            destinations.append(self.fetch_coords(location))
+
+        return destinations
+
+    def fetch_coords(self, location: dict) -> dict:
+        return {"lat": location["latitude"], "lng": location["longitude"]}
+
     def validate_against_schema(self, json: dict, schema_name: str) -> bool:
         try:
             contract = self.fetch_json(self.contracts[schema_name] + ".json")
             validate(instance=json, schema=contract)
             return True
-        except (ValidationError, SchemaError, Exception) as error:
-            print(error)
+        except (ValidationError, SchemaError, Exception):
             return False
 
     def fetch_json(self, file_name: str) -> dict:
@@ -60,4 +74,7 @@ class RoadDistance:
             with open(self.contracts_path + file_name) as json_file:
                 return json.load(json_file)
         except Exception as ex:
-            print("Exception: Unable to open file " + self.contracts_path + file_name + ". {0}".format(ex))
+            self.logger.log(
+                "Exception: Unable to open file " + self.contracts_path + file_name + ". {0}".format(ex), "error"
+            )
+            raise ex

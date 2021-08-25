@@ -4,8 +4,6 @@
   "description": "Unsupported content type was specified in the Accept header. More information is available in additional_info attribute",
   "documentation_link": "http://docs.traveltimeplatform.com/reference/error-codes",
   "additional_info": {
-    "supported_content_types": [
-      "application/json"
-    ]
+    "supported_content_types": ["application/json"]
   }
 }

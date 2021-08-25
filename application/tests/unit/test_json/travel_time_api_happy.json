@@ -67,9 +67,7 @@
         "parking_time": 0
       },
       "departure_time": "2021-05-12T08:44:35.725283",
-      "properties": [
-        "distance"
-      ],
+      "properties": ["distance"],
       "travel_time": 7200
     }
   ]

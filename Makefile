@@ -82,11 +82,14 @@ run-contract-test: # Run contract only unit tests, add NAME="xxx" or NAME="xxx o
 run-logging-test: # Run logging only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_logging.py
 
-run-handler-test:
+run-handler-test: # Run handler only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_handler.py
 
-run-roaddistance-test:
+run-roaddistance-test: # Run road distance only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_roaddistance.py
+
+run-traveltimerequest-test: # Run travel time protobuf request only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
+	make run-unit-test TEST_FILE=test_traveltimerequest.py
 
 run-functional-test:
 	[ $$(make project-branch-func-test) != true ] && exit 0
@@ -100,9 +103,16 @@ run-security-test:
 	[ $$(make project-branch-sec-test) != true ] && exit 0
 	echo TODO: $(@)
 
-generate-contract-json:
+generate-contract-json: # Generate the JSON files used for contract testing
 	cd application && \
 		python yaml_to_json.py
+
+generate-proto-python: # Generate the Python code from the protobuf proto files
+	SRC_DIR=application/proto/traveltime && \
+	DST_DIR=application/proto/traveltime&& \
+	protoc -I=$$SRC_DIR --python_out=$$DST_DIR $$SRC_DIR/*.proto && \
+	ls -l $$SRC_DIR/*.py
+
 
 # --------------------------------------
 

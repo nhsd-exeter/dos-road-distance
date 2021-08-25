@@ -1,10 +1,6 @@
 {
   "type": "object",
-  "required": [
-    "transactionid",
-    "origin",
-    "destinations"
-  ],
+  "required": ["transactionid", "origin", "destinations"],
   "properties": {
     "transactionid": {
       "type": "string",
@@ -13,11 +9,7 @@
     "origin": {
       "type": "object",
       "description": "Object defining the origin point",
-      "required": [
-        "reference",
-        "latitude",
-        "longitude"
-      ],
+      "required": ["reference", "latitude", "longitude"],
       "properties": {
         "reference": {
           "type": "string",
@@ -39,11 +31,7 @@
       "maxItems": 2000,
       "items": {
         "type": "object",
-        "required": [
-          "reference",
-          "latitude",
-          "longitude"
-        ],
+        "required": ["reference", "latitude", "longitude"],
         "properties": {
           "reference": {
             "type": "string",

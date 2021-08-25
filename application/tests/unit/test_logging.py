@@ -1,12 +1,11 @@
 import re
 import uuid
-import json
-from jsonschema.exceptions import STRONG_MATCHES
 import pytest
+from application.tests.unit.common import Common
 from application.rdlogger import RDLogger
 
 
-class TestLogging:
+class TestLogging(Common):
 
     """
     All logs will contain:
@@ -18,7 +17,6 @@ class TestLogging:
     http status code=###
     road_distance_pilot|error=' + error description
 
-    YYYY/MM/DD 00:00:00.000000+0100|<info|debug|error>|lambda|<request_id>|<transaction_id>|roaddistancepilot|<request|response>|<success|fail>|<error=|message=>|<additional>
     """
 
     STR_LOG_LAMBDA = "lambda"
@@ -29,7 +27,8 @@ class TestLogging:
     LOG1_DATETIME = r"(20[234]\d\/[01]\d\/[0123]\d \d{2}:\d{2}:\d{2}\.(\d{6}\+\d{4}|\d{3}))"
     LOG2_INFO_PREFIX = r"\|INFO\|{}".format(STR_LOG_LAMBDA)
     LOG2_FAILURE_PREFIX = r"\|ERROR\|{}".format(STR_LOG_LAMBDA)
-    LOG3_SECOND_PREFIX = r"\|([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12})\|([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}|)\|roaddistancepilot"
+    LOG3_ID = r"\|([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12})"
+    LOG3_SECOND_PREFIX = LOG3_ID + LOG3_ID + r"\|roaddistancepilot"
     LOG4_DETAILS_BASIC = r"\|([^\|]+)"
     LOG4_DETAILS_STATUS = r"\|system\|success\|message=([^\|]*)"
     LOG4_DETAILS_RAW = r"\|({}|{}|{})\|.*".format(STR_LOG_CCSREQUEST, STR_LOG_PROVIDERREQUEST, STR_LOG_PROVIDERRESPONSE)
@@ -43,17 +42,12 @@ class TestLogging:
 
     test_log_path: str = "./tests/unit/test_log/"
     test_log_file: str = "rd.log"
-    json_path: str = "tests/unit/test_json/"
     request_id: str = str(uuid.uuid4())
     transaction_id: str = str(uuid.uuid4())
     rdlogger = RDLogger("Test", request_id, transaction_id)
 
     def __fetch_json(self, file_name: str):
-        try:
-            with open(self.json_path + file_name) as json_file:
-                return str(json.load(json_file))
-        except Exception as ex:
-            print("Exception: Unable to open file " + file_name + ". {0}".format(ex))
+        return str(super().fetch_json(file_name))
 
     def test_basic_log_success(self):
         rx = self.LOG1_DATETIME + self.LOG2_INFO_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_DETAILS_BASIC
