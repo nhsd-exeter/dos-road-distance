@@ -16,27 +16,27 @@ class TravelTimeRequest:
         transportation = RequestsCommon.Transportation()
         transportation.type = RequestsCommon.TransportationType.DRIVING
 
-        locationDeltas = self.create_deltas(origin, destinations)
+        location_deltas = self.create_deltas(origin, destinations)
 
         properties = [request.DISTANCES]
 
-        oneToMany = TimeFilterFastRequest.TimeFilterFastRequest().OneToMany()
-        oneToMany.departureLocation.CopyFrom(coords)
-        oneToMany.transportation.CopyFrom(transportation)
-        oneToMany.locationDeltas[:] = locationDeltas
-        oneToMany.properties[:] = properties
-        oneToMany.travelTime = self.TRAVEL_TIME_MINUTES
+        one_to_many = TimeFilterFastRequest.TimeFilterFastRequest().OneToMany()
+        one_to_many.departureLocation.CopyFrom(coords)
+        one_to_many.transportation.CopyFrom(transportation)
+        one_to_many.locationDeltas[:] = location_deltas
+        one_to_many.properties[:] = properties
+        one_to_many.travelTime = self.TRAVEL_TIME_MINUTES
 
-        request.oneToManyRequest.CopyFrom(oneToMany)
+        request.oneToManyRequest.CopyFrom(one_to_many)
 
         return request.SerializeToString()
 
     def create_deltas(self, origin: dict, destinations: list) -> list:
         deltas = []
         for destination in destinations:
-            deltaLat = round((destination["lat"] - origin["lat"]) * 100000)
-            deltaLng = round((destination["lng"] - origin["lng"]) * 100000)
-            deltas.append(deltaLat)
-            deltas.append(deltaLng)
+            delta_lat = round((destination["lat"] - origin["lat"]) * 100000)
+            delta_lng = round((destination["lng"] - origin["lng"]) * 100000)
+            deltas.append(delta_lat)
+            deltas.append(delta_lng)
 
         return deltas

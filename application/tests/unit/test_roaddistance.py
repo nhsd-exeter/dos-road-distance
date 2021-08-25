@@ -7,6 +7,7 @@ from application.main import RoadDistance
 
 class TestRoadDistance(Common):
 
+    JSON_DOS_ROAD_DISTANCE_HAPPY = "dos_road_distance_api_happy.json"
     os.environ["LOGGER"] = "Test"
     road_distance = RoadDistance({})
 
@@ -29,7 +30,7 @@ class TestRoadDistance(Common):
         self.road_distance.contracts["local"] = tmp_local
 
     def test_fetch_coords_successful(self):
-        json_content: dict = self.__fetch_json("dos_road_distance_api_happy.json")
+        json_content: dict = self.__fetch_json(self.JSON_DOS_ROAD_DISTANCE_HAPPY)
         result = self.road_distance.fetch_coords(json_content["origin"])
         assert isinstance(result, dict)
         assert "lat" in result
@@ -41,7 +42,7 @@ class TestRoadDistance(Common):
             self.road_distance.coords(json_content["origin"])
 
     def test_fetch_destinations_successful(self):
-        json_content: dict = self.__fetch_json("dos_road_distance_api_happy.json")
+        json_content: dict = self.__fetch_json(self.JSON_DOS_ROAD_DISTANCE_HAPPY)
         destinations = self.road_distance.fetch_destinations(json_content["destinations"])
         assert isinstance(destinations, list)
         for destination in destinations:
@@ -50,12 +51,11 @@ class TestRoadDistance(Common):
             assert "lng" in destination
 
     def test_valid_request(self):
-        json_content: dict = self.__fetch_json("dos_road_distance_api_happy.json")
+        json_content: dict = self.__fetch_json(self.JSON_DOS_ROAD_DISTANCE_HAPPY)
         road_distance = RoadDistance(json_content)
         road_distance.logger.purge()
         status_code = road_distance.process_request()
         assert status_code == 200
-        compare = "ccsrequest|" + str(json_content)
         compare = (
             "|"
             + road_distance.request_id
@@ -67,19 +67,6 @@ class TestRoadDistance(Common):
         result = road_distance.logger.read_log_output().find(compare)
         print("result: " + str(result))
         assert result is not -1
-        # road_distance.logger.purge()
-        # json_response: dict = self.road_distance.get_response()
-        # compare = (
-        #     "|"
-        #     + road_distance.request_id
-        #     + "|"
-        #     + json_content["transactionid"]
-        #     + "|roaddistancepilot|providerresponse|"
-        #     + str(json_response)
-        # )
-        # result = road_distance.logger.read_log_output().find(compare)
-        # print(result)
-        # assert result is not -1
 
     def test_error_responses_handled_gracefully(self):
         for file in sorted(os.listdir(self.json_path)):

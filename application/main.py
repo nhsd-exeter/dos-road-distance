@@ -1,8 +1,6 @@
 import os
 import json
 import uuid
-
-# import google.protobuf.json_format as protobuf
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
 from application.rdlogger import RDLogger
