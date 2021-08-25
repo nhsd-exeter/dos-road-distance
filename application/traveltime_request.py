@@ -34,9 +34,8 @@ class TravelTimeRequest:
     def create_deltas(self, origin: dict, destinations: list) -> list:
         deltas = []
         for destination in destinations:
-            deltaLat = round(destination["lat"] - origin["lat"]) * 100000
-            deltaLng = round(destination["lng"] - origin["lng"]) * 100000
-
+            deltaLat = round((destination["lat"] - origin["lat"]) * 100000)
+            deltaLng = round((destination["lng"] - origin["lng"]) * 100000)
             deltas.append(deltaLat)
             deltas.append(deltaLng)
 

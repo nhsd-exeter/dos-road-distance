@@ -3,7 +3,6 @@ import pytest
 import json
 from application.tests.unit.common import Common
 from application.main import RoadDistance
-from application.rdlogger import RDLogger
 
 
 class TestRoadDistance(Common):

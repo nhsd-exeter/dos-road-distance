@@ -15,7 +15,6 @@
 """
 from configparser import ConfigParser
 import logging
-import sys
 import os
 
 
@@ -41,15 +40,13 @@ class RDLogger:
             logging_level = logging.INFO if os.environ.get("DEBUG", "false").lower() == "true" else logging.DEBUG
             self.logger.setLevel(logging_level)
 
-            sh = logging.StreamHandler(sys.stdout)
             formatter = logging.Formatter(self.__create_log_format(request_id, transaction_id), "%Y/%m/%d %H:%M:%S")
-            sh.setFormatter(formatter)
-            self.logger.addHandler(sh)
+            self.logger.addHandler(self.__create_stream_handler(self.log_file_path, formatter))
             self.logger.addHandler(self.__create_file_handler(self.log_file_path, formatter))
         except Exception as ex:
             print(ex)
 
-    def __create_log_format(self, request_id, transaction_id):
+    def __create_log_format(self, request_id: str, transaction_id: str) -> str:
         return (
             "%(asctime)s.%(msecs)03d|%(levelname)s|lambda|"
             + request_id
@@ -57,6 +54,11 @@ class RDLogger:
             + transaction_id
             + "|roaddistancepilot|%(message)s"
         )
+
+    def __create_stream_handler(self, log_path: str, formatter):
+        sh = logging.StreamHandler(log_path)
+        sh.setFormatter(formatter)
+        return sh
 
     def __create_file_handler(self, log_path: str, formatter):
         fh = logging.FileHandler(log_path)
