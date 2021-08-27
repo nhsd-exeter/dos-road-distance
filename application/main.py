@@ -35,7 +35,7 @@ class RoadDistance(Common):
                 self.status_code = 200
             except Exception as ex:
                 self.status_code = 500
-                self.logger.log("dos-road-distance exception: " + str(ex), "error")
+                self.logger.log(config.LOG_CCS_REQUEST_EXCPETION + str(ex), "error")
         else:
             self.status_code = 500
             self.logger.log_ccs_error(str(self.status_code), str(self.request))
@@ -72,6 +72,6 @@ class RoadDistance(Common):
             return json.loads(super().fetch_file(self.contracts_path, file_name))
         except Exception as ex:
             self.logger.log(
-                "Exception: Unable to open file " + self.contracts_path + file_name + ". {0}".format(ex), "error"
+                config.EXCEPTION_FILE_CANNOT_BE_OPENED + self.contracts_path + file_name + ". {0}".format(ex), "error"
             )
             raise ex

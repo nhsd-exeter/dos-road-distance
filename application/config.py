@@ -6,9 +6,14 @@ Contracts = {
     "provider-response": "travel_time_api_response",
 }
 
+PATH_TEST_JSON = "tests/unit/test_json/"
+PATH_TEST_PROTO = "tests/unit/test_proto/"
+
 EXCEPTION_FILE_CANNOT_BE_OPENED = "Exception: Unable to open file "
-EXCEPTION_LOG_FORMATTER_NOT_FOUND = "EXception: Did not find a function for formatter "
+EXCEPTION_LOG_FORMATTER_NOT_FOUND = "Exception: Did not find a function for formatter "
 EXCEPTION_LOG_NAME_NOT_FOUND = "Error: Logger name is not found "
+
+LOG_CCS_REQUEST_EXCPETION = "dos-road-distance exception: "
 
 JSON_DOS_ROAD_DISTANCE_HAPPY = "dos_road_distance_api_happy.json"
 JSON_DOS_ROAD_DISTANCE_INVALID = "dos_road_distance_api_invalid_missing_element.json"

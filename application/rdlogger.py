@@ -13,7 +13,6 @@
 
     See README for more information including log output formats
 """
-from configparser import ConfigParser
 import logging
 import os
 import uuid
@@ -34,7 +33,7 @@ class RDLogger:
             self.log_name = log_name
             self.log_file_path = log_config[log_name]["Path"]
         else:
-            raise ValueError("Logging config: " + self.log_name + " is not valid")
+            raise ValueError(config.EXCEPTION_LOG_NAME_NOT_FOUND + self.log_name)
 
         try:
             self.logger = logging.getLogger(__name__ + str(uuid.uuid1().int))
@@ -97,7 +96,7 @@ class RDLogger:
             f.close()
             return content
         except Exception as ex:
-            print("Unable to open file: " + self.log_file_path + ": ")
+            print(config.EXCEPTION_FILE_CANNOT_BE_OPENED + self.log_file_path + ": ")
             print(ex)
 
     def purge(self):
@@ -114,7 +113,7 @@ class RDLogger:
         if hasattr(self, formatterfunc) and callable(func := getattr(self, formatterfunc)):
             self.log(func(log_message), levelname)
         else:
-            print("Did not find a function for formatter " + formatter)
+            raise Exception(config.EXCEPTION_LOG_FORMATTER_NOT_FOUND + formatter)
 
     def log_provider_success(self, serviceUid: str, unreachable: str, distance: str = ""):
         log_message = "success|reference=" + serviceUid + "|unreachable=" + unreachable + "|distance=" + distance

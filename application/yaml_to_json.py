@@ -1,15 +1,12 @@
 import os
 import json
 import yaml
+import application.config as config
 from yaml.loader import Loader
 
 json_path: str = "openapi_schemas/json/"
 yaml_path: str = "openapi_schemas/yaml/"
-contract_infile: dict = {
-    "local": "dos_road_distance_api",
-    "provider": "travel_time_api",
-    "provider_response": "travel_time_api",
-}
+contract_infile: config.Contracts
 contract_outfile: dict = {
     "local": "dos_road_distance_api",
     "provider": "travel_time_api",
