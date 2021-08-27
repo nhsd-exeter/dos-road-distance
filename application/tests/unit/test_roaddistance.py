@@ -71,7 +71,7 @@ class TestRoadDistance(Common):
 
     def test_error_responses_handled_gracefully(self):
         self.__setup()
-        for file in sorted(os.listdir(self.PATH_TEST_JSON)):
+        for file in sorted(os.listdir(config.PATH_TEST_JSON)):
             if file.lower().find("_error_") != -1:
                 json_content = self.__fetch_json(file)
                 http_status = json_content["http_status"]

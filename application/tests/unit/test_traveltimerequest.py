@@ -10,11 +10,8 @@ class TestTravelTimeRequest(Common):
 
     travel_time_request = TravelTimeRequest()
 
-    def fetch_json(self, file_name: str):
-        return super().fetch_test_json(file_name)
-
     def test_proto_request_valid(self):
-        ccs_request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
+        ccs_request = super().fetch_test_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
         road_distance = RoadDistance(ccs_request)
 
         origin = road_distance.fetch_coords(road_distance.request["origin"])
