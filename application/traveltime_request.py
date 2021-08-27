@@ -1,11 +1,9 @@
+import application.config as config
 import application.proto.traveltime.RequestsCommon_pb2 as RequestsCommon
 import application.proto.traveltime.TimeFilterFastRequest_pb2 as TimeFilterFastRequest
 
 
 class TravelTimeRequest:
-
-    TRAVEL_TIME_MINUTES = 7200
-
     def build_request_proto(self, origin: dict, destinations: list):
         request = TimeFilterFastRequest.TimeFilterFastRequest()
 
@@ -25,7 +23,7 @@ class TravelTimeRequest:
         one_to_many.transportation.CopyFrom(transportation)
         one_to_many.locationDeltas[:] = location_deltas
         one_to_many.properties[:] = properties
-        one_to_many.travelTime = self.TRAVEL_TIME_MINUTES
+        one_to_many.travelTime = config.TRAVEL_TIME_MINUTES
 
         request.oneToManyRequest.CopyFrom(one_to_many)
 

@@ -6,7 +6,7 @@ from yaml.loader import Loader
 
 json_path: str = "openapi_schemas/json/"
 yaml_path: str = "openapi_schemas/yaml/"
-contract_infile: config.Contracts
+contract_infile: dict = config.Contracts
 contract_outfile: dict = {
     "local": "dos_road_distance_api",
     "provider": "travel_time_api",

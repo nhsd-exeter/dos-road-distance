@@ -6,6 +6,7 @@ Contracts = {
     "provider-response": "travel_time_api_response",
 }
 
+# file paths
 PATH_TEST_JSON = "tests/unit/test_json/"
 PATH_TEST_PROTO = "tests/unit/test_proto/"
 
@@ -15,6 +16,7 @@ EXCEPTION_LOG_NAME_NOT_FOUND = "Error: Logger name is not found "
 
 LOG_CCS_REQUEST_EXCPETION = "dos-road-distance exception: "
 
+# test response and response files
 JSON_DOS_ROAD_DISTANCE_HAPPY = "dos_road_distance_api_happy.json"
 JSON_DOS_ROAD_DISTANCE_INVALID = "dos_road_distance_api_invalid_missing_element.json"
 JSON_TRAVEL_TIME_REQUEST_HAPPY = "travel_time_api_happy.json"
@@ -33,3 +35,6 @@ JSON_TRAVEL_TIME_ERROR_503 = "travel_time_api_error_503.json"
 JSON_TRAVEL_TIME_ERROR_504 = "travel_time_api_error_504.json"
 
 PROTO_TRAVEL_TIME_REQUEST_HAPPY = "traveltime_proto_happy.dump"
+
+# travel time request and response values
+TRAVEL_TIME_MINUTES = 7200
