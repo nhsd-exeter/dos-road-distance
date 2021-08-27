@@ -113,7 +113,7 @@ class RDLogger:
         if hasattr(self, formatterfunc) and callable(func := getattr(self, formatterfunc)):
             self.log(func(log_message), levelname)
         else:
-            raise Exception(config.EXCEPTION_LOG_FORMATTER_NOT_FOUND + formatter)
+            raise AttributeError(config.EXCEPTION_LOG_FORMATTER_NOT_FOUND + formatter)
 
     def log_provider_success(self, serviceUid: str, unreachable: str, distance: str = ""):
         log_message = "success|reference=" + serviceUid + "|unreachable=" + unreachable + "|distance=" + distance
