@@ -91,6 +91,9 @@ run-roaddistance-test: # Run road distance only unit tests, add NAME="xxx" or NA
 run-traveltimerequest-test: # Run travel time protobuf request only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_traveltimerequest.py
 
+run-traveltimeresponse-test: # Run travel time protobuf reponse only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
+	make run-unit-test TEST_FILE=test_traveltimeresponse.py
+
 run-functional-test:
 	[ $$(make project-branch-func-test) != true ] && exit 0
 	echo TODO: $(@)
