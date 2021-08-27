@@ -16,6 +16,7 @@
 from configparser import ConfigParser
 import logging
 import os
+import uuid
 
 
 class RDLogger:
@@ -36,7 +37,7 @@ class RDLogger:
             raise ValueError("Logging config: " + self.log_name + " is not valid")
 
         try:
-            self.logger = logging.getLogger(__name__)
+            self.logger = logging.getLogger(__name__ + str(uuid.uuid1().int))
             logging_level = logging.INFO if os.environ.get("DEBUG", "false").lower() == "true" else logging.DEBUG
             self.logger.setLevel(logging_level)
 
