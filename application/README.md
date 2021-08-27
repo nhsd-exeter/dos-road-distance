@@ -1,3 +1,31 @@
+# AWS Lambda Docker
+
+## Requirements
+
+	pip install awslambdaric
+
+## Container image settings
+
+Lambda supports the following container image settings in the Dockerfile:
+
+* ENTRYPOINT – Specifies the absolute path to the entry point of the application.
+* CMD – Specifies parameters that you want to pass in with ENTRYPOINT.
+* WORKDIR – Specifies the absolute path to the working directory.
+* ENV – Specifies an environment variable for the Lambda function.
+
+## Requirements
+
+	pip install awslambdaric
+
+## Container image settings
+
+Lambda supports the following container image settings in the Dockerfile:
+
+* ENTRYPOINT – Specifies the absolute path to the entry point of the application.
+* CMD – Specifies parameters that you want to pass in with ENTRYPOINT.
+* WORKDIR – Specifies the absolute path to the working directory.
+* ENV – Specifies an environment variable for the Lambda function.
+
 
 
 
