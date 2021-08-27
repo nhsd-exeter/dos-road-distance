@@ -1,4 +1,5 @@
-from application.tests.unit.common import Common
+import application.config as config
+from application.common import Common
 from application.main import RoadDistance
 
 
@@ -12,7 +13,7 @@ class TestContracts(Common):
     road_distance = RoadDistance({})
 
     def test_css_to_lambda_contract_happy(self):
-        json_content = self.fetch_json("dos_road_distance_api_happy.json")
+        json_content = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
         assert self.road_distance.validate_against_schema(json_content, "local")
 
     def test_lambda_to_provider_contract_happy(self):
@@ -24,7 +25,7 @@ class TestContracts(Common):
         assert self.road_distance.validate_against_schema(json_content, "provider-response")
 
     def test_contract_css_to_lambda_bad_request(self):
-        json_content = self.fetch_json("dos_road_distance_api_invalid_missing_element.json")
+        json_content = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID)
         assert not self.road_distance.validate_against_schema(json_content, "local")
 
     def test_contract_lambda_to_provider_bad_request(self):
@@ -38,4 +39,4 @@ class TestContracts(Common):
         assert not self.road_distance.validate_against_schema(json_content, "provider-response")
 
     def fetch_json(self, file_name: str):
-        return super().fetch_json(file_name)
+        return super().fetch_test_json(file_name)

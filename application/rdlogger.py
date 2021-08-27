@@ -13,10 +13,10 @@
 
     See README for more information including log output formats
 """
-from configparser import ConfigParser
 import logging
 import os
 import uuid
+import application.config as config
 
 
 class RDLogger:
@@ -27,14 +27,13 @@ class RDLogger:
 
     def __init__(self, log_name: str, request_id: str, transaction_id: str):
 
-        log_config = ConfigParser()
-        log_config.read("logging.conf")
+        log_config = config.Logging
 
         if log_name in log_config:
             self.log_name = log_name
             self.log_file_path = log_config[log_name]["Path"]
         else:
-            raise ValueError("Logging config: " + self.log_name + " is not valid")
+            raise ValueError(config.EXCEPTION_LOG_NAME_NOT_FOUND + self.log_name)
 
         try:
             self.logger = logging.getLogger(__name__ + str(uuid.uuid1().int))
@@ -42,8 +41,8 @@ class RDLogger:
             self.logger.setLevel(logging_level)
 
             formatter = logging.Formatter(self.__create_log_format(request_id, transaction_id), "%Y/%m/%d %H:%M:%S")
-            self.logger.addHandler(self.__create_stream_handler(self.log_file_path, formatter))
-            self.logger.addHandler(self.__create_file_handler(self.log_file_path, formatter))
+            self.logger.addHandler(self.__create_stream_handler(formatter))
+            self.logger.addHandler(self.__create_file_handler(formatter))
         except Exception as ex:
             print(ex)
 
@@ -56,13 +55,13 @@ class RDLogger:
             + "|roaddistancepilot|%(message)s"
         )
 
-    def __create_stream_handler(self, log_path: str, formatter):
-        sh = logging.StreamHandler(log_path)
+    def __create_stream_handler(self, formatter):
+        sh = logging.StreamHandler()
         sh.setFormatter(formatter)
         return sh
 
-    def __create_file_handler(self, log_path: str, formatter):
-        fh = logging.FileHandler(log_path)
+    def __create_file_handler(self, formatter):
+        fh = logging.FileHandler(self.log_file_path)
         fh.setFormatter(formatter)
         return fh
 
@@ -97,7 +96,7 @@ class RDLogger:
             f.close()
             return content
         except Exception as ex:
-            print("Unable to open file: " + self.log_file_path + ": ")
+            print(config.EXCEPTION_FILE_CANNOT_BE_OPENED + self.log_file_path + ": ")
             print(ex)
 
     def purge(self):
@@ -114,7 +113,7 @@ class RDLogger:
         if hasattr(self, formatterfunc) and callable(func := getattr(self, formatterfunc)):
             self.log(func(log_message), levelname)
         else:
-            print("Did not find a function for formatter " + formatter)
+            raise AttributeError(config.EXCEPTION_LOG_FORMATTER_NOT_FOUND + formatter)
 
     def log_provider_success(self, serviceUid: str, unreachable: str, distance: str = ""):
         log_message = "success|reference=" + serviceUid + "|unreachable=" + unreachable + "|distance=" + distance

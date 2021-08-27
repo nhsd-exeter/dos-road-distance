@@ -4,10 +4,12 @@ import uuid
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
 from application.rdlogger import RDLogger
+from application.common import Common
 from application.traveltime_request import TravelTimeRequest
+import application.config as config
 
 
-class RoadDistance:
+class RoadDistance(Common):
 
     logger: RDLogger = None
     request: dict = {}
@@ -16,11 +18,7 @@ class RoadDistance:
     url: str = ""
     status_code: int
     contracts_path: str = "openapi_schemas/json/"
-    contracts: dict = {
-        "provider": "travel_time_api",
-        "local": "dos_road_distance_api",
-        "provider-response": "travel_time_api_response",
-    }
+    contracts: dict = config.Contracts
     request_id: str = ""
 
     def __init__(self, request):
@@ -37,7 +35,7 @@ class RoadDistance:
                 self.status_code = 200
             except Exception as ex:
                 self.status_code = 500
-                self.logger.log("dos-road-distance exception: " + str(ex), "error")
+                self.logger.log(config.LOG_CCS_REQUEST_EXCEPTION + str(ex), "error")
         else:
             self.status_code = 500
             self.logger.log_ccs_error(str(self.status_code), str(self.request))
@@ -71,10 +69,9 @@ class RoadDistance:
 
     def fetch_json(self, file_name: str) -> dict:
         try:
-            with open(self.contracts_path + file_name) as json_file:
-                return json.load(json_file)
+            return json.loads(super().fetch_file(self.contracts_path, file_name))
         except Exception as ex:
             self.logger.log(
-                "Exception: Unable to open file " + self.contracts_path + file_name + ". {0}".format(ex), "error"
+                config.EXCEPTION_FILE_CANNOT_BE_OPENED + self.contracts_path + file_name + ". {0}".format(ex), "error"
             )
             raise ex
