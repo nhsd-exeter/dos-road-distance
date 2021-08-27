@@ -14,7 +14,7 @@ EXCEPTION_FILE_CANNOT_BE_OPENED = "Exception: Unable to open file "
 EXCEPTION_LOG_FORMATTER_NOT_FOUND = "Exception: Did not find a function for formatter "
 EXCEPTION_LOG_NAME_NOT_FOUND = "Error: Logger name is not found "
 
-LOG_CCS_REQUEST_EXCPETION = "dos-road-distance exception: "
+LOG_CCS_REQUEST_EXCEPTION = "dos-road-distance exception: "
 
 # test response and response files
 JSON_DOS_ROAD_DISTANCE_HAPPY = "dos_road_distance_api_happy.json"
