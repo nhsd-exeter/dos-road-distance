@@ -7,7 +7,6 @@ from application.main import RoadDistance
 
 class TestRoadDistance(Common):
 
-    JSON_DOS_ROAD_DISTANCE_HAPPY = "dos_road_distance_api_happy.json"
     os.environ["LOGGER"] = "Test"
     road_distance: RoadDistance
 
@@ -69,26 +68,26 @@ class TestRoadDistance(Common):
         print("result: " + str(result))
         assert result is not -1
 
-    # def test_error_responses_handled_gracefully(self):
-    #     self.__setup()
-    #     for file in sorted(os.listdir(self.PATH_TEST_JSON)):
-    #         if file.lower().find("_error_") != -1:
-    #             json_content = self.__fetch_json(file)
-    #             http_status = json_content["http_status"]
+    def test_error_responses_handled_gracefully(self):
+        self.__setup()
+        for file in sorted(os.listdir(self.PATH_TEST_JSON)):
+            if file.lower().find("_error_") != -1:
+                json_content = self.__fetch_json(file)
+                http_status = json_content["http_status"]
 
-    #             try:
-    #                 response = self.road_distance.format_response(json_content)
-    #                 response_content = json.loads(response)
+                try:
+                    response = self.road_distance.format_response(json_content)
+                    response_content = json.loads(response)
 
-    #                 assert response_content["http_status"] == http_status
-    #                 assert response_content["error_code"] is not None
+                    assert response_content["http_status"] == http_status
+                    assert response_content["error_code"] is not None
 
-    #             except ValueError as ve:
-    #                 print(ve)
-    #                 assert False
-    #             except Exception as ex:
-    #                 print(ex)
-    #                 assert False
+                except ValueError as ve:
+                    print(ve)
+                    assert False
+                except Exception as ex:
+                    print(ex)
+                    assert False
 
     def __setup(self, json={}):
         self.road_distance = RoadDistance(json)

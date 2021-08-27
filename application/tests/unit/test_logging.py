@@ -1,6 +1,7 @@
 import re
 import uuid
 import pytest
+import application.config as config
 from application.common import Common
 from application.rdlogger import RDLogger
 
@@ -40,8 +41,6 @@ class TestLogging(Common):
 
     TEST_PAYLOAD = "This is a test payload/message"
 
-    test_log_path: str = "./tests/unit/test_log/"
-    test_log_file: str = "rd.log"
     request_id: str = str(uuid.uuid4())
     transaction_id: str = str(uuid.uuid4())
     rdlogger = RDLogger("Test", request_id, transaction_id)
@@ -125,7 +124,7 @@ class TestLogging(Common):
         assert result is not None
 
     def test_content_raw_ccs_request(self):
-        json_content = self.__fetch_json("dos_road_distance_api_happy.json")
+        json_content = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
         print(json_content)
         self.rdlogger.purge()
         self.rdlogger.log_formatted(json_content, "ccs_request")
@@ -139,7 +138,7 @@ class TestLogging(Common):
         assert result is not -1
 
     def test_content_raw_provider_request(self):
-        json_content = self.__fetch_json("travel_time_api_happy.json")
+        json_content = self.__fetch_json(config.JSON_TRAVEL_TIME_REQUEST_HAPPY)
         print(json_content)
         self.rdlogger.purge()
         self.rdlogger.log_formatted(json_content, "provider_request")
@@ -153,7 +152,7 @@ class TestLogging(Common):
         assert result is not -1
 
     def test_content_raw_provider_response(self):
-        json_content = self.__fetch_json("travel_time_api_response_happy.json")
+        json_content = self.__fetch_json(config.JSON_TRAVEL_TIME_RESPONSE_HAPPY)
         print(json_content)
         self.rdlogger.purge()
         self.rdlogger.log_formatted(json_content, "provider_response")
@@ -179,7 +178,7 @@ class TestLogging(Common):
         assert result is not -1
 
     def test_content_provider_failure(self):
-        json_content = self.__fetch_json("travel_time_api_error_500.json")
+        json_content = self.__fetch_json(config.JSON_TRAVEL_TIME_ERROR_500)
         print(json_content)
         self.rdlogger.purge()
         self.rdlogger.log_provider_error("500", json_content)

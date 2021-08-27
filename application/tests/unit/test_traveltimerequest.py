@@ -1,4 +1,5 @@
 import pytest
+import application.config as config
 from application.common import Common
 from application.traveltime_request import TravelTimeRequest
 from application.main import RoadDistance
@@ -13,7 +14,7 @@ class TestTravelTimeRequest(Common):
         return super().fetch_test_json(file_name)
 
     def test_proto_request_valid(self):
-        ccs_request = self.fetch_json("dos_road_distance_api_happy.json")
+        ccs_request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
         road_distance = RoadDistance(ccs_request)
 
         origin = road_distance.fetch_coords(road_distance.request["origin"])
@@ -26,7 +27,7 @@ class TestTravelTimeRequest(Common):
             # test the request build is returning a 'bytes' type string
             tt_model.ParseFromString(tt_binary)
             assert isinstance(tt_model.oneToManyRequest, TimeFilterFastRequest.TimeFilterFastRequest().OneToMany)
-            assert self.fetch_test_proto("traveltime_proto_happy.dump") == str(tt_model.oneToManyRequest)
+            assert self.fetch_test_proto(config.PROTO_TRAVEL_TIME_REQUEST_HAPPY) == str(tt_model.oneToManyRequest)
         except (UnicodeDecodeError, AttributeError):
             assert False
 
