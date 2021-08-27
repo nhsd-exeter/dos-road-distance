@@ -1,6 +1,6 @@
 import os
 from application.main import RoadDistance
-from application.tests.unit.common import Common
+from application.common import Common
 
 
 class TestTravelTimeResponse(Common):
@@ -10,7 +10,7 @@ class TestTravelTimeResponse(Common):
     road_distance = RoadDistance({})
 
     def test_response_valid(self):
-        json_content: dict = self.__fetch_json(self.JSON_DOS_ROAD_DISTANCE_HAPPY)
+        json_content: dict = self.__fetch_test_json(self.JSON_DOS_ROAD_DISTANCE_HAPPY)
         self.road_distance.logger.purge()
         json_response: dict = self.road_distance.get_response()
         compare = (

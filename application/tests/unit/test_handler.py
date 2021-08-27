@@ -1,6 +1,6 @@
 import os
 import json
-from application.tests.unit.common import Common
+from application.common import Common
 import application.handler as handler
 
 
@@ -36,4 +36,4 @@ class TestHandler(Common):
             os.remove(self.log_path)
 
     def fetch_json(self, file_name: str) -> str:
-        return json.dumps(super().fetch_json(file_name))
+        return json.dumps(super().fetch_test_json(file_name))

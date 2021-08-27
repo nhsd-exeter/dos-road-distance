@@ -1,7 +1,7 @@
 import re
 import uuid
 import pytest
-from application.tests.unit.common import Common
+from application.common import Common
 from application.rdlogger import RDLogger
 
 
@@ -47,7 +47,7 @@ class TestLogging(Common):
     rdlogger = RDLogger("Test", request_id, transaction_id)
 
     def __fetch_json(self, file_name: str):
-        return str(super().fetch_json(file_name))
+        return str(super().fetch_test_json(file_name))
 
     def test_basic_log_success(self):
         rx = self.LOG1_DATETIME + self.LOG2_INFO_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_DETAILS_BASIC

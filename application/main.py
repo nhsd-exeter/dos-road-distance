@@ -4,10 +4,12 @@ import uuid
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
 from application.rdlogger import RDLogger
+from application.common import Common
 from application.traveltime_request import TravelTimeRequest
+import application.config as config
 
 
-class RoadDistance:
+class RoadDistance(Common):
 
     logger: RDLogger = None
     request: dict = {}
@@ -16,11 +18,7 @@ class RoadDistance:
     url: str = ""
     status_code: int
     contracts_path: str = "openapi_schemas/json/"
-    contracts: dict = {
-        "provider": "travel_time_api",
-        "local": "dos_road_distance_api",
-        "provider-response": "travel_time_api_response",
-    }
+    contracts: dict = config.Contracts
     request_id: str = ""
 
     def __init__(self, request):
@@ -71,8 +69,7 @@ class RoadDistance:
 
     def fetch_json(self, file_name: str) -> dict:
         try:
-            with open(self.contracts_path + file_name) as json_file:
-                return json.load(json_file)
+            return json.loads(super().fetch_file(self.contracts_path, file_name))
         except Exception as ex:
             self.logger.log(
                 "Exception: Unable to open file " + self.contracts_path + file_name + ". {0}".format(ex), "error"

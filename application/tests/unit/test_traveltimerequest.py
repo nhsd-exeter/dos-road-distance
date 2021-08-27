@@ -1,5 +1,5 @@
 import pytest
-from application.tests.unit.common import Common
+from application.common import Common
 from application.traveltime_request import TravelTimeRequest
 from application.main import RoadDistance
 import application.proto.traveltime.TimeFilterFastRequest_pb2 as TimeFilterFastRequest
@@ -10,7 +10,7 @@ class TestTravelTimeRequest(Common):
     travel_time_request = TravelTimeRequest()
 
     def fetch_json(self, file_name: str):
-        return super().fetch_json(file_name)
+        return super().fetch_test_json(file_name)
 
     def test_proto_request_valid(self):
         ccs_request = self.fetch_json("dos_road_distance_api_happy.json")
@@ -26,7 +26,7 @@ class TestTravelTimeRequest(Common):
             # test the request build is returning a 'bytes' type string
             tt_model.ParseFromString(tt_binary)
             assert isinstance(tt_model.oneToManyRequest, TimeFilterFastRequest.TimeFilterFastRequest().OneToMany)
-            assert self.fetch_proto("traveltime_proto_happy.dump") == str(tt_model.oneToManyRequest)
+            assert self.fetch_test_proto("traveltime_proto_happy.dump") == str(tt_model.oneToManyRequest)
         except (UnicodeDecodeError, AttributeError):
             assert False
 

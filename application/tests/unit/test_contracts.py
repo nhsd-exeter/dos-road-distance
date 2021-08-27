@@ -1,4 +1,4 @@
-from application.tests.unit.common import Common
+from application.common import Common
 from application.main import RoadDistance
 
 
@@ -38,4 +38,4 @@ class TestContracts(Common):
         assert not self.road_distance.validate_against_schema(json_content, "provider-response")
 
     def fetch_json(self, file_name: str):
-        return super().fetch_json(file_name)
+        return super().fetch_test_json(file_name)

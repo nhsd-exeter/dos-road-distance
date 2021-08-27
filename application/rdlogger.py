@@ -17,6 +17,7 @@ from configparser import ConfigParser
 import logging
 import os
 import uuid
+import application.config as config
 
 
 class RDLogger:
@@ -27,8 +28,7 @@ class RDLogger:
 
     def __init__(self, log_name: str, request_id: str, transaction_id: str):
 
-        log_config = ConfigParser()
-        log_config.read("logging.conf")
+        log_config = config.Logging
 
         if log_name in log_config:
             self.log_name = log_name
@@ -42,8 +42,8 @@ class RDLogger:
             self.logger.setLevel(logging_level)
 
             formatter = logging.Formatter(self.__create_log_format(request_id, transaction_id), "%Y/%m/%d %H:%M:%S")
-            self.logger.addHandler(self.__create_stream_handler(self.log_file_path, formatter))
-            self.logger.addHandler(self.__create_file_handler(self.log_file_path, formatter))
+            self.logger.addHandler(self.__create_stream_handler(formatter))
+            self.logger.addHandler(self.__create_file_handler(formatter))
         except Exception as ex:
             print(ex)
 
@@ -56,13 +56,13 @@ class RDLogger:
             + "|roaddistancepilot|%(message)s"
         )
 
-    def __create_stream_handler(self, log_path: str, formatter):
-        sh = logging.StreamHandler(log_path)
+    def __create_stream_handler(self, formatter):
+        sh = logging.StreamHandler()
         sh.setFormatter(formatter)
         return sh
 
-    def __create_file_handler(self, log_path: str, formatter):
-        fh = logging.FileHandler(log_path)
+    def __create_file_handler(self, formatter):
+        fh = logging.FileHandler(self.log_file_path)
         fh.setFormatter(formatter)
         return fh
 
