@@ -13,20 +13,18 @@ Lambda supports the following container image settings in the Dockerfile:
 * WORKDIR – Specifies the absolute path to the working directory.
 * ENV – Specifies an environment variable for the Lambda function.
 
-## Requirements
+## Container image environment variables
+The AWS base images provide the following environment variables:
 
-	pip install awslambdaric
+LAMBDA_TASK_ROOT=/var/task
 
-## Container image settings
+LAMBDA_RUNTIME_DIR=/var/runtime
 
-Lambda supports the following container image settings in the Dockerfile:
-
-* ENTRYPOINT – Specifies the absolute path to the entry point of the application.
-* CMD – Specifies parameters that you want to pass in with ENTRYPOINT.
-* WORKDIR – Specifies the absolute path to the working directory.
-* ENV – Specifies an environment variable for the Lambda function.
-
-
+## Building and running
+```
+cd application
+docker build -t dos/roaddistance:latest .
+```
 
 
 # RDLogger.py usage notes
