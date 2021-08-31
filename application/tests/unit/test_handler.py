@@ -37,4 +37,4 @@ class TestHandler(Common):
             os.remove(self.log_path)
 
     def fetch_json(self, file_name: str) -> str:
-        return json.dumps(super().fetch_test_json(file_name))
+        return super().fetch_test_json(file_name)
