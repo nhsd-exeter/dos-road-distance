@@ -7,3 +7,6 @@
 .scannerwork
 *.code-workspace
 !project.code-workspace
+/node_modules
+/target
+/tmp
