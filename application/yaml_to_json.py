@@ -1,7 +1,7 @@
 import os
 import json
 import yaml
-import application.config as config
+import config as config
 from yaml.loader import Loader
 
 json_path: str = "openapi_schemas/json/"

@@ -1,5 +1,5 @@
 import json
-from application.main import RoadDistance
+from main import RoadDistance
 
 
 def process_road_distance_request(event, context):

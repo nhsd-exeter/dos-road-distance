@@ -3,10 +3,10 @@ import json
 import uuid
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
-from application.rdlogger import RDLogger
-from application.common import Common
-from application.traveltime_request import TravelTimeRequest
-import application.config as config
+from rdlogger import RDLogger
+from common import Common
+from traveltime_request import TravelTimeRequest
+import config as config
 
 
 class RoadDistance(Common):

@@ -1,5 +1,5 @@
 import json
-import application.config as config
+import config as config
 
 
 class Common:
