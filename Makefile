@@ -122,8 +122,7 @@ docker-build-lambda: # Build the local lambda Docker image
 
 docker-run-lambda: # Run the local lambda Docker container
 	cd application && \
-	echo $(pwd) \
-	docker run --rm -p 9000:8080 --mount type=bind,source=$(pwd),target=/var/task/application dos/roaddistance:latest
+	docker run --rm -p 9000:8080 --mount type=bind,source=`pwd`,target=/var/task/application dos/roaddistance:latest
 
 local-ccs-lambda-request: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
 	curl -v -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" \
