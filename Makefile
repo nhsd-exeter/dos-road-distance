@@ -128,12 +128,12 @@ docker-run-lambda: # Run the local lambda Docker container
 		--mount type=bind,source=`pwd`,target=/var/task/application \
 		--name roaddistance dos/roaddistance:latest
 
-docker-update-root:
+docker-update-root: # Update the root files on the running lambda docker container without a rebuild
 		docker exec \
 			roaddistance \
 			cp application/*.py ./
 
-docker-bash-lambda:
+docker-bash-lambda: # Bash into the running lambda docker container
 		docker exec -it \
 			roaddistance \
 			/bin/bash
