@@ -1,9 +1,9 @@
 import re
 import uuid
 import pytest
-import application.config as config
-from application.common import Common
-from application.rdlogger import RDLogger
+import task.config as config
+from task.common import Common
+from task.rdlogger import RDLogger
 
 
 class TestLogging(Common):

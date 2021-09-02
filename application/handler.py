@@ -9,14 +9,8 @@ def process_road_distance_request(event, context):
         body = {}
     except Exception as e:
         status_code = 502
-        body = {
-            "statusCode": status_code,
-            "error": repr(e)
-        }
+        body = {"statusCode": status_code, "error": repr(e)}
 
-    response = {
-        "statusCode": status_code,
-        "body": json.dumps(body)
-    }
+    response = {"statusCode": status_code, "body": json.dumps(body)}
 
     return response

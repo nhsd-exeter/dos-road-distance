@@ -1,7 +1,7 @@
 import os
-import application.config as config
-from application.main import RoadDistance
-from application.common import Common
+import task.config as config
+from task.main import RoadDistance
+from task.common import Common
 
 
 class TestTravelTimeResponse(Common):
