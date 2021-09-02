@@ -16,7 +16,7 @@
 import logging
 import os
 import uuid
-import application.config as config
+import config as config
 
 
 class RDLogger:

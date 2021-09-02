@@ -1,6 +1,6 @@
-import application.config as config
-from application.common import Common
-from application.main import RoadDistance
+import task.config as config
+from task.common import Common
+from task.main import RoadDistance
 
 
 class TestContracts(Common):

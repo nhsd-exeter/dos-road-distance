@@ -1,4 +1,33 @@
+# AWS Lambda Docker
 
+## Requirements
+
+    pip install awslambdaric
+
+## Container image settings
+
+Lambda supports the following container image settings in the Dockerfile:
+
+* ENTRYPOINT – Specifies the absolute path to the entry point of the application.
+* CMD – Specifies parameters that you want to pass in with ENTRYPOINT.
+* WORKDIR – Specifies the absolute path to the working directory.
+* ENV – Specifies an environment variable for the Lambda function.
+
+## Container image environment variables
+
+The AWS base images provide the following environment variables:
+```
+LAMBDA_TASK_ROOT=/var/task
+LAMBDA_RUNTIME_DIR=/var/runtime
+```
+## Building and running
+
+    make docker-build-lambda
+    make docker-run-lambda
+
+Then, in another shell instance, a sample request can be made:
+
+    make local-ccs-lambda-request
 
 
 # RDLogger.py usage notes
@@ -27,14 +56,14 @@ YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddi
 
 ### Raw request and response
 ```
-    YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|ccsrequest|<data>
-    YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerrequest|<data>
-    YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|<data>
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|ccsrequest|<data>
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerrequest|<data>
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|<data>
 ```
 
 ### CCS Request Failure
 ```
-    YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|roaddistancepilot|ccsrequest|failed|statuscode=<statuscode>|error=<error>
+YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|roaddistancepilot|ccsrequest|failed|statuscode=<statuscode>|error=<error>
 ```
 
 ### Provider Response Failure (anything other than 200 response)

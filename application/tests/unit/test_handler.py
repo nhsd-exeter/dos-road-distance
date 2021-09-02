@@ -1,8 +1,7 @@
 import os
-import json
-import application.config as config
-from application.common import Common
-import application.handler as handler
+import task.config as config
+from task.common import Common
+import task.handler as handler
 
 
 class TestHandler(Common):
@@ -29,7 +28,7 @@ class TestHandler(Common):
         os.environ["LOGGER"] = "DoesNotExist"
         request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID)
         response = handler.process_road_distance_request(request, None)
-        assert response["statusCode"] == 500
+        assert response["statusCode"] == 502
         assert not os.path.isfile(self.log_path)
 
     def purge_test_logs(self):
@@ -37,4 +36,4 @@ class TestHandler(Common):
             os.remove(self.log_path)
 
     def fetch_json(self, file_name: str) -> str:
-        return json.dumps(super().fetch_test_json(file_name))
+        return super().fetch_test_json(file_name)
