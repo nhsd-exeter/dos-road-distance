@@ -11,7 +11,7 @@ import config as config
 
 class RoadDistance(Common):
 
-    logger: RDLogger = None
+    logger: RDLogger
     request: dict = {}
     response: dict = {}
     options: dict = {}
