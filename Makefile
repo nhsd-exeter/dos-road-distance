@@ -67,8 +67,9 @@ run-static-analisys:
 	echo TODO: $(@)
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	cd application && \
-		pytest -q tests/unit/$(TEST_FILE) -k "$(NAME)"
+		docker exec \
+			roaddistance \
+			python -m pytest -q tests/unit/$(TEST_FILE) -k "$(NAME)"
 
 run-smoke-test:
 	echo TODO: $(@)
@@ -125,7 +126,17 @@ docker-run-lambda: # Run the local lambda Docker container
 	docker run --rm -p 9000:8080 \
 		--mount type=bind,source=`pwd`/tests,target=/var/task/tests \
 		--mount type=bind,source=`pwd`,target=/var/task/application \
-		dos/roaddistance:latest
+		--name roaddistance dos/roaddistance:latest
+
+docker-update-root:
+		docker exec \
+			roaddistance \
+			cp application/*.py ./
+
+docker-bash-lambda:
+		docker exec -it \
+			roaddistance \
+			/bin/bash
 
 local-ccs-lambda-request: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
 	curl -v -POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
