@@ -36,6 +36,7 @@ class RoadDistance(Common):
             try:
                 self.logger.log_formatted(str(self.request), "ccs_request")
                 self.send_request(self.build_request())
+                self.logger.log_formatted(str(self.response), "provider_response")
                 self.status_code = 200
             except Exception as ex:
                 self.status_code = 500
