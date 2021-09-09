@@ -6,7 +6,9 @@ from jsonschema.exceptions import ValidationError, SchemaError
 from rdlogger import RDLogger
 from common import Common
 from traveltime_request import TravelTimeRequest
+from traveltime_response import TravelTimeResponse
 import config as config
+import requests
 
 
 class RoadDistance(Common):
@@ -14,6 +16,7 @@ class RoadDistance(Common):
     logger: RDLogger
     request: dict = {}
     response: dict = {}
+    status_code = 0
     options: dict = {}
     url: str = ""
     status_code: int
@@ -32,6 +35,7 @@ class RoadDistance(Common):
         if self.validate_against_schema(self.request, "local"):
             try:
                 self.logger.log_formatted(str(self.request), "ccs_request")
+                self.send_request(self.build_request())
                 self.status_code = 200
             except Exception as ex:
                 self.status_code = 500
@@ -42,12 +46,41 @@ class RoadDistance(Common):
 
         return self.status_code
 
+    def send_request(self, request: TravelTimeRequest) -> str:
+        endpoint = os.environ.get("DRD_ENDPOINT", "")
+        basic_auth = os.environ.get("DRD_BASICAUTH", "")
+        print(endpoint)
+        print(basic_auth)
+        r = requests.post(url=endpoint, headers={
+                "Authorization": basic_auth,
+                "Content-type": "application/octet-stream",
+                "Accept": "application/octet-stream"
+            }
+        )
+        print(r.status_code)
+        self.status_code = r.status_code
+        if self.status_code == 200:
+            self.response = self.decode_response(r.content)
+        else:
+            self.response = str(r.content)
+
+        print(type(self.response))
+        print("RESPONSE: " + str(self.response))
+
     def build_request(self):
         origin = self.fetch_coords(self.request["origin"])
         destinations = self.fetch_destinations(self.request["destinations"])
 
         request = TravelTimeRequest()
+        print("PROTO REQUEST: " + str(request.build_request_proto(origin, destinations)), "debug")
         return request.build_request_proto(origin, destinations)
+
+    def decode_response(self, content: bytes):
+        message = TravelTimeResponse()
+        self.response = message.decode_response_proto(content)
+
+    def get_response(self):
+        return self.response
 
     def fetch_destinations(self, locations: list) -> list:
         destinations = []

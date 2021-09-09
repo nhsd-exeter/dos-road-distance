@@ -2,6 +2,7 @@ import os
 import task.config as config
 from task.main import RoadDistance
 from task.common import Common
+import task.proto.traveltime.TimeFilterFastResponse_pb2 as TimeFilterFastResponse
 
 
 class TestTravelTimeResponse(Common):
@@ -10,16 +11,18 @@ class TestTravelTimeResponse(Common):
     road_distance = RoadDistance({})
 
     def test_response_valid(self):
-        json_content: dict = self.__fetch_test_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
-        self.road_distance.logger.purge()
-        json_response: dict = self.road_distance.get_response()
+        ccs_request: dict = self.__fetch_test_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
+        road_distance = RoadDistance(ccs_request)
+        road_distance.logger.purge()
+        self.road_distance.process_request()
+        # provider_response = self.road_distance.get_response()
         compare = (
             "|"
             + self.road_distance.request_id
             + "|"
-            + json_content["transactionid"]
+            + ccs_request["transactionid"]
             + "|roaddistancepilot|providerresponse|"
-            + str(json_response)
+            + str(ccs_request)
         )
         result = self.road_distance.logger.read_log_output().find(compare)
         print(result)
