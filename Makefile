@@ -68,7 +68,7 @@ run-static-analisys:
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 		docker exec \
-			roaddistance \
+			roaddistance-lambda \
 			python -m pytest -q tests/unit/$(TEST_FILE) -k "$(NAME)"
 
 run-smoke-test:
@@ -137,7 +137,7 @@ docker-run-lambda: # Run the local lambda Docker container
 docker-update-root: # Update the root files on the running lambda docker container without a rebuild
 		docker exec \
 			roaddistance-lambda \
-			cp application/*.py ./
+			cp -v application/*.py ./
 
 docker-bash-lambda: # Bash into the running lambda docker container
 		docker exec -it \
