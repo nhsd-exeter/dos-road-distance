@@ -94,6 +94,9 @@ class RDLogger:
             f = open(self.log_file_path, "r")
             content = f.read()
             f.close()
+            print("--------begin Logdump---------")
+            print(content)
+            print("---------end Logdump----------")
             return content
         except Exception as ex:
             print(config.EXCEPTION_FILE_CANNOT_BE_OPENED + self.log_file_path + ": ")

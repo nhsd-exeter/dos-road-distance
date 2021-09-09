@@ -4,7 +4,7 @@ import proto.traveltime.TimeFilterFastRequest_pb2 as TimeFilterFastRequest
 
 
 class TravelTimeRequest:
-    def build_request_proto(self, origin: dict, destinations: list):
+    def build_request_proto(self, origin: dict, destinations: list) -> bytes:
         request = TimeFilterFastRequest.TimeFilterFastRequest()
 
         coords = RequestsCommon.Coords()

@@ -46,38 +46,31 @@ class RoadDistance(Common):
 
         return self.status_code
 
-    def send_request(self, request: TravelTimeRequest) -> str:
-        endpoint = os.environ.get("DRD_ENDPOINT", "")
-        basic_auth = os.environ.get("DRD_BASICAUTH", "")
-        print(endpoint)
-        print(basic_auth)
-        r = requests.post(url=endpoint, headers={
+    def send_request(self, request: bytes):
+        endpoint = os.environ.get("DRD_ENDPOINT")
+        basic_auth = os.environ.get("DRD_BASICAUTH")
+        r = requests.post(url=endpoint, data=request, headers={
                 "Authorization": basic_auth,
                 "Content-type": "application/octet-stream",
                 "Accept": "application/octet-stream"
             }
         )
-        print(r.status_code)
         self.status_code = r.status_code
         if self.status_code == 200:
             self.response = self.decode_response(r.content)
         else:
             self.response = str(r.content)
 
-        print(type(self.response))
-        print("RESPONSE: " + str(self.response))
-
     def build_request(self):
         origin = self.fetch_coords(self.request["origin"])
         destinations = self.fetch_destinations(self.request["destinations"])
 
         request = TravelTimeRequest()
-        print("PROTO REQUEST: " + str(request.build_request_proto(origin, destinations)), "debug")
         return request.build_request_proto(origin, destinations)
 
     def decode_response(self, content: bytes):
         message = TravelTimeResponse()
-        self.response = message.decode_response_proto(content)
+        return message.decode_response_proto(content)
 
     def get_response(self):
         return self.response
