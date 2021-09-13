@@ -175,13 +175,24 @@ remove-old-backups:
 
 # --------------------------------------
 
+parse-profile-from-branch: # Return profile based off of git branch - Mandatory BRANCH_NAME=[git branch name]
+	if [ $(BRANCH_NAME) == "master" ]; then
+		echo "dev"
+	else
+		echo "task"
+	fi
+
+deployment-summary: # Returns a deployment summary
+	echo Terraform Changes
+	cat /tmp/terraform_changes.txt | grep -E 'Apply...'
+
 pipeline-finalise: ## Finalise pipeline execution - mandatory: PIPELINE_NAME,BUILD_STATUS
 	# Check if BUILD_STATUS is SUCCESS or FAILURE
 	make pipeline-send-notification
 
 pipeline-send-notification: ## Send Slack notification with the pipeline status - mandatory: PIPELINE_NAME,BUILD_STATUS
 	eval "$$(make aws-assume-role-export-variables)"
-	eval "$$(make secret-fetch-and-export-variables NAME=$(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)-$(PROFILE)/deployment)"
+	eval "$$(make secret-fetch-and-export-variables NAME=$(DEPLOYMENT_SECRETS)"
 	make slack-it
 
 # --------------------------------------
@@ -215,4 +226,9 @@ pipeline-create-resources: ## Create all the pipeline deployment supporting reso
 
 # ==============================================================================
 
-.SILENT:
+create-artefact-repositories: # Create ECR repositories to store the artefacts
+	make docker-create-repository NAME=road-distance
+
+# ==============================================================================
+.SILENT: \
+	parse-profile-from-branch
