@@ -15,6 +15,7 @@ class RoadDistance(Common):
 
     logger: RDLogger
     request: dict = {}
+    destinations = []
     response: dict = {}
     status_code = 0
     options: dict = {}
@@ -36,7 +37,7 @@ class RoadDistance(Common):
             try:
                 self.logger.log_formatted(str(self.request), "ccs_request")
                 self.send_request(self.build_request())
-                self.logger.log_formatted(str(self.response), "provider_response")
+                self.log_individual_service_responses()
                 self.status_code = 200
             except Exception as ex:
                 self.status_code = 500
@@ -46,6 +47,21 @@ class RoadDistance(Common):
             self.logger.log_ccs_error(str(self.status_code), str(self.request))
 
         return self.status_code
+
+    def log_individual_service_responses(self):
+        for i in range(len(self.request["destinations"])):
+            distance = self.response["distances"][i]
+            travelTime = self.response["travelTimes"][i]
+            if (travelTime == -1):
+                unreachable = "yes"
+                distance = 999
+            else:
+                unreachable = "no"
+            self.logger.log_provider_success(
+                str(self.request["destinations"][i]["reference"]),
+                unreachable,
+                str(distance)
+            )
 
     def send_request(self, request: bytes):
         endpoint = os.environ.get("DRD_ENDPOINT")
@@ -71,7 +87,9 @@ class RoadDistance(Common):
 
     def decode_response(self, content: bytes):
         message = TravelTimeResponse()
-        return message.decode_response_proto(content)
+        response_decoded = message.decode_response_proto(content)
+        self.logger.log_formatted(str(message.response), "provider_response")
+        return response_decoded
 
     def get_response(self):
         return self.response
