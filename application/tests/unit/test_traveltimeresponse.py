@@ -2,7 +2,6 @@ import os
 import task.config as config
 from task.main import RoadDistance
 from task.common import Common
-import task.proto.traveltime.TimeFilterFastResponse_pb2 as TimeFilterFastResponse
 
 
 class TestTravelTimeResponse(Common):
