@@ -34,7 +34,10 @@ JSON_TRAVEL_TIME_ERROR_500 = "travel_time_api_error_500.json"
 JSON_TRAVEL_TIME_ERROR_503 = "travel_time_api_error_503.json"
 JSON_TRAVEL_TIME_ERROR_504 = "travel_time_api_error_504.json"
 
-PROTO_TRAVEL_TIME_REQUEST_HAPPY = "traveltime_proto_happy.dump"
+PROTO_TRAVEL_TIME_REQUEST_HAPPY = "travel_time_proto_happy.dump"
+PROTO_TRAVEL_TIME_REQUEST_HAPPY_BIN = "travel_time_proto_happy.bin"
+PROTO_TRAVEL_TIME_RESPONSE_HAPPY = "travel_time_proto_response_happy.dump"
+PROTO_TRAVEL_TIME_RESPONSE_HAPPY_BIN = "travel_time_proto_response_happy.bin"
 
 # travel time request and response values
 TRAVEL_TIME_MINUTES = 7200

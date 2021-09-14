@@ -1,28 +1,17 @@
-import os
 import task.config as config
-from task.main import RoadDistance
 from task.common import Common
+from traveltime_response import TravelTimeResponse
 
 
 class TestTravelTimeResponse(Common):
 
-    os.environ["LOGGER"] = "Test"
-    road_distance = RoadDistance({})
+    def test_decode_response_proto(self):
+        traveltime_response_data_bin = super().fetch_test_proto_bin(config.PROTO_TRAVEL_TIME_RESPONSE_HAPPY_BIN)
+        traveltime_response_data = super().fetch_test_proto(config.PROTO_TRAVEL_TIME_RESPONSE_HAPPY)
 
-    def test_response_valid(self):
-        ccs_request: dict = self.__fetch_test_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
-        road_distance = RoadDistance(ccs_request)
-        road_distance.logger.purge()
-        self.road_distance.process_request()
-        # provider_response = self.road_distance.get_response()
-        compare = (
-            "|"
-            + self.road_distance.request_id
-            + "|"
-            + ccs_request["transactionid"]
-            + "|roaddistancepilot|providerresponse|"
-            + str(ccs_request)
-        )
-        result = self.road_distance.logger.read_log_output().find(compare)
-        print(result)
-        assert result is not -1
+        tt_response = TravelTimeResponse()
+        tt_response_decoded = tt_response.decode_response_proto(traveltime_response_data_bin)
+        print(tt_response_decoded)
+        print(traveltime_response_data)
+        print(str(tt_response.response))
+        assert traveltime_response_data == str(tt_response.response)
