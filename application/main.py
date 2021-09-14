@@ -60,7 +60,7 @@ class RoadDistance(Common):
             self.logger.log_provider_success(
                 str(self.request["destinations"][i]["reference"]),
                 unreachable,
-                str(distance)
+                distance
             )
 
     def send_request(self, request: bytes):

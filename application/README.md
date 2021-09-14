@@ -73,5 +73,5 @@ YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|roadd
 
 ### Provider Response Success - Per returned service
 ```
-YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|success|reference=<serviceUid>|unreachable=<yes/no>|distance=####
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|success|reference=<serviceUid>|unreachable=<yes/no>|distance=####|km=##.#|miles=##.#
 ```

@@ -25,6 +25,9 @@ class RDLogger:
     log_name: str = ""
     log_file_path: str = ""
 
+    # Meters to Miles conversion
+    M_TO_MI = 0.000621371
+
     def __init__(self, log_name: str, request_id: str, transaction_id: str):
 
         log_config = config.Logging
@@ -118,8 +121,17 @@ class RDLogger:
         else:
             raise AttributeError(config.EXCEPTION_LOG_FORMATTER_NOT_FOUND + formatter)
 
-    def log_provider_success(self, serviceUid: str, unreachable: str, distance: str = ""):
-        log_message = "success|reference=" + serviceUid + "|unreachable=" + unreachable + "|distance=" + distance
+    def log_provider_success(self, serviceUid: str, unreachable: str, distance: int):
+        if(unreachable == "yes"):
+            meters = km = miles = ""
+        else:
+            meters = str(distance)
+            km = str(round(distance/1000, 1))
+            miles = str(round(distance * self.M_TO_MI, 1))
+        log_message = (
+            "success|reference=" + serviceUid + "|unreachable=" + unreachable
+            + "|distance=" + meters + "|km=" + km + "|miles=" + miles
+        )
         self.log_formatted(log_message, "provider_response")
 
     def log_provider_error(self, statusCode: str, error: str):
