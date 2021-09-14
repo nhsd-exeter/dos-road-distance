@@ -33,8 +33,8 @@ class TestLogging(Common):
     LOG4_DETAILS_BASIC = r"\|([^\|]+)"
     LOG4_DETAILS_STATUS = r"\|system\|success\|message=([^\|]*)"
     LOG4_DETAILS_RAW = r"\|({}|{}|{})\|.*".format(STR_LOG_CCSREQUEST, STR_LOG_PROVIDERREQUEST, STR_LOG_PROVIDERRESPONSE)
-    LOG4_CCS_FAILURE = r"\|{}\|failed\|statuscode=([^\|]*)|error=([^\|]*)".format(STR_LOG_CCSREQUEST)
-    LOG4_PROVIDER_FAILURE = r"\|{}\|failed\|statuscode=([^\|]*)|error=([^\|]*)".format(STR_LOG_PROVIDERRESPONSE)
+    LOG4_CCS_FAILURE = r"\|{}\|failed\|statuscode=([^\|]*)|error=([^\|]+)|data=([^\|]*)".format(STR_LOG_CCSREQUEST)
+    LOG4_PROVIDER_FAILURE = r"\|{}\|failed\|statuscode=([^\|]*)|error=([^\|]+)|data=([^\|]*)".format(STR_LOG_PROVIDERRESPONSE)
     LOG4_PROVIDER_RESPONSE = r"\|{}\|success\|reference=([^\|]*)\|unreachable=(yes|no)\|distance=([\d.]+)?".format(
         STR_LOG_PROVIDERRESPONSE
     )
@@ -93,13 +93,13 @@ class TestLogging(Common):
     def test_provider_response_success_per_destination(self):
         rx = self.LOG1_DATETIME + self.LOG2_INFO_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_PROVIDER_RESPONSE
         self.rdlogger.purge()
-        self.rdlogger.log_provider_success("1000001", "yes", "1000")
+        self.rdlogger.log_provider_success("1000001", "no", 1000)
         result = re.search(rx, self.rdlogger.read_log_output())
         print(rx)
         print(result)
         assert result is not None
         self.rdlogger.purge()
-        self.rdlogger.log_provider_success("1000001", "no")
+        self.rdlogger.log_provider_success("1000001", "yes", 0)
         result = re.search(rx, self.rdlogger.read_log_output())
         print(rx)
         print(result)
@@ -117,7 +117,7 @@ class TestLogging(Common):
     def test_ccs_request_failure(self):
         rx = self.LOG1_DATETIME + self.LOG2_FAILURE_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_CCS_FAILURE
         self.rdlogger.purge()
-        self.rdlogger.log_ccs_error("422", "there was an error")
+        self.rdlogger.log_ccs_error("422", "there was an error", "data example")
         result = re.search(rx, self.rdlogger.read_log_output())
         print(rx)
         print(result)
@@ -167,8 +167,14 @@ class TestLogging(Common):
 
     def test_content_provider_response_success_per_destination(self):
         self.rdlogger.purge()
-        self.rdlogger.log_provider_success("1000001", "yes", "1000")
-        compare = "{}|success|reference=1000001|unreachable=yes|distance=1000".format(self.STR_LOG_PROVIDERRESPONSE)
+        self.rdlogger.log_provider_success("1000001", "yes")
+        compare = "{}|success|reference=1000001|unreachable=yes|distance=|km=|miles=".format(self.STR_LOG_PROVIDERRESPONSE)
+        result = self.rdlogger.read_log_output().find(compare)
+        print(result)
+        assert result is not -1
+        self.rdlogger.purge()
+        self.rdlogger.log_provider_success("1000001", "no", 1000)
+        compare = "{}|success|reference=1000001|unreachable=no|distance=1000|km=1.0|miles=0.6".format(self.STR_LOG_PROVIDERRESPONSE)
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
@@ -181,8 +187,11 @@ class TestLogging(Common):
         json_content = self.__fetch_json(config.JSON_TRAVEL_TIME_ERROR_500)
         print(json_content)
         self.rdlogger.purge()
-        self.rdlogger.log_provider_error("500", json_content)
-        compare = "{}|failed|statuscode=500|error=".format(self.STR_LOG_PROVIDERRESPONSE) + json_content
+        self.rdlogger.log_provider_error("500", "there was an error", json_content)
+        compare = (
+            "{}|failed|statuscode=500|error=there was an error|data=".format(self.STR_LOG_PROVIDERRESPONSE)
+            + json_content
+        )
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1

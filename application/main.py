@@ -44,7 +44,7 @@ class RoadDistance(Common):
                 self.logger.log(config.LOG_CCS_REQUEST_EXCEPTION + str(ex), "error")
         else:
             self.status_code = 500
-            self.logger.log_ccs_error(str(self.status_code), str(self.request))
+            self.logger.log_ccs_error(str(self.status_code), "Validation error", str(self.request))
 
         return self.status_code
 

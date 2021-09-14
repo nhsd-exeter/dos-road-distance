@@ -7,9 +7,10 @@
     rdlogger = RDLogger()
     rdlogger.log("Put your info log message here")
     rdlogger.log_formatted(request, "ccs_request")
-    rdlogger.log_ccs_error("422", "there was an error")
-    rdlogger.log_provider_success("1000001", "yes", "1000")
-    rdlogger.log_provider_error("422", "there was an error")
+    rdlogger.log_ccs_error("422", "there was an error", <data>)
+    rdlogger.log_provider_success("1000001", "no", 1000)
+    rdlogger.log_provider_success("1000001", "yes")
+    rdlogger.log_provider_error("422", "there was an error", <data>)
 
     See README for more information including log output formats
 """
@@ -121,7 +122,7 @@ class RDLogger:
         else:
             raise AttributeError(config.EXCEPTION_LOG_FORMATTER_NOT_FOUND + formatter)
 
-    def log_provider_success(self, serviceUid: str, unreachable: str, distance: int):
+    def log_provider_success(self, serviceUid: str, unreachable: str, distance: int = 0):
         if(unreachable == "yes"):
             meters = km = miles = ""
         else:
@@ -134,10 +135,10 @@ class RDLogger:
         )
         self.log_formatted(log_message, "provider_response")
 
-    def log_provider_error(self, statusCode: str, error: str):
-        log_message = "statuscode=" + statusCode + "|error=" + error
+    def log_provider_error(self, statusCode: str, error: str, data: str = ""):
+        log_message = "statuscode=" + statusCode + "|error=" + error + "|data=" + data
         self.log_formatted(log_message, "provider_response_error")
 
-    def log_ccs_error(self, statusCode: str, error: str):
-        log_message = "statuscode=" + statusCode + "|error=" + error
+    def log_ccs_error(self, statusCode: str, error: str, data: str = ""):
+        log_message = "statuscode=" + statusCode + "|error=" + error + "|data=" + data
         self.log_formatted(log_message, "ccs_request_error")
