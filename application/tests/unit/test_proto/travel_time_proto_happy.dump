@@ -1,17 +1,19 @@
-departureLocation {
-  lat: 50.721794
-  lng: -3.5259426
+oneToManyRequest {
+  departureLocation {
+    lat: 50.721794
+    lng: -3.5259426
+  }
+  locationDeltas: -448
+  locationDeltas: -1302
+  locationDeltas: -488
+  locationDeltas: -1079
+  locationDeltas: 26994
+  locationDeltas: -1302
+  locationDeltas: 126994
+  locationDeltas: -1302
+  transportation {
+    type: DRIVING
+  }
+  travelTime: 7200
+  properties: DISTANCES
 }
-locationDeltas: -448
-locationDeltas: -1302
-locationDeltas: -488
-locationDeltas: -1079
-locationDeltas: 26994
-locationDeltas: -1302
-locationDeltas: 126994
-locationDeltas: -1302
-transportation {
-  type: DRIVING
-}
-travelTime: 7200
-properties: DISTANCES
