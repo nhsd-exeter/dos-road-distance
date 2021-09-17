@@ -24,7 +24,7 @@ class TestTravelTimeRequest(Common):
             # test the request build is returning a 'bytes' type string
             tt_model.ParseFromString(tt_binary)
             assert isinstance(tt_model.oneToManyRequest, TimeFilterFastRequest.TimeFilterFastRequest().OneToMany)
-            assert self.fetch_test_proto(config.PROTO_TRAVEL_TIME_REQUEST_HAPPY) == str(tt_model.oneToManyRequest)
+            assert self.fetch_test_proto(config.PROTO_TRAVEL_TIME_REQUEST_HAPPY) == str(tt_model)
         except (UnicodeDecodeError, AttributeError):
             assert False
 
