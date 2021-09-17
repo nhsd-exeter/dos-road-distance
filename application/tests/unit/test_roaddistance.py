@@ -69,26 +69,22 @@ class TestRoadDistance(Common):
         print("result: " + str(result))
         assert result is not -1
 
-    def test_error_responses_handled_gracefully(self):
-        self.__setup()
-        for file in sorted(os.listdir(config.PATH_TEST_JSON)):
-            if file.lower().find("_error_") != -1:
-                json_content = self.__fetch_json(file)
-                http_status = json_content["http_status"]
-
-                try:
-                    response = self.road_distance.format_response(json_content)
-                    response_content = json.loads(response)
-
-                    assert response_content["http_status"] == http_status
-                    assert response_content["error_code"] is not None
-
-                except ValueError as ve:
-                    print(ve)
-                    assert False
-                except Exception as ex:
-                    print(ex)
-                    assert False
+    def test_protobuf_error_responses_handled(self):
+        json_content: dict = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID_COORD)
+        self.__setup(json_content)
+        status_code = self.road_distance.process_request()
+        print(status_code)
+        assert status_code == 500
+        compare = (
+            "|"
+            + self.road_distance.request_id
+            + "|"
+            + json_content["transactionid"]
+            + "|roaddistancepilot|Protobuf returned error in request: SOURCE_NOT_IN_GEOMETRY"
+        )
+        print(compare)
+        result = self.road_distance.logger.read_log_output().find(compare)
+        assert result is not -1
 
     def __setup(self, json={}):
         self.road_distance = RoadDistance(json)

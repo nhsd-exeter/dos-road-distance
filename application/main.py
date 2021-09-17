@@ -37,8 +37,12 @@ class RoadDistance(Common):
             try:
                 self.logger.log_formatted(str(self.request), "ccs_request")
                 self.send_request(self.build_request())
-                self.log_individual_service_responses()
-                self.status_code = 200
+                if 'error' in self.response and self.response['error']:
+                    self.status_code = 500
+                    self.logger.log("Protobuf returned error in request: " + self.response['error'], "error")
+                else:
+                    self.log_individual_service_responses()
+                    self.status_code = 200
             except Exception as ex:
                 self.status_code = 500
                 self.logger.log(config.LOG_CCS_REQUEST_EXCEPTION + str(ex), "error")
@@ -73,10 +77,17 @@ class RoadDistance(Common):
             }
         )
         self.status_code = r.status_code
-        if self.status_code == 200:
+        if r.status_code == 200:
+            self.status_code = 200
             self.response = self.decode_response(r.content)
         else:
-            self.response = str(r.content)
+            self.status_code = 500
+            self.logger.log_ccs_error(
+                str(self.status_code),
+                "Protobuf endpoint error, status code: " + str(r.status_code)
+            )
+            # raise Exception()
+            self.logger.log("Protobuf endpoint error, status code: " + str(r.status_code), "error")
 
     def build_request(self):
         origin = self.fetch_coords(self.request["origin"])

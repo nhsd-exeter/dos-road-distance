@@ -98,9 +98,6 @@ class RDLogger:
             f = open(self.log_file_path, "r")
             content = f.read()
             f.close()
-            print("--------begin Logdump---------")
-            print(content)
-            print("---------end Logdump----------")
             return content
         except Exception as ex:
             print(config.EXCEPTION_FILE_CANNOT_BE_OPENED + self.log_file_path + ": ")
@@ -137,8 +134,8 @@ class RDLogger:
 
     def log_provider_error(self, statusCode: str, error: str, data: str = ""):
         log_message = "statuscode=" + statusCode + "|error=" + error + "|data=" + data
-        self.log_formatted(log_message, "provider_response_error")
+        self.log_formatted(log_message, "provider_response_error", "error")
 
     def log_ccs_error(self, statusCode: str, error: str, data: str = ""):
         log_message = "statuscode=" + statusCode + "|error=" + error + "|data=" + data
-        self.log_formatted(log_message, "ccs_request_error")
+        self.log_formatted(log_message, "ccs_request_error", "error")

@@ -16,9 +16,10 @@ EXCEPTION_LOG_NAME_NOT_FOUND = "Error: Logger name is not found "
 
 LOG_CCS_REQUEST_EXCEPTION = "dos-road-distance exception: "
 
-# test response and response files
+# test request and response files
 JSON_DOS_ROAD_DISTANCE_HAPPY = "dos_road_distance_api_happy.json"
 JSON_DOS_ROAD_DISTANCE_INVALID = "dos_road_distance_api_invalid_missing_element.json"
+JSON_DOS_ROAD_DISTANCE_INVALID_COORD = "dos_road_distance_api_invalid_coord.json"
 JSON_TRAVEL_TIME_REQUEST_HAPPY = "travel_time_api_happy.json"
 JSON_TRAVEL_TIME_REQUEST_INVALID = "travel_time_api_invalid_missing_element.json"
 JSON_TRAVEL_TIME_RESPONSE_HAPPY = "travel_time_api_response_happy.json"
