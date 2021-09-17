@@ -1,5 +1,4 @@
 import os
-import json
 import pytest
 import task.config as config
 from task.common import Common
