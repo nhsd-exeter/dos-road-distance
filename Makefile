@@ -68,7 +68,7 @@ run-static-analisys:
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 		docker exec \
-			roaddistance \
+			roaddistance-lambda \
 			python -m pytest -q tests/unit/$(TEST_FILE) -k "$(NAME)"
 
 run-smoke-test:
@@ -118,29 +118,39 @@ generate-proto-python: # Generate the Python code from the protobuf proto files
 	ls -l $$SRC_DIR/*.py
 
 docker-build-lambda: # Build the local lambda Docker image
-	cd application && \
-	docker build -t dos/roaddistance:latest .
+	cp $(APPLICATION_DIR)/requirements.txt $(DOCKER_DIR)/roaddistance-lambda/assets/
+	cp $(APPLICATION_DIR)/*.py $(DOCKER_DIR)/roaddistance-lambda/assets/
+	cp -r $(APPLICATION_DIR)/proto $(DOCKER_DIR)/roaddistance-lambda/assets/
+	cp -r $(APPLICATION_DIR)/openapi_schemas $(DOCKER_DIR)/roaddistance-lambda/assets/
+	make docker-image NAME=roaddistance-lambda
+	rm $(DOCKER_DIR)/roaddistance-lambda/assets/*.py
 
 docker-run-lambda: # Run the local lambda Docker container
-	cd application && \
 	docker run --rm -p 9000:8080 \
-		--mount type=bind,source=`pwd`/tests,target=/var/task/tests \
-		--mount type=bind,source=`pwd`,target=/var/task/application \
-		--name roaddistance dos/roaddistance:latest
+		--mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests \
+		--mount type=bind,source=$(APPLICATION_DIR),target=/var/task/application \
+		--name roaddistance-lambda $(DOCKER_REGISTRY)/roaddistance-lambda:latest
+	# make docker-run IMAGE=$(DOCKER_REGISTRY)/roaddistance-lambda:latest \
+	# 	ARGS="-p 9000:8080 --mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests" \
+	# 	CONTAINER=roaddistance-lambda
 
-docker-update-root:
+docker-update-root: # Update the root files on the running lambda docker container without a rebuild
 		docker exec \
-			roaddistance \
-			cp application/*.py ./
+			roaddistance-lambda \
+			cp -v application/*.py ./
 
-docker-bash-lambda:
+docker-bash-lambda: # Bash into the running lambda docker container
 		docker exec -it \
-			roaddistance \
+			roaddistance-lambda \
 			/bin/bash
 
 local-ccs-lambda-request: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
 	curl -v -POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
 		-d @application/tests/unit/test_json/dos_road_distance_api_happy.json
+
+local-ccs-lambda-request-invalid: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
+	curl -v -POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
+		-d @application/tests/unit/test_json/dos_road_distance_api_invalid_coord.json
 
 # --------------------------------------
 

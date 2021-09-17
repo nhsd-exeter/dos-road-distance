@@ -7,9 +7,10 @@
     rdlogger = RDLogger()
     rdlogger.log("Put your info log message here")
     rdlogger.log_formatted(request, "ccs_request")
-    rdlogger.log_ccs_error("422", "there was an error")
-    rdlogger.log_provider_success("1000001", "yes", "1000")
-    rdlogger.log_provider_error("422", "there was an error")
+    rdlogger.log_ccs_error("422", "there was an error", <data>)
+    rdlogger.log_provider_success("1000001", "no", 1000)
+    rdlogger.log_provider_success("1000001", "yes")
+    rdlogger.log_provider_error("422", "there was an error", <data>)
 
     See README for more information including log output formats
 """
@@ -24,6 +25,9 @@ class RDLogger:
     logger = None
     log_name: str = ""
     log_file_path: str = ""
+
+    # Meters to Miles conversion
+    M_TO_MI = 0.000621371
 
     def __init__(self, log_name: str, request_id: str, transaction_id: str):
 
@@ -115,14 +119,23 @@ class RDLogger:
         else:
             raise AttributeError(config.EXCEPTION_LOG_FORMATTER_NOT_FOUND + formatter)
 
-    def log_provider_success(self, serviceUid: str, unreachable: str, distance: str = ""):
-        log_message = "success|reference=" + serviceUid + "|unreachable=" + unreachable + "|distance=" + distance
+    def log_provider_success(self, serviceuid: str, unreachable: str, distance: int = 0):
+        if(unreachable == "yes"):
+            meters = km = miles = ""
+        else:
+            meters = str(distance)
+            km = str(round(distance/1000, 1))
+            miles = str(round(distance * self.M_TO_MI, 1))
+        log_message = (
+            "success|reference=" + serviceuid + "|unreachable=" + unreachable
+            + "|distance=" + meters + "|km=" + km + "|miles=" + miles
+        )
         self.log_formatted(log_message, "provider_response")
 
-    def log_provider_error(self, statusCode: str, error: str):
-        log_message = "statuscode=" + statusCode + "|error=" + error
-        self.log_formatted(log_message, "provider_response_error")
+    def log_provider_error(self, statuscode: str, error: str, data: str = ""):
+        log_message = "statuscode=" + statuscode + "|error=" + error + "|data=" + data
+        self.log_formatted(log_message, "provider_response_error", "error")
 
-    def log_ccs_error(self, statusCode: str, error: str):
-        log_message = "statuscode=" + statusCode + "|error=" + error
-        self.log_formatted(log_message, "ccs_request_error")
+    def log_ccs_error(self, statuscode: str, error: str, data: str = ""):
+        log_message = "statuscode=" + statuscode + "|error=" + error + "|data=" + data
+        self.log_formatted(log_message, "ccs_request_error", "error")

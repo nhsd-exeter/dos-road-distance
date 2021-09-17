@@ -6,14 +6,18 @@ from jsonschema.exceptions import ValidationError, SchemaError
 from rdlogger import RDLogger
 from common import Common
 from traveltime_request import TravelTimeRequest
+from traveltime_response import TravelTimeResponse
 import config as config
+import requests
 
 
 class RoadDistance(Common):
 
     logger: RDLogger
     request: dict = {}
+    destinations = []
     response: dict = {}
+    status_code = 0
     options: dict = {}
     url: str = ""
     status_code: int
@@ -32,15 +36,57 @@ class RoadDistance(Common):
         if self.validate_against_schema(self.request, "local"):
             try:
                 self.logger.log_formatted(str(self.request), "ccs_request")
-                self.status_code = 200
+                self.send_request(self.build_request())
+                if 'error' in self.response and self.response['error']:
+                    self.status_code = 500
+                    self.logger.log("Protobuf returned error in request: " + self.response['error'], "error")
+                else:
+                    self.log_individual_service_responses()
+                    self.status_code = 200
             except Exception as ex:
                 self.status_code = 500
                 self.logger.log(config.LOG_CCS_REQUEST_EXCEPTION + str(ex), "error")
         else:
             self.status_code = 500
-            self.logger.log_ccs_error(str(self.status_code), str(self.request))
+            self.logger.log_ccs_error(str(self.status_code), "Validation error", str(self.request))
 
         return self.status_code
+
+    def log_individual_service_responses(self):
+        for i in range(len(self.request["destinations"])):
+            distance = self.response["distances"][i]
+            traveltime = self.response["travelTimes"][i]
+            if (traveltime == -1):
+                unreachable = "yes"
+                distance = 999
+            else:
+                unreachable = "no"
+            self.logger.log_provider_success(
+                str(self.request["destinations"][i]["reference"]),
+                unreachable,
+                distance
+            )
+
+    def send_request(self, request: bytes):
+        endpoint = os.environ.get("DRD_ENDPOINT")
+        basic_auth = os.environ.get("DRD_BASICAUTH")
+        r = requests.post(url=endpoint, data=request, headers={
+                "Authorization": basic_auth,
+                "Content-type": "application/octet-stream",
+                "Accept": "application/octet-stream"
+            }
+        )
+        self.status_code = r.status_code
+        if r.status_code == 200:
+            self.status_code = 200
+            self.response = self.decode_response(r.content)
+        else:
+            self.status_code = 500
+            self.logger.log_ccs_error(
+                str(self.status_code),
+                "Protobuf endpoint error, status code: " + str(r.status_code)
+            )
+            self.logger.log("Protobuf endpoint error, status code: " + str(r.status_code), "error")
 
     def build_request(self):
         origin = self.fetch_coords(self.request["origin"])
@@ -48,6 +94,12 @@ class RoadDistance(Common):
 
         request = TravelTimeRequest()
         return request.build_request_proto(origin, destinations)
+
+    def decode_response(self, content: bytes):
+        message = TravelTimeResponse()
+        response_decoded = message.decode_response_proto(content)
+        self.logger.log_formatted(str(message.response), "provider_response")
+        return response_decoded
 
     def fetch_destinations(self, locations: list) -> list:
         destinations = []

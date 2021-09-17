@@ -1,0 +1,13 @@
+oneToManyRequest {
+  departureLocation {
+    lat: 500.7218017578125
+    lng: -3.52594256401062
+  }
+  locationDeltas: -45000448
+  locationDeltas: -1302
+  transportation {
+    type: DRIVING
+  }
+  travelTime: 7200
+  properties: DISTANCES
+}

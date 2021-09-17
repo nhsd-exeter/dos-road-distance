@@ -37,11 +37,12 @@ from rdlogger import RDLogger
 rdlogger = RDLogger()
 rdlogger.log("Put your info log message here")
 rdlogger.log_formatted(request, "ccs_request")
-rdlogger.log_ccs_error("422", "there was an error")
+rdlogger.log_ccs_error("422", "there was an error", <data> = "")
 rdlogger.log_formatted(request, "provider_request")
 rdlogger.log_formatted(request, "provider_response")
-rdlogger.log_provider_success("1000001", "yes", "1000")
-rdlogger.log_provider_error("422", "there was an error")
+rdlogger.log_provider_success("1000001", "no", 1000)
+rdlogger.log_provider_success("1000001", "yes")
+rdlogger.log_provider_error("422", "there was an error", <data> = "")
 ```
 ## Log format outputs
 ### Basic Log
@@ -63,15 +64,15 @@ YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddi
 
 ### CCS Request Failure
 ```
-YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|roaddistancepilot|ccsrequest|failed|statuscode=<statuscode>|error=<error>
+YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|roaddistancepilot|ccsrequest|failed|statuscode=<statuscode>|error=<error>|data=<data>
 ```
 
 ### Provider Response Failure (anything other than 200 response)
 ```
-YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|failed|statuscode=<statuscode>|error=<error>
+YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|failed|statuscode=<statuscode>|error=<error>|data=<data>
 ```
 
 ### Provider Response Success - Per returned service
 ```
-YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|success|reference=<serviceUid>|unreachable=<yes/no>|distance=####
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|success|reference=<serviceUid>|unreachable=<yes/no>|distance=####|km=##.#|miles=##.#
 ```
