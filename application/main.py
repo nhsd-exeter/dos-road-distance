@@ -101,9 +101,6 @@ class RoadDistance(Common):
         self.logger.log_formatted(str(message.response), "provider_response")
         return response_decoded
 
-    def get_response(self):
-        return self.response
-
     def fetch_destinations(self, locations: list) -> list:
         destinations = []
         for location in locations:
