@@ -55,8 +55,8 @@ class RoadDistance(Common):
     def log_individual_service_responses(self):
         for i in range(len(self.request["destinations"])):
             distance = self.response["distances"][i]
-            travelTime = self.response["travelTimes"][i]
-            if (travelTime == -1):
+            traveltime = self.response["travelTimes"][i]
+            if (traveltime == -1):
                 unreachable = "yes"
                 distance = 999
             else:
@@ -86,7 +86,6 @@ class RoadDistance(Common):
                 str(self.status_code),
                 "Protobuf endpoint error, status code: " + str(r.status_code)
             )
-            # raise Exception()
             self.logger.log("Protobuf endpoint error, status code: " + str(r.status_code), "error")
 
     def build_request(self):

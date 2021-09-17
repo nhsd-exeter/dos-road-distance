@@ -119,7 +119,7 @@ class RDLogger:
         else:
             raise AttributeError(config.EXCEPTION_LOG_FORMATTER_NOT_FOUND + formatter)
 
-    def log_provider_success(self, serviceUid: str, unreachable: str, distance: int = 0):
+    def log_provider_success(self, serviceuid: str, unreachable: str, distance: int = 0):
         if(unreachable == "yes"):
             meters = km = miles = ""
         else:
@@ -127,15 +127,15 @@ class RDLogger:
             km = str(round(distance/1000, 1))
             miles = str(round(distance * self.M_TO_MI, 1))
         log_message = (
-            "success|reference=" + serviceUid + "|unreachable=" + unreachable
+            "success|reference=" + serviceuid + "|unreachable=" + unreachable
             + "|distance=" + meters + "|km=" + km + "|miles=" + miles
         )
         self.log_formatted(log_message, "provider_response")
 
-    def log_provider_error(self, statusCode: str, error: str, data: str = ""):
-        log_message = "statuscode=" + statusCode + "|error=" + error + "|data=" + data
+    def log_provider_error(self, statuscode: str, error: str, data: str = ""):
+        log_message = "statuscode=" + statuscode + "|error=" + error + "|data=" + data
         self.log_formatted(log_message, "provider_response_error", "error")
 
-    def log_ccs_error(self, statusCode: str, error: str, data: str = ""):
-        log_message = "statuscode=" + statusCode + "|error=" + error + "|data=" + data
+    def log_ccs_error(self, statuscode: str, error: str, data: str = ""):
+        log_message = "statuscode=" + statuscode + "|error=" + error + "|data=" + data
         self.log_formatted(log_message, "ccs_request_error", "error")

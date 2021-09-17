@@ -4,7 +4,7 @@ import proto.traveltime.TimeFilterFastResponse_pb2 as TimeFilterFastResponse
 class TravelTimeResponse:
     traveltimes = []
     distances = []
-    error: str = None
+    error: str = ""
     response = TimeFilterFastResponse.TimeFilterFastResponse()
 
     def decode_response_proto(self, response_protobuf: bytes) -> dict:
