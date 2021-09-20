@@ -27,5 +27,5 @@ If you just want to run an individual test, you can specify it by name - e.g.
 
 ### The logs for the tests
 
-The logs are located in `tests/unit/logs/rd.log` which gets cleared down before each test run. 
-If you want to analyse the log output then run a single test and review this file
+The logs are located in `tests/unit/logs/rd.log` which gets cleared down before each test run.
+If you want to analyse the log output then run a single test and review this file.
