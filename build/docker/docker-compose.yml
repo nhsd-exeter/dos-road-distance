@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  lambda:
+    image: $AWS_LAMBDA_ECR/$PROJECT_GROUP_SHORT/$PROJECT_NAME_SHORT/roaddistance-lambda:latest
+    container_name: roaddistance-lambda
+    hostname: roaddistance-lambda
+    ports:
+      - 9000:8080
+    volumes:
+      - $APPLICATION_DIR/tests:/var/task/tests
+      - $APPLICATION_DIR:/var/task/application
+
+networks:
+  default:
+    external:
+      name: $DOCKER_NETWORK

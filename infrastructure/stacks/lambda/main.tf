@@ -4,7 +4,7 @@ resource "aws_lambda_function" "road_distance_lambda" {
   publish       = true
   package_type  = "Image"
   timeout       = "30"
-  image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/road-distance:${var.image_version}"
+  image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/roaddistance-lambda:${var.image_version}"
   depends_on = [
     aws_iam_role.road_distance_lambda_role,
     aws_iam_role_policy.road_distance_lambda_role_policy,

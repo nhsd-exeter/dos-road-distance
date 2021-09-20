@@ -1,0 +1,57 @@
+pipeline {
+  agent { label "jenkins-slave" }
+  options {
+    buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
+    disableConcurrentBuilds()
+    parallelAlwaysFailFast()
+    timeout(time: 180, unit: "MINUTES")
+  }
+  environment {
+    BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
+    PROFILE = sh(returnStdout: true, script: "make parse-profile-from-branch BRANCH_NAME=$BRANCH_NAME").trim()
+  }
+  triggers { pollSCM("* * * * *") }
+  stages{
+    stage("Show Configuration") {
+      steps {
+        script { sh "make secret-fetch-and-export-variables NAME=$DEPLOYMENT_SECRETS" }
+        script { sh "make show-configuration" }
+      }
+    }
+    stage("Build App") {
+      steps {
+        script { sh "make build" }
+        script { sh "make unit-test" }
+        script { sh "make push" }
+      }
+    }
+    stage("Deploy") {
+      environment {
+        TF_VAR_image_version = "$BUILD_TAG"
+      }
+      steps { sh "make terraform-apply-auto-approve | tee /tmp/terraform_changes.txt" }
+    }
+    stage("Test") {
+      # Run Tests Here
+      steps { sh "echo Running Tests..." }
+    }
+    stage("Deployment Summary") {
+      steps {
+        script {
+          sh "make deployment-summary"
+        }
+      }
+    }
+  }
+  post {
+    success {
+      script {
+        if ( env.BRANCH_NAME == "master" ) {
+          sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Development)' BUILD_STATUS=${currentBuild.currentResult}"
+        }
+      }
+    }
+    failure { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Development)' BUILD_STATUS=${currentBuild.currentResult}" }
+    always { sh "make stop" }
+  }
+}

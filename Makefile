@@ -9,29 +9,39 @@ setup: # Set up project
 	make python-virtualenv PYTHON_VENV_NAME=$(PROJECT_ID)
 	pip install -r application/requirements.txt
 
-build: project-config # Build project
-	make docker-build NAME=NAME_TEMPLATE_TO_REPLACE
+build: # Build image
+	make docker-build-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
 
-start: project-start # Start project
+start: project-start
 
-stop: project-stop # Stop project
+restart:
+	make \
+		stop \
+		start
 
-restart: stop start # Restart project
+stop: project-stop
 
-log: project-log # Show project logs
+log: project-log
 
-test: # Test project
+unit-test: # Test project
 	make start
+	make run-contract-test
+	make run-logging-test
+	# make run-handler-test
+	# make run-roaddistance-test
+	# make run-traveltimerequest-test
+	# make run-traveltimeresponse-test
 	make stop
 
 push: # Push project artefacts to the registry
-	make docker-push NAME=NAME_TEMPLATE_TO_REPLACE
+	eval "$$(make aws-assume-role-export-variables)"
+	make docker-push NAME=roaddistance-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
 
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
-	make project-deploy STACK=application PROFILE=$(PROFILE)
+	make sls-deploy STACK=application PROFILE=$(PROFILE)
 
 provision: # Provision environment - mandatory: PROFILE=[name]
-	make terraform-apply-auto-approve STACK=database PROFILE=$(PROFILE)
+	make terraform-apply-auto-approve PROFILE=$(PROFILE)
 
 clean: # Clean up project
 
@@ -40,31 +50,7 @@ clean: # Clean up project
 
 trust-certificate: ssl-trust-certificate-project ## Trust the SSL development certificate
 
-# ==============================================================================
-# Pipeline targets
-
-build-artefact:
-	echo TODO: $(@)
-
-publish-artefact:
-	echo TODO: $(@)
-
-backup-data:
-	echo TODO: $(@)
-
-provision-infractructure:
-	echo TODO: $(@)
-
-deploy-artefact:
-	echo TODO: $(@)
-
-apply-data-changes:
-	echo TODO: $(@)
-
 # --------------------------------------
-
-run-static-analisys:
-	echo TODO: $(@)
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	if [ -z $(TEST_FILE) ]; then
@@ -74,12 +60,6 @@ run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run spec
 		docker exec roaddistance-lambda \
 			python -m pytest -rA -q tests/unit/$(TEST_FILE) -k "$(NAME)"
 	fi
-
-run-smoke-test:
-	echo TODO: $(@)
-
-run-integration-test:
-	echo TODO: $(@)
 
 run-contract-test: # Run contract only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_contracts.py
@@ -102,18 +82,6 @@ run-traveltimeresponse-test: # Run TravelTime protobuf response only unit tests,
 run-mock-test: # Run mock TravelTime protobuf only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_mock.py
 
-run-functional-test:
-	[ $$(make project-branch-func-test) != true ] && exit 0
-	echo TODO: $(@)
-
-run-performance-test:
-	[ $$(make project-branch-perf-test) != true ] && exit 0
-	echo TODO: $(@)
-
-run-security-test:
-	[ $$(make project-branch-sec-test) != true ] && exit 0
-	echo TODO: $(@)
-
 generate-contract-json: # Generate the JSON files used for contract testing
 	cd application && \
 		python yaml_to_json.py
@@ -134,15 +102,14 @@ docker-build-lambda: # Build the local lambda Docker image
 	make docker-image NAME=roaddistance-lambda
 	rm -rf $(DOCKER_DIR)/roaddistance-lambda/assets/*
 
-docker-run-lambda: # Run the local lambda Docker container
-	docker run --rm -p 9000:8080 \
-		--mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests \
-		--mount type=bind,source=$(APPLICATION_DIR)/mock,target=/var/task/mock \
-		--mount type=bind,source=$(APPLICATION_DIR),target=/var/task/application \
-		--name roaddistance-lambda $(DOCKER_REGISTRY)/roaddistance-lambda:latest
-	# make docker-run IMAGE=$(DOCKER_REGISTRY)/roaddistance-lambda:latest \
-	# 	ARGS="-p 9000:8080 --mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests" \
-	# 	CONTAINER=roaddistance-lambda
+# docker-run-lambda: # Run the local lambda Docker container
+# 	docker run --rm -p 9000:8080 \
+# 		--mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests \
+# 		--mount type=bind,source=$(APPLICATION_DIR),target=/var/task/application \
+# 		--name roaddistance-lambda $(DOCKER_REGISTRY)/roaddistance-lambda:latest
+# 	# make docker-run IMAGE=$(DOCKER_REGISTRY)/roaddistance-lambda:latest \
+# 	# 	ARGS="-p 9000:8080 --mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests" \
+# 	# 	CONTAINER=roaddistance-lambda
 
 docker-update-root: # Update the root files on the running lambda docker container without a rebuild
 		docker exec \
@@ -150,9 +117,9 @@ docker-update-root: # Update the root files on the running lambda docker contain
 			cp -v application/*.py ./
 
 docker-bash-lambda: # Bash into the running lambda docker container
-		docker exec -it \
-			roaddistance-lambda \
-			/bin/bash
+		# docker exec -it \
+		# 	roaddistance-lambda \
+		# 	/bin/bash
 
 local-ccs-lambda-request: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
 	curl -v -POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
@@ -161,17 +128,6 @@ local-ccs-lambda-request: # Perform a sample valid request from CCS to the local
 local-ccs-lambda-request-invalid: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
 	curl -v -POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
 		-d @application/tests/unit/test_json/dos_road_distance_api_invalid_coord.json
-
-# --------------------------------------
-
-remove-unused-environments:
-	echo TODO: $(@)
-
-remove-old-artefacts:
-	echo TODO: $(@)
-
-remove-old-backups:
-	echo TODO: $(@)
 
 # --------------------------------------
 

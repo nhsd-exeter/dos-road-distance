@@ -6,6 +6,7 @@
 PROJECT_IMAGE_TAG :=
 ENV := task
 SERVICE_PREFIX := $(PROJECT_ID)-$(ENVIRONMENT)
+DEPLOYMENT_SECRETS = $(PROJECT_ID)-dev/deployment
 
 # ==============================================================================
 # Infrastructure variables
