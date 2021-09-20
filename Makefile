@@ -53,13 +53,14 @@ trust-certificate: ssl-trust-certificate-project ## Trust the SSL development ce
 # --------------------------------------
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	if [ -z $(TEST_FILE) ]; then
-		docker exec roaddistance-lambda \
-			/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done'
-	else
-		docker exec roaddistance-lambda \
-			python -m pytest -rA -q tests/unit/$(TEST_FILE) -k "$(NAME)"
-	fi
+		if [ $(BUILD_ID) == 0 ]; then
+			container=roaddistance-lambda
+		else
+			container=roaddistance-lambda-$(BUILD_ID)
+		fi
+		docker exec \
+			$$container \
+			python -m pytest -q tests/unit/$(TEST_FILE) -k "$(NAME)"
 
 run-contract-test: # Run contract only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_contracts.py
