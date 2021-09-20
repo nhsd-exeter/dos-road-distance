@@ -14,8 +14,8 @@ pipeline {
   stages{
     stage("Show Configuration") {
       steps {
-        script { sh "make secret-fetch-and-export-variables NAME=$DEPLOYMENT_SECRETS" }
         script { sh "make show-configuration" }
+        script { sh "make secret-fetch-and-export-variables NAME=$DEPLOYMENT_SECRETS" }
       }
     }
     stage("Build App") {

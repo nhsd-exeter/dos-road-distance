@@ -148,7 +148,7 @@ pipeline-finalise: ## Finalise pipeline execution - mandatory: PIPELINE_NAME,BU
 
 pipeline-send-notification: ## Send Slack notification with the pipeline status - mandatory: PIPELINE_NAME,BUILD_STATUS
 	eval "$$(make aws-assume-role-export-variables)"
-	eval "$$(make secret-fetch-and-export-variables NAME=$(DEPLOYMENT_SECRETS)"
+	eval "$$(make secret-fetch-and-export-variables NAME=$(DEPLOYMENT_SECRETS))"
 	make slack-it
 
 # --------------------------------------
