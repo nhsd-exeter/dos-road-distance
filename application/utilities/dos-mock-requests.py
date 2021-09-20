@@ -18,11 +18,11 @@ origin_northing = "198826"
 destination_volumes = [5, 50, 500, 1500, 3000]
 output_directory = "rd_requests"
 
-db_database = "pathwaysdos_dev"
-db_user = "postgres"
-db_password = "postgres"
-db_host = "localhost"
-db_port = "5432"
+db_database = ""
+db_user = ""
+db_password = ""
+db_host = ""
+db_port = ""
 
 
 def create_requests():
