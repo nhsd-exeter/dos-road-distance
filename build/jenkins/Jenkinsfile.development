@@ -3,8 +3,8 @@ pipeline {
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
     disableConcurrentBuilds()
-    parallelAlwaysFailFast()
-    timeout(time: 180, unit: "MINUTES")
+    parallelsAlwaysFailFast()
+    timeout(time: 25, unit: "MINUTES")
   }
   environment {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
