@@ -25,9 +25,6 @@ pipeline {
       }
     }
     stage("Deploy") {
-      environment {
-        TF_VAR_image_version = "$BUILD_TAG"
-      }
       steps { sh "make terraform-apply-auto-approve | tee /tmp/terraform_changes.txt" }
     }
     stage("Test") {
