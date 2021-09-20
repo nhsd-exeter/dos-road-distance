@@ -47,8 +47,8 @@ def build_request_proto(origin: dict, destinations: list) -> bytes:
 
 
 def send_request(request):
-    endpoint = "http://mpd-dev-1.nhsd.proto.traveltimeapp.com/api/v2/time-filter/fast/driving"
-    basic_auth = "Basic bmhzLWRpZ2l0YWw6dXhyaGV2aTR2a21yaHdsNg=="
+    endpoint = os.environ.get("DRD_ENDPOINT")
+    basic_auth = os.environ.get("DRD_BASICAUTH")
     r = requests.post(url=endpoint, data=request, headers={
             "Authorization": basic_auth,
             "Content-type": "application/octet-stream",
