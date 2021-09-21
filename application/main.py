@@ -9,6 +9,7 @@ from traveltime_request import TravelTimeRequest
 from traveltime_response import TravelTimeResponse
 import config as config
 import requests
+from traveltime_mock import TravelTimeMock
 
 
 class RoadDistance(Common):
@@ -24,31 +25,44 @@ class RoadDistance(Common):
     contracts_path: str = "openapi_schemas/json/"
     contracts: dict = config.Contracts
     request_id: str = ""
+    transaction_id: str = ""
 
     def __init__(self, request):
         self.request = request
-        transaction_id = str(self.request["transactionid"]) if "transactionid" in self.request else ""
+        self.transaction_id = str(self.request["transactionid"]) if "transactionid" in self.request else ""
         self.request_id = str(uuid.uuid4())
         log_name = os.environ.get("LOGGER", "Audit")
-        self.logger = RDLogger(log_name, self.request_id, transaction_id)
+        self.logger = RDLogger(log_name, self.request_id, self.transaction_id)
 
     def process_request(self) -> int:
-        if self.validate_against_schema(self.request, "local"):
-            try:
-                self.logger.log_formatted(str(self.request), "ccs_request")
-                self.send_request(self.build_request())
-                if 'error' in self.response and self.response['error']:
-                    self.status_code = 500
-                    self.logger.log("Protobuf returned error in request: " + self.response['error'], "error")
-                else:
-                    self.log_individual_service_responses()
-                    self.status_code = 200
-            except Exception as ex:
-                self.status_code = 500
-                self.logger.log(config.LOG_CCS_REQUEST_EXCEPTION + str(ex), "error")
-        else:
+        if not self.validate_against_schema(self.request, "local"):
             self.status_code = 500
-            self.logger.log_ccs_error(str(self.status_code), "Validation error", str(self.request))
+            self.logger.log_ccs_error(
+                str(self.status_code),
+                "Validation error", str(self.request)
+            )
+            return self.status_code
+
+        if(len(self.request["destinations"]) > config.TRAVEL_TIME_DESTINATIONS_LIMIT):
+            self.status_code = 500
+            self.logger.log_ccs_error(
+                str(self.status_code),
+                "Too many destinations, limit is " + str(config.TRAVEL_TIME_DESTINATIONS_LIMIT)
+            )
+            return self.status_code
+
+        try:
+            self.logger.log_formatted(str(self.request), "ccs_request")
+            self.send_request(self.build_request())
+            if 'error' in self.response and self.response['error']:
+                self.status_code = 500
+                self.logger.log("Protobuf returned error in request: " + self.response['error'], "error")
+            else:
+                self.log_individual_service_responses()
+                self.status_code = 200
+        except Exception as ex:
+            self.status_code = 500
+            self.logger.log(config.LOG_CCS_REQUEST_EXCEPTION + str(ex), "error")
 
         return self.status_code
 
@@ -70,13 +84,21 @@ class RoadDistance(Common):
     def send_request(self, request: bytes):
         endpoint = os.environ.get("DRD_ENDPOINT")
         basic_auth = os.environ.get("DRD_BASICAUTH")
-        r = requests.post(url=endpoint, data=request, headers={
-                "Authorization": basic_auth,
-                "Content-type": "application/octet-stream",
-                "Accept": "application/octet-stream"
-            }
-        )
-        self.status_code = r.status_code
+        mock_mode = endpoint = os.environ.get("DRD_MOCK_MODE")
+        if(mock_mode is False):
+            r = requests.post(url=endpoint, data=request, headers={
+                    "Authorization": basic_auth,
+                    "Content-type": "application/octet-stream",
+                    "Accept": "application/octet-stream"
+                }
+            )
+        else:
+            self.logger.log("MOCK MODE ENABLED")
+            r = TravelTimeMock().post(
+                request,
+                transaction_id=self.transaction_id,
+                service_count=len(self.request["destinations"])
+            )
         if r.status_code == 200:
             self.status_code = 200
             self.response = self.decode_response(r.content)
@@ -91,6 +113,7 @@ class RoadDistance(Common):
     def build_request(self):
         origin = self.fetch_coords(self.request["origin"])
         destinations = self.fetch_destinations(self.request["destinations"])
+        print(destinations)
 
         request = TravelTimeRequest()
         return request.build_request_proto(origin, destinations)

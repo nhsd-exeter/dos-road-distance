@@ -9,6 +9,7 @@ Contracts = {
 # file paths
 PATH_TEST_JSON = "tests/unit/test_json/"
 PATH_TEST_PROTO = "tests/unit/test_proto/"
+PATH_MOCK_PROTO = "proto/mock/"
 
 EXCEPTION_FILE_CANNOT_BE_OPENED = "Exception: Unable to open file "
 EXCEPTION_LOG_FORMATTER_NOT_FOUND = "Exception: Did not find a function for formatter "
@@ -46,3 +47,4 @@ PROTO_TRAVEL_TIME_RESPONSE_ERROR_4_BIN = "travel_time_proto_response_error_4.bin
 
 # travel time request and response values
 TRAVEL_TIME_MINUTES = 7200
+TRAVEL_TIME_DESTINATIONS_LIMIT = 3000

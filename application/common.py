@@ -25,3 +25,9 @@ class Common:
 
     def fetch_test_proto_bin(self, file_name: str):
         return self.fetch_file(config.PATH_TEST_PROTO, file_name, True)
+
+    def fetch_mock_proto(self, file_name: str):
+        return self.fetch_file(config.PATH_MOCK_PROTO, file_name)
+
+    def fetch_mock_proto_bin(self, file_name: str):
+        return self.fetch_file(config.PATH_MOCK_PROTO, file_name, True)
