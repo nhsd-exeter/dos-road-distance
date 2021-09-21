@@ -28,7 +28,7 @@
     "destinations": {
       "type": "array",
       "minItems": 1,
-      "maxItems": 2000,
+      "maxItems": 3000,
       "items": {
         "type": "object",
         "required": ["reference", "latitude", "longitude"],

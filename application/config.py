@@ -9,7 +9,7 @@ Contracts = {
 # file paths
 PATH_TEST_JSON = "tests/unit/test_json/"
 PATH_TEST_PROTO = "tests/unit/test_proto/"
-PATH_MOCK_PROTO = "proto/mock/"
+PATH_MOCK_PROTO = "mock/"
 
 EXCEPTION_FILE_CANNOT_BE_OPENED = "Exception: Unable to open file "
 EXCEPTION_LOG_FORMATTER_NOT_FOUND = "Exception: Did not find a function for formatter "

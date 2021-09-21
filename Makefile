@@ -128,6 +128,7 @@ docker-build-lambda: # Build the local lambda Docker image
 docker-run-lambda: # Run the local lambda Docker container
 	docker run --rm -p 9000:8080 \
 		--mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests \
+		--mount type=bind,source=$(APPLICATION_DIR)/mock,target=/var/task/mock \
 		--mount type=bind,source=$(APPLICATION_DIR),target=/var/task/application \
 		--name roaddistance-lambda $(DOCKER_REGISTRY)/roaddistance-lambda:latest
 	# make docker-run IMAGE=$(DOCKER_REGISTRY)/roaddistance-lambda:latest \
