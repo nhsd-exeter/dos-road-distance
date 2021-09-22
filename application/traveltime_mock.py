@@ -15,7 +15,7 @@ class TravelTimeMock(Common):
     status_code = 200
     content = b''
     status_message = ""
-    delay = 0
+    delay: float
     files_by_count = {
         5: config.MOCK_REQUEST_5_BIN,
         50: config.MOCK_REQUEST_50_BIN,
