@@ -89,11 +89,14 @@ run-handler-test: # Run handler only unit tests, add NAME="xxx" or NAME="xxx or 
 run-roaddistance-test: # Run road distance only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_roaddistance.py
 
-run-traveltimerequest-test: # Run travel time protobuf request only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
+run-traveltimerequest-test: # Run TravelTime protobuf request only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_traveltimerequest.py
 
-run-traveltimeresponse-test: # Run travel time protobuf reponse only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
+run-traveltimeresponse-test: # Run TravelTime protobuf response only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_traveltimeresponse.py
+
+run-mock-test: # Run mock TravelTime protobuf only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
+	make run-unit-test TEST_FILE=test_mock.py
 
 run-functional-test:
 	[ $$(make project-branch-func-test) != true ] && exit 0

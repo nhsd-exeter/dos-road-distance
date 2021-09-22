@@ -43,14 +43,6 @@ class RoadDistance(Common):
             )
             return self.status_code
 
-        if(len(self.request["destinations"]) > config.TRAVEL_TIME_DESTINATIONS_LIMIT):
-            self.status_code = 500
-            self.logger.log_ccs_error(
-                str(self.status_code),
-                "Too many destinations, limit is " + str(config.TRAVEL_TIME_DESTINATIONS_LIMIT)
-            )
-            return self.status_code
-
         try:
             self.logger.log_formatted(str(self.request), "ccs_request")
             self.send_request(self.build_request())
@@ -62,7 +54,7 @@ class RoadDistance(Common):
                 self.status_code = 200
         except Exception as ex:
             self.status_code = 500
-            self.logger.log(config.LOG_CCS_REQUEST_EXCEPTION + str(ex), "error")
+            self.logger.log(config.EXCEPTION_LOG_CCS_REQUEST + str(ex), "error")
 
         return self.status_code
 
@@ -99,6 +91,7 @@ class RoadDistance(Common):
                 transaction_id=self.transaction_id,
                 service_count=len(self.request["destinations"])
             )
+            self.logger.log(r.status_message)
         if r.status_code == 200:
             self.status_code = 200
             self.response = self.decode_response(r.content)

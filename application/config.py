@@ -1,23 +1,25 @@
+# Logger
 Logging = {"Audit": {"Path": "log/rd.log"}, "Test": {"Path": "tests/unit/test_log/rd.log"}}
 
+# Contract file names (excluding extension)
 Contracts = {
     "local": "dos_road_distance_api",
     "provider": "travel_time_api",
     "provider-response": "travel_time_api_response",
 }
 
-# file paths
+# File paths
 PATH_TEST_JSON = "tests/unit/test_json/"
 PATH_TEST_PROTO = "tests/unit/test_proto/"
 PATH_MOCK_PROTO = "mock/"
 
+# Exception messages
 EXCEPTION_FILE_CANNOT_BE_OPENED = "Exception: Unable to open file "
 EXCEPTION_LOG_FORMATTER_NOT_FOUND = "Exception: Did not find a function for formatter "
 EXCEPTION_LOG_NAME_NOT_FOUND = "Error: Logger name is not found "
+EXCEPTION_LOG_CCS_REQUEST = "dos-road-distance exception: "
 
-LOG_CCS_REQUEST_EXCEPTION = "dos-road-distance exception: "
-
-# test request and response files
+# Request and response files
 JSON_DOS_ROAD_DISTANCE_HAPPY = "dos_road_distance_api_happy.json"
 JSON_DOS_ROAD_DISTANCE_INVALID = "dos_road_distance_api_invalid_missing_element.json"
 JSON_DOS_ROAD_DISTANCE_INVALID_COORD = "dos_road_distance_api_invalid_coord.json"
@@ -45,6 +47,12 @@ PROTO_TRAVEL_TIME_RESPONSE_HAPPY_BIN = "travel_time_proto_response_happy.bin"
 PROTO_TRAVEL_TIME_RESPONSE_ERROR_4 = "travel_time_proto_response_error_4.dump"
 PROTO_TRAVEL_TIME_RESPONSE_ERROR_4_BIN = "travel_time_proto_response_error_4.bin"
 
-# travel time request and response values
+MOCK_REQUEST_5_BIN = "proto_5_destinations.bin"
+MOCK_REQUEST_50_BIN = "proto_50_destinations.bin"
+MOCK_REQUEST_500_BIN = "proto_500_destinations.bin"
+MOCK_REQUEST_1500_BIN = "proto_1500_destinations.bin"
+MOCK_REQUEST_3000_BIN = "proto_3000_destinations.bin"
+
+# TravelTime request and response values
 TRAVEL_TIME_MINUTES = 7200
 TRAVEL_TIME_DESTINATIONS_LIMIT = 3000
