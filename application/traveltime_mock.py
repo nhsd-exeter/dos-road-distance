@@ -45,13 +45,13 @@ class TravelTimeMock(Common):
                 self.response_path
                 + self.files_by_count[service_count]
             )
-        elif transaction_id != "" and transaction_id in self.files_by_transaction_id:
+        elif transaction_id != "" and transaction_id in self.count_by_transaction_id:
             self.status_message = "MOCK Matched on transaction ID of " + transaction_id
             self.content = super().fetch_mock_proto_bin(
                 self.response_path
-                + self.files_by_count[self.files_by_transaction_id[transaction_id]]
+                + self.files_by_count[self.count_by_transaction_id[transaction_id]]
             )
-            service_count = self.files_by_transaction_id[transaction_id]
+            service_count = self.count_by_transaction_id[transaction_id]
         else:
             self.status_message = "MOCK No match defaulting to 5"
             self.content = super().fetch_mock_proto_bin(self.response_path + self.files_by_count[5])
