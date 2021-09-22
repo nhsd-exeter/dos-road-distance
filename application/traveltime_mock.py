@@ -31,11 +31,11 @@ class TravelTimeMock(Common):
         "c50904c9-18a4-49f0-811e-d63f7ea84900": 3000,
     }
     server_delay = {
-        5: {"min": 50, "max": 100},
-        50: {"min": 50, "max": 110},
-        500: {"min": 60, "max": 120},
-        1500: {"min": 90, "max": 130},
-        3000: {"min": 100, "max": 150},
+        5: {"min": 68, "max": 99},
+        50: {"min": 68, "max": 109},
+        500: {"min": 80, "max": 119},
+        1500: {"min": 90, "max": 129},
+        3000: {"min": 100, "max": 149},
     }
 
     def post(self, transaction_id="", service_count=0):
