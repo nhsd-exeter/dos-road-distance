@@ -5,7 +5,7 @@ import config as config
 class Common:
     # class Common:
     def fetch_file(self, file_path: str, file_name: str, bin: bool = False) -> dict:
-        mode = "rb+" if bin else "r+"
+        mode = "rb" if bin else "r"
         try:
             with open(file_path + file_name, mode=mode) as file_handle:
                 file_content = file_handle.read()

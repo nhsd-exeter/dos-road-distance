@@ -87,11 +87,10 @@ class RoadDistance(Common):
         else:
             self.logger.log("MOCK MODE ENABLED")
             r = TravelTimeMock().post(
-                request,
                 transaction_id=self.transaction_id,
                 service_count=len(self.request["destinations"])
             )
-            self.logger.log(r.status_message)
+            self.logger.log(r.status_message + "; delay added: " + r.delay)
         if r.status_code == 200:
             self.status_code = 200
             self.response = self.decode_response(r.content)

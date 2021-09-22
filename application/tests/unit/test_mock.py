@@ -10,17 +10,17 @@ class TestMock(Common):
 
     def test_mock_count_5(self):
         self.rdlogger.purge()
-        r = TravelTimeMock().post(self.request, transaction_id="", service_count=5)
+        r = TravelTimeMock().post(transaction_id="", service_count=5)
         assert False
 
     def test_mock_count_3000(self):
         self.rdlogger.purge()
-        r = TravelTimeMock().post(self.request, transaction_id="", service_count=3000)
+        r = TravelTimeMock().post(transaction_id="", service_count=3000)
         assert False
 
     def test_mock_transaction_id(self):
         self.rdlogger.purge()
-        r = TravelTimeMock().post(self.request, transaction_id=self.transaction_id)
+        r = TravelTimeMock().post(transaction_id=self.transaction_id)
         assert False
 
     def test_mock_no_params(self):
@@ -30,7 +30,7 @@ class TestMock(Common):
 
     def test_mock_incorrect_params(self):
         self.rdlogger.purge()
-        r = TravelTimeMock().post(self.request, transaction_id="", service_count=1)
+        r = TravelTimeMock().post(transaction_id="", service_count=1)
         assert False
-        r = TravelTimeMock().post(self.request, transaction_id="wrong")
+        r = TravelTimeMock().post(transaction_id="wrong")
         assert False
