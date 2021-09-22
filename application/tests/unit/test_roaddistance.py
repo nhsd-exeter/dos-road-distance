@@ -9,6 +9,7 @@ class TestRoadDistance(Common):
 
     os.environ["LOGGER"] = "Test"
     road_distance: RoadDistance
+    mock_mode = os.environ.get("DRD_MOCK_MODE")
 
     def test_missing_contract_logs_exception(self):
         self.__setup()
@@ -68,6 +69,7 @@ class TestRoadDistance(Common):
         print("result: " + str(result))
         assert result is not -1
 
+    @pytest.mark.skipif(mock_mode != "False", reason="requires DRD_MOCK_MODE to be False")
     def test_protobuf_error_responses_handled(self):
         json_content: dict = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID_COORD)
         self.__setup(json_content)
