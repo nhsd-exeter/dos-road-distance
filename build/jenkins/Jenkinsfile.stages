@@ -13,6 +13,7 @@ pipeline {
   environment {
     ENVIRONMENT = "${params.ENVIRONMENT}"
     PROFILE = "nonprod"
+    TF_VAR_lambda_version = "${params.LAMBDA_VERSION}"
   }
   triggers { pollSCM("* * * * *") }
   stages{
