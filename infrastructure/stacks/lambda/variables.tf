@@ -53,3 +53,11 @@ variable "image_version" {
 variable "aws_lambda_ecr" {
   description = "ECR repository to store lambda docker images"
 }
+
+variable "drd_basicauth" {
+  description = "Auth token for DRD"
+}
+
+variable "drd_endpoint" {
+  description = "Endpoint for DRD"
+}
