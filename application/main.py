@@ -77,20 +77,20 @@ class RoadDistance(Common):
         endpoint = os.environ.get("DRD_ENDPOINT")
         basic_auth = os.environ.get("DRD_BASICAUTH")
         mock_mode = os.environ.get("DRD_MOCK_MODE")
-        if (mock_mode == "False"):
-            r = requests.post(url=endpoint, data=request, headers={
-                    "Authorization": basic_auth,
-                    "Content-type": "application/octet-stream",
-                    "Accept": "application/octet-stream"
-                }
-            )
-        else:
+        if (mock_mode == "True"):
             self.logger.log("MOCK MODE ENABLED")
             r = TravelTimeMock().post(
                 transaction_id=self.transaction_id,
                 service_count=len(self.request["destinations"])
             )
             self.logger.log(r.status_message + "; delay added: " + str(r.delay))
+        else:
+            r = requests.post(url=endpoint, data=request, headers={
+                    "Authorization": basic_auth,
+                    "Content-type": "application/octet-stream",
+                    "Accept": "application/octet-stream"
+                }
+            )
         if r.status_code == 200:
             self.status_code = 200
             self.response = self.decode_response(r.content)

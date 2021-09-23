@@ -69,7 +69,7 @@ class TestRoadDistance(Common):
         print("result: " + str(result))
         assert result is not -1
 
-    @pytest.mark.skipif(mock_mode != "False", reason="requires DRD_MOCK_MODE to be False")
+    @pytest.mark.skipif(mock_mode == "True", reason="requires DRD_MOCK_MODE to be not True")
     def test_protobuf_error_responses_handled(self):
         json_content: dict = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID_COORD)
         self.__setup(json_content)
