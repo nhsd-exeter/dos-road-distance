@@ -2,6 +2,9 @@ FROM public.ecr.aws/lambda/python:3.8
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+ENV DRD_ENDPOINT="http://localhost"
+ENV DRD_BASICAUTH=""
+ENV DRD_MOCK_MODE="True"
 
 COPY assets/ .
 
