@@ -67,9 +67,13 @@ run-static-analisys:
 	echo TODO: $(@)
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-		docker exec \
-			roaddistance-lambda \
-			python -m pytest -rsx -q tests/unit/$(TEST_FILE) -k "$(NAME)"
+	if [ -z $(TEST_FILE) ]; then
+		docker exec roaddistance-lambda \
+			/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done'
+	else
+		docker exec roaddistance-lambda \
+			python -m pytest -rA -q tests/unit/$(TEST_FILE) -k "$(NAME)"
+	fi
 
 run-smoke-test:
 	echo TODO: $(@)
