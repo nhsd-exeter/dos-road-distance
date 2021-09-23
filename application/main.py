@@ -54,7 +54,7 @@ class RoadDistance(Common):
                 self.status_code = 200
         except Exception as ex:
             self.status_code = 500
-            self.logger.log(config.EXCEPTION_LOG_CCS_REQUEST + str(ex), "error")
+            self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
 
         return self.status_code
 

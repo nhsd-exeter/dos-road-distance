@@ -17,7 +17,7 @@ PATH_MOCK_PROTO = "mock/"
 EXCEPTION_FILE_CANNOT_BE_OPENED = "Exception: Unable to open file "
 EXCEPTION_LOG_FORMATTER_NOT_FOUND = "Exception: Did not find a function for formatter "
 EXCEPTION_LOG_NAME_NOT_FOUND = "Error: Logger name is not found "
-EXCEPTION_LOG_CCS_REQUEST = "dos-road-distance exception: "
+EXCEPTION_DOS_ROADDISTANCE = "dos-road-distance exception: "
 
 # Request and response files
 JSON_DOS_ROAD_DISTANCE_HAPPY = "dos_road_distance_api_happy.json"
