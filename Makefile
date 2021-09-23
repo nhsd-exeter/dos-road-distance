@@ -40,8 +40,9 @@ push: # Push project artefacts to the registry
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
 	make sls-deploy STACK=application PROFILE=$(PROFILE)
 
-provision: # Provision environment - mandatory: PROFILE=[name]
-	make terraform-apply-auto-approve PROFILE=$(PROFILE)
+provision: # Provision environment - mandatory: PROFILE=[name],STACKS=[comma separated names]
+	eval "$$(make secret-fetch-and-export-variables)"
+	make terraform-apply-auto-approve PROFILE=$(PROFILE) STACKS=$(STACKS)
 
 clean: # Clean up project
 

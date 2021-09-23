@@ -19,13 +19,12 @@ pipeline {
   stages{
     stage("Show Configuration") {
       steps {
-        script { sh "eval '\$(make secret-fetch-and-export-variables)'" }
         script { sh "make show-configuration" }
       }
     }
     stage("Deploy") {
       steps {
-        script { sh "make terraform-apply-auto-approve STACK=api-stage | tee /tmp/terraform_changes.txt" }
+        script { sh "make provision STACKS=api-stage | tee /tmp/terraform_changes.txt" }
       }
     }
     stage("Deployment Summary") {
