@@ -8,16 +8,15 @@ resource "aws_apigatewayv2_integration" "road_distance_api_integration" {
   payload_format_version = "2.0"
   integration_type       = "AWS_PROXY"
   integration_method     = "POST"
-  integration_uri        = data.terraform_remote_state.lambda.outputs.lambda_arn
+  integration_uri        = "${data.terraform_remote_state.lambda.outputs.lambda_arn}:$${stageVariables.version}"
 }
 
 resource "aws_apigatewayv2_stage" "road_distance_api_stage" {
   api_id      = aws_apigatewayv2_api.road_distance_apigateway.id
-  name        = var.environment
+  name        = "$default"
   auto_deploy = true
-  access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.road_distance_lambda_log_group.arn
-    format          = "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\", \"responseLength\":\"$context.responseLength\" }"
+  stage_variables = {
+    "version" = data.terraform_remote_state.lambda.outputs.lambda_latest_version
   }
 }
 
@@ -27,8 +26,6 @@ resource "aws_apigatewayv2_route" "road_distance_api_route" {
   target    = "integrations/${aws_apigatewayv2_integration.road_distance_api_integration.id}"
 }
 
-# Auth probably required also
-
 resource "aws_lambda_permission" "road_distance_invoke_lambda_permission" {
   action        = "lambda:InvokeFunction"
   function_name = "${var.service_prefix}-rd-lambda"
@@ -36,7 +33,4 @@ resource "aws_lambda_permission" "road_distance_invoke_lambda_permission" {
   source_arn    = "${aws_apigatewayv2_api.road_distance_apigateway.execution_arn}/*/*/"
 }
 
-resource "aws_cloudwatch_log_group" "road_distance_lambda_log_group" {
-  name              = "/aws/api-gateway/${var.service_prefix}-rd-api"
-  retention_in_days = "0"
-}
+# Auth probably required also

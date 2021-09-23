@@ -1,0 +1,41 @@
+pipeline {
+  agent { label "jenkins-slave" }
+  parameters {
+    choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'regression'], description: 'Environment of the Stage to deploy')
+    choice(name: 'LAMBDA_VERSION', defaultValue: '1', description:  'Version or alias of the RD Lambda for stage to point at')
+  }
+  options {
+    buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
+    disableConcurrentBuilds()
+    parallelsAlwaysFailFast()
+    timeout(time: 25, unit: "MINUTES")
+  }
+  environment {
+    ENVIRONMENT = "${params.ENVIRONMENT}"
+    PROFILE = "nonprod"
+  }
+  triggers { pollSCM("* * * * *") }
+  stages{
+    stage("Show Configuration") {
+      steps {
+        script { sh "make show-configuration" }
+      }
+    }
+    stage("Deploy") {
+      steps {
+        script { sh "make terraform-export-variables-from-secret" }
+        script { sh "make terraform-apply-auto-approve STACK=api-stage | tee /tmp/terraform_changes.txt" }
+      }
+    }
+    stage("Deployment Summary") {
+      steps {
+        script {
+          sh "make deployment-summary"
+        }
+      }
+    }
+  }
+  post {
+    always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Stage)' BUILD_STATUS=${currentBuild.currentResult}" }
+  }
+}

@@ -25,7 +25,10 @@ pipeline {
       }
     }
     stage("Deploy") {
-      steps { sh "make terraform-apply-auto-approve | tee /tmp/terraform_changes.txt" }
+      steps {
+        script { sh "make terraform-export-variables-from-secret" }
+        script { sh "make terraform-apply-auto-approve | tee /tmp/terraform_changes.txt" }
+      }
     }
     stage("Test") {
       steps { sh "echo Running Tests..." }
