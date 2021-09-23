@@ -132,8 +132,29 @@ local-ccs-lambda-request-invalid: # Perform a sample valid request from CCS to t
 
 # --------------------------------------
 
-pipeline-secrets:
-	eval "$$(make secret-fetch-and-export-variables)"
+lambda-latest-version: ### Updates new lambda version with alias based on commit hash - Mandatory PROFILE=[profile]
+	function=$(SERVICE_PREFIX)-rd-lambda
+	version_string=$$(make -s aws-lambda-get-latest-version NAME=$$function \
+		| make -s docker-run-tools CMD="jq '.Versions[-1].Version'")
+	version=$$(echo $$version_string | tr -d '"')
+	make aws-lambda-create-alias NAME=$$function VERSION=$$version
+
+aws-lambda-get-latest-version: ### Fetches the latest function version for a lambda function - Mandatory NAME=[lambda function name]
+	eval "$$(make aws-assume-role-export-variables)"
+	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
+		$(AWSCLI) lambda list-versions-by-function \
+			--function-name $(NAME) \
+			--output json \
+		"
+
+aws-lambda-create-alias: ### Creates an alias for a lambda version - Mandatory NAME=[lambda function name], VERSION=[lambda version]
+	eval "$$(make aws-assume-role-export-variables)"
+	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
+		$(AWSCLI) lambda create-alias \
+			--name $(VERSION)-$(BUILD_COMMIT_HASH) \
+			--function-name $(NAME) \
+			--function-version $(VERSION) \
+		"
 
 parse-profile-from-branch: # Return profile based off of git branch - Mandatory BRANCH_NAME=[git branch name]
 	if [ $(BRANCH_NAME) == "master" ]; then

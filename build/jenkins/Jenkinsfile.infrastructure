@@ -25,7 +25,7 @@ pipeline {
         }
       }
       steps {
-        script { sh "make pipeline-secrets" }
+        script { sh "eval '$(make secret-fetch-and-export-variables)'" }
         script { sh "make show-configuration" }
       }
     }
@@ -53,6 +53,7 @@ pipeline {
       }
       steps {
         script { sh "make terraform-apply-auto-approve | tee /tmp/terraform_changes.txt" }
+        script { sh "make lambda-latest-version}
       }
     }
     stage("Test") {

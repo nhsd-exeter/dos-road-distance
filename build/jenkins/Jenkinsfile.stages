@@ -19,7 +19,7 @@ pipeline {
   stages{
     stage("Show Configuration") {
       steps {
-        script { sh "make pipeline-secrets" }
+        script { sh "eval '$(make secret-fetch-and-export-variables)'" }
         script { sh "make show-configuration" }
       }
     }
