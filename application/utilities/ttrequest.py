@@ -2,6 +2,7 @@ import proto.traveltime.RequestsCommon_pb2 as RequestsCommon
 import proto.traveltime.TimeFilterFastRequest_pb2 as TimeFilterFastRequest
 import proto.traveltime.TimeFilterFastResponse_pb2 as TimeFilterFastResponse
 import requests
+import os
 
 
 def build_request_proto(origin: dict, destinations: list) -> bytes:
@@ -80,7 +81,7 @@ def decode_response(response):
     return {"travelTimes": traveltimes, "distances": distances}
 
 
-origin = {'lat': 500.72179229048227, 'lng': -3.525942582444856}
+origin = {'lat': 50.72179229048227, 'lng': -3.525942582444856}
 destinations = [
     {'lat': 50.71731288843375, 'lng': -3.5389588298795496}
 ]
