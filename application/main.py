@@ -105,7 +105,6 @@ class RoadDistance(Common):
     def build_request(self):
         origin = self.fetch_coords(self.request["origin"])
         destinations = self.fetch_destinations(self.request["destinations"])
-        print(destinations)
 
         request = TravelTimeRequest()
         return request.build_request_proto(origin, destinations)
