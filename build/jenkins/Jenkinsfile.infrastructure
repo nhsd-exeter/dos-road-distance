@@ -25,6 +25,7 @@ pipeline {
         }
       }
       steps {
+        script { sh "make pipeline-secrets" }
         script { sh "make show-configuration" }
       }
     }
@@ -51,7 +52,6 @@ pipeline {
         }
       }
       steps {
-        script { sh "make terraform-export-variables-from-secret" }
         script { sh "make terraform-apply-auto-approve | tee /tmp/terraform_changes.txt" }
       }
     }

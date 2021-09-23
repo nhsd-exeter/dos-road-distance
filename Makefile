@@ -132,6 +132,9 @@ local-ccs-lambda-request-invalid: # Perform a sample valid request from CCS to t
 
 # --------------------------------------
 
+pipeline-secrets:
+	eval "$$(make secret-fetch-and-export-variables)"
+
 parse-profile-from-branch: # Return profile based off of git branch - Mandatory BRANCH_NAME=[git branch name]
 	if [ $(BRANCH_NAME) == "master" ]; then
 		echo "dev"
