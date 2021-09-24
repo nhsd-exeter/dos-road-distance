@@ -43,6 +43,7 @@ class RDLogger:
             self.logger = logging.getLogger(__name__ + str(uuid.uuid1().int))
             logging_level = logging.INFO if os.environ.get("DEBUG", "false").lower() == "true" else logging.DEBUG
             self.logger.setLevel(logging_level)
+            self.logger.propagate = False
 
             formatter = logging.Formatter(self.__create_log_format(request_id, transaction_id), "%Y/%m/%d %H:%M:%S")
             self.logger.addHandler(self.__create_stream_handler(formatter))

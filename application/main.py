@@ -112,7 +112,8 @@ class RoadDistance(Common):
     def decode_response(self, content: bytes):
         message = TravelTimeResponse()
         response_decoded = message.decode_response_proto(content)
-        self.logger.log_formatted(str(message.response), "provider_response")
+        if os.environ.get("DRD_LOG_RESPONSE_RAW") == "True":
+            self.logger.log_formatted(str(message.response), "provider_response")
         return response_decoded
 
     def fetch_destinations(self, locations: list) -> list:
