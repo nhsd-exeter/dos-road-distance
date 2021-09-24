@@ -136,9 +136,11 @@ local-ccs-lambda-request-invalid: # Perform a sample valid request from CCS to t
 lambda-alias: ### Updates new lambda version with alias based on commit hash - Mandatory PROFILE=[profile]
 	eval "$$(make aws-assume-role-export-variables)"
 	function=$(SERVICE_PREFIX)-rd-lambda
-	version_string=$$(make -s aws-lambda-get-latest-version NAME=$$function \
-		| make -s docker-run-tools CMD="jq '.Versions[-1].Version'")
-	version=$$(echo $$version_string | tr -d '"')
+	versions=$$(make -s aws-lambda-get-latest-version NAME=$$function)
+	version=$$(echo $$versions | make -s docker-run-tools CMD="jq '.Versions[-1].Version'" | tr -d '"')
+	# version_string=$$(make -s aws-lambda-get-latest-version NAME=$$function \
+	# 	| make -s docker-run-tools CMD="jq '.Versions[-1].Version'")
+	# version=$$(echo $$version_string | tr -d '"')
 	make aws-lambda-create-alias NAME=$$function VERSION=$$version
 
 aws-lambda-get-latest-version: ### Fetches the latest function version for a lambda function - Mandatory NAME=[lambda function name]
