@@ -52,7 +52,7 @@ pipeline {
       }
       steps {
         script { sh "make provision | tee /tmp/terraform_changes.txt" }
-        script { sh "make lambda-latest-version" }
+        script { sh "make lambda-alias" }
       }
     }
     stage("Test") {

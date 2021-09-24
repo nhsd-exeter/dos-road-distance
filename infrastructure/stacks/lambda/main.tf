@@ -7,7 +7,7 @@ resource "aws_lambda_function" "road_distance_lambda" {
   image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/roaddistance-lambda:${var.image_version}"
   environment {
     variables = {
-      "DRD_BASICAUTH" = var.drd_basicauth
+      "DRD_BASICAUTH" = "Basic ${var.drd_basicauth}"
       "DRD_ENDPOINT"  = var.drd_endpoint
     }
   }
