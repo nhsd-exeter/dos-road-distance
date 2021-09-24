@@ -104,24 +104,10 @@ docker-build-lambda: # Build the local lambda Docker image
 	make docker-image NAME=roaddistance-lambda
 	rm -rf $(DOCKER_DIR)/roaddistance-lambda/assets/*
 
-# docker-run-lambda: # Run the local lambda Docker container
-# 	docker run --rm -p 9000:8080 \
-# 		--mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests \
-# 		--mount type=bind,source=$(APPLICATION_DIR),target=/var/task/application \
-# 		--name roaddistance-lambda $(DOCKER_REGISTRY)/roaddistance-lambda:latest
-# 	# make docker-run IMAGE=$(DOCKER_REGISTRY)/roaddistance-lambda:latest \
-# 	# 	ARGS="-p 9000:8080 --mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests" \
-# 	# 	CONTAINER=roaddistance-lambda
-
 docker-update-root: # Update the root files on the running lambda docker container without a rebuild
 		docker exec \
 			roaddistance-lambda \
 			cp -v application/*.py ./
-
-docker-bash-lambda: # Bash into the running lambda docker container
-		# docker exec -it \
-		# 	roaddistance-lambda \
-		# 	/bin/bash
 
 local-ccs-lambda-request: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
 	curl -v -POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
@@ -138,9 +124,6 @@ lambda-alias: ### Updates new lambda version with alias based on commit hash - M
 	function=$(SERVICE_PREFIX)-rd-lambda
 	versions=$$(make -s aws-lambda-get-latest-version NAME=$$function)
 	version=$$(echo $$versions | make -s docker-run-tools CMD="jq '.Versions[-1].Version'" | tr -d '"')
-	# version_string=$$(make -s aws-lambda-get-latest-version NAME=$$function \
-	# 	| make -s docker-run-tools CMD="jq '.Versions[-1].Version'")
-	# version=$$(echo $$version_string | tr -d '"')
 	make aws-lambda-create-alias NAME=$$function VERSION=$$version
 
 aws-lambda-get-latest-version: ### Fetches the latest function version for a lambda function - Mandatory NAME=[lambda function name]
