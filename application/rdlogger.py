@@ -47,7 +47,8 @@ class RDLogger:
 
             formatter = logging.Formatter(self.__create_log_format(request_id, transaction_id), "%Y/%m/%d %H:%M:%S")
             self.logger.addHandler(self.__create_stream_handler(formatter))
-            self.logger.addHandler(self.__create_file_handler(formatter))
+            if self.log_file_path != "":
+                self.logger.addHandler(self.__create_file_handler(formatter))
         except Exception as ex:
             print(ex)
 
