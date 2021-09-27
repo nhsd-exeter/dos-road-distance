@@ -1,5 +1,5 @@
 # Logger
-Logging = {"Audit": {"Path": "log/rd.log"}, "Test": {"Path": "tests/unit/test_log/rd.log"}}
+Logging = {"Audit": {"Path": ""}, "Test": {"Path": "tests/unit/test_log/rd.log"}}
 
 # Contract file names (excluding extension)
 Contracts = {
