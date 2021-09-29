@@ -1,21 +1,20 @@
 import json
-from locust import HttpUser, task, between, tag, TaskSet
+from locust import HttpUser, task, between, tag
+import build.docker
 
 wait_time = between(1, 2)
 
-URL = 'https://aoap9pw296.execute-api.eu-west-2.amazonaws.com'
 
-
-class FiveRequest(TaskSet):
+class FiveRequest(HttpUser):
     weight = 80
 
-    host = URL
+    host = ' '
 
     def on_start(self):
-        with open('application/mock/requests/ccs_5_destinations.json') as json_file:
+        with open('/application/mock/requests/ccs_5_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
-    @tag('scen1')
+    @tag('tag1')
     @task(100)
     def do_test(self):
         headers = {'content-type': 'application/json'}
@@ -24,12 +23,13 @@ class FiveRequest(TaskSet):
 
 class FiftyRequest(HttpUser):
     weight = 15
-    host = 'https://aoap9pw296.execute-api.eu-west-2.amazonaws.com'
+    host = ''
 
     def on_start(self):
         with open('application/mock/requests/ccs_50_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
+    @tag('tag2')
     @task
     def do_test(self):
         headers = {'content-type': 'application/json'}
@@ -38,12 +38,13 @@ class FiftyRequest(HttpUser):
 
 class FiveHundredRequest(HttpUser):
     weight = 3
-    host = 'https://aoap9pw296.execute-api.eu-west-2.amazonaws.com'
+    host = ''
 
     def on_start(self):
         with open('application/mock/requests/ccs_500_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
+    @tag('tag3')
     @task
     def do_test(self):
         headers = {'content-type': 'application/json'}
@@ -52,12 +53,13 @@ class FiveHundredRequest(HttpUser):
 
 class OneThousandFiveHundredRequest(HttpUser):
     weight = 1
-    host = 'https://aoap9pw296.execute-api.eu-west-2.amazonaws.com'
+    host = ''
 
     def on_start(self):
         with open('application/mock/requests/ccs_1500_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
+    @tag('tag4')
     @task
     def do_test(self):
         headers = {'content-type': 'application/json'}
@@ -66,12 +68,13 @@ class OneThousandFiveHundredRequest(HttpUser):
 
 class ThreeThousandRequest(HttpUser):
     weight = 1
-    host = 'https://aoap9pw296.execute-api.eu-west-2.amazonaws.com'
+    host = ''
 
     def on_start(self):
         with open('application/mock/requests/ccs_3000_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
+    @tag('tag5')
     @task
     def do_test(self):
         headers = {'content-type': 'application/json'}
