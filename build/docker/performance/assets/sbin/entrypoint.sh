@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /opt/locust
 BUILD_DATE=$(date +"%Y-%m-%dT%H:%M:%S")
-if [[ $PROFILE != "nonprod" ]]
+if [[ $PROFILE == "local" ]]
 then
   echo "Local Performance Tests"
   locust --config locust.conf --host ${API_ENDPOINT}

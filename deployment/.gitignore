@@ -1,3 +1,4 @@
 *.yaml
 !stacks/*/base/template/*
 !stacks/*/base/template/**/*.yaml
+!stacks/*/overlays/*/template/*

@@ -48,6 +48,10 @@ provision: # Provision environment - mandatory: PROFILE=[name],STACKS=[comma sep
 	eval "$$(make secret-fetch-and-export-variables)"
 	make terraform-apply-auto-approve PROFILE=$(PROFILE) STACKS=$(STACKS)
 
+clean:
+	make stop
+	docker network rm $(DOCKER_NETWORK) 2> /dev/null ||:
+
 # ==============================================================================
 # Supporting targets
 

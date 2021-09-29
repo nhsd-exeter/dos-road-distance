@@ -36,5 +36,6 @@ pipeline {
   }
   post {
     always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Stage)' BUILD_STATUS=${currentBuild.currentResult}" }
+    cleanup { sh "make clean" }
   }
 }

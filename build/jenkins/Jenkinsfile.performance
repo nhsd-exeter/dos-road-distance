@@ -2,11 +2,7 @@ pipeline {
   agent { label "jenkins-slave" }
   parameters {
     choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'regression'], description: 'Environment to test')
-    choice(name: 'SCENARIO', choices: ['locustfile.py'], description: 'Performance scenario to run')
-    string(name: 'TAGS', defaultValue: '[load]', description: 'List of tags to run e.g. [load,coldStart]')
-    string(name: 'USERS', defaultValue: '5', description: 'Number of users to run')
-    string(name: 'RATE', defaultValue: '1', description: 'Spawn rate of users per second')
-    string(name: 'RUNTIME', defaultValue: '60', description: 'Time to run tests in seconds')
+    choice(name: 'SCENARIO', choices: ['scenario1.py', 'scenario2.py', 'scenario3.py', 'scenario4.py'], description: 'Performance scenario to run')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -18,10 +14,6 @@ pipeline {
     PROFILE = "nonprod"
     ENVIRONMENT = "${params.ENVIRONMENT}"
     LOCUST_LOCUSTFILE = "${params.SCENARIO}"
-    LOCUST_TAGS = "${params.TAGS}"
-    LOCUST_USERS = "${params.USERS}"
-    LOCUST_SPAWN_RATE = "${params.RATE}"
-    LOCUST_RUN_TIME = "${params.RUNTIME}s"
   }
   stages {
     stage("Show Configuration") {
@@ -35,12 +27,12 @@ pipeline {
         }
       }
     }
-    stage ("Run Terraform") {
+    stage ("Provision") {
       steps {
         script { sh "make provision STACKS=performance ENVIRONMENT=nonprod | tee /tmp/terraform_changes.txt" }
       }
     }
-    stage ("Performance Build") {
+    stage ("Build") {
       steps {
         script {
           sh "make performance-build"
@@ -48,9 +40,37 @@ pipeline {
         }
       }
     }
-    stage ("Performance Deploy Job") {
+    stage ("Deploy Job One") {
+      when {
+        beforeInput true
+        beforeAgent true
+        expression { params.SCENARIO == "scenario1.py" || params.SCENARIO == "scenario4.py" }
+      }
+      input {
+        message "Select Scenario Parameters"
+        parameters {
+          string(name: 'USERS', defaultValue: '5', description: 'Number of users to run')
+          string(name: 'RATE', defaultValue: '1', description: 'Spawn rate of users per second')
+          string(name: 'RUNTIME', defaultValue: '60', description: 'Time to run tests in seconds')
+        }
+      }
+      environment {
+        LOCUST_USERS = "${USERS}"
+        LOCUST_SPAWN_RATE = "${RATE}"
+        LOCUST_RUN_TIME = "${RUNTIME}s"
+      }
       steps {
-        script { sh "make performance-deploy SECONDS=${params.RUNTIME}" }
+        script { sh "make performance-deploy PROFILE=performance SECONDS=${RUNTIME}" }
+      }
+    }
+    stage ("Deploy Job Two") {
+      when {
+        beforeInput true
+        beforeAgent true
+        expression { params.SCENARIO == "scenario2.py" || params.SCENARIO == "scenario3.py" }
+      }
+      steps {
+        script { sh "make performance-deploy SECONDS=3500" }
       }
     }
     stage ("Deployment Summary") {
@@ -60,6 +80,13 @@ pipeline {
     }
   }
   post {
+    unsuccessful {
+      script {
+        try { sh "make performance-delete" }
+        catch (Exception e) { echo 'Job not deleted' }
+      }
+    }
     always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Performance)' BUILD_STATUS=${currentBuild.currentResult}" }
+    cleanup { sh "make clean" }
   }
 }
