@@ -56,13 +56,13 @@ run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run spec
 		else
 			container=roaddistance-lambda-$(BUILD_ID)
 		fi
-		if [ -z $(TEST_FILE) ]; then
+	if [ -z $(TEST_FILE) ]; then
 			docker exec $$container \
-				/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done'
-		else
+			/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done'
+	else
 			docker exec $$container \
-				python -m pytest -rA -q tests/unit/$(TEST_FILE) -k "$(NAME)"
-		fi
+			python -m pytest -rA -q tests/unit/$(TEST_FILE) -k "$(NAME)"
+	fi
 
 run-contract-test: # Run contract only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_contracts.py
@@ -102,6 +102,7 @@ docker-build-lambda: # Build the local lambda Docker image
 	cp $(APPLICATION_DIR)/roaddistance/*.py $(DOCKER_DIR)/roaddistance-lambda/assets/
 	cp -r $(APPLICATION_DIR)/roaddistance/proto $(DOCKER_DIR)/roaddistance-lambda/assets/
 	cp -r $(APPLICATION_DIR)/roaddistance/openapi_schemas $(DOCKER_DIR)/roaddistance-lambda/assets/
+	cp -r $(APPLICATION_DIR)/roaddistance/mock $(DOCKER_DIR)/roaddistance-lambda/assets/
 	make docker-image NAME=roaddistance-lambda
 	rm -rf $(DOCKER_DIR)/roaddistance-lambda/assets/*
 

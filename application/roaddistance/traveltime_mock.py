@@ -46,7 +46,9 @@ class TravelTimeMock(Common):
             else:
                 service_sizes = list(self.files_by_count.keys())
                 adjusted_count = service_sizes[bisect_left(service_sizes, service_count)]
-                self.status_message = "MOCK From count of " + str(service_count) + " using adjusted count of " + str(adjusted_count)
+                self.status_message = (
+                    "MOCK From count of " + str(service_count) + " using adjusted count of " + str(adjusted_count)
+                )
                 service_count = adjusted_count
             self.content = super().fetch_mock_proto_bin(self.response_path + self.files_by_count[service_count])
         elif transaction_id != "" and transaction_id in self.count_by_transaction_id:
