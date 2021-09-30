@@ -15,6 +15,16 @@
     - [Test data and mock services](#test-data-and-mock-services)
     - [Manual check](#manual-check)
   - [Deployment](#deployment)
+    - [Summary of branch, PR and commit naming](#summary-of-branch-pr-and-commit-naming)
+      - [Branch naming](#branch-naming)
+        - [Rules](#rules)
+        - [Examples](#examples)
+      - [PR naming](#pr-naming)
+        - [Rules](#rules-1)
+        - [Example PR name](#example-pr-name)
+      - [Commit messages](#commit-messages)
+        - [Rules](#rules-2)
+        - [Example commit messages](#example-commit-messages)
     - [Artefact Versioning](#artefact-versioning)
     - [CI/CD Pipelines](#cicd-pipelines)
     - [Deployment From the Command-line](#deployment-from-the-command-line)
@@ -134,6 +144,52 @@ Here are the steps to perform meaningful local system check:
 - Log in to the system using a well known username role
 
 ## Deployment
+
+### Summary of branch, PR and commit naming
+#### Branch naming
+##### Rules
+* Starts with task/
+* Then the ticket reference with upper case PD
+* Then underscore and three plus words underscore delimited, first letter of first word upper case
+* No punctuation at the end
+
+##### Examples
+```
+task/PD-1234_Makefile_build_cleanup
+```
+
+#### PR naming
+##### Rules
+* The ticket reference with upper case PD
+* Then a space and three plus words space delimited, first letter of first word upper case
+* No punctuation at the end
+
+
+##### Example PR name
+```
+PD-1234 Cleaned up code
+```
+
+#### Commit messages
+##### Rules
+* The ticket reference with upper case PD
+* Then a space and three plus words space delimited, first letter of first word upper case
+* No punctuation at the end of the first line
+* You can have multiple lines with anything else needed, but each line must be less then 75 characters
+* Note: All commits must be GPG signed
+```
+git commit -S -m "<MESSAGE>"
+```
+##### Example commit messages
+```
+PD-1234 Changed copy and cleanup process for a build
+```
+```
+PD-1234 This is a longer commit
+message spread over multiple
+lines.
+We can also add extra information
+```
 
 ### Artefact Versioning
 
