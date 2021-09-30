@@ -150,7 +150,7 @@ Here are the steps to perform meaningful local system check:
 ##### Rules
 * Starts with task/
 * Then the ticket reference with upper case PD
-* Then underscore and three plus words, first letter of first word upper case
+* Then underscore and three plus words underscore delimited, first letter of first word upper case
 * No punctuation at the end
 
 ##### Examples
@@ -176,6 +176,7 @@ PD-1234 Cleaned up code
 * Then a space and three plus words space delimited, first letter of first word upper case
 * No punctuation at the end of the first line
 * You can have multiple lines with anything else needed, but each line must be less then 75 characters
+* Note: All commits must be GPG signed
 ```
 git commit -S -m "<MESSAGE>"
 ```
