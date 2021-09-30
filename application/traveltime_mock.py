@@ -7,6 +7,7 @@ from common import Common
 import config
 from time import sleep
 from random import randrange
+from bisect import bisect_left
 
 
 class TravelTimeMock(Common):
@@ -39,8 +40,14 @@ class TravelTimeMock(Common):
     }
 
     def post(self, transaction_id="", service_count=0):
-        if service_count > 0 and service_count in self.files_by_count:
-            self.status_message = "MOCK Matched on count of " + str(service_count)
+        if service_count > 0:
+            if service_count in self.files_by_count:
+                self.status_message = "MOCK Matched on count of " + str(service_count)
+            else:
+                service_sizes = list(self.files_by_count.keys())
+                adjusted_count = service_sizes[bisect_left(service_sizes, service_count)]
+                self.status_message = "MOCK From count of " + str(service_count) + " using adjusted count of " + str(adjusted_count)
+                service_count = adjusted_count
             self.content = super().fetch_mock_proto_bin(self.response_path + self.files_by_count[service_count])
         elif transaction_id != "" and transaction_id in self.count_by_transaction_id:
             self.status_message = "MOCK Matched on transaction ID of " + transaction_id
