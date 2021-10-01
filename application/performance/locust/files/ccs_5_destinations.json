@@ -1,0 +1,35 @@
+{
+  "transactionid":"43c31af7-1f53-470f-9edc-fed8f447dc8f",
+  "origin":{
+    "reference":"origin1",
+    "latitude":52.076771,
+    "longitude":-1.339661
+  },
+  "destinations":[
+    {
+      "reference":"destination1",
+      "latitude":51.759471,
+      "longitude":-1.212681
+    },
+    {
+      "reference":"destination2",
+      "latitude":52.037914,
+      "longitude":-1.154121
+    },
+    {
+      "reference":"destination3",
+      "latitude":51.51159,
+      "longitude":-0.762012
+    },
+    {
+      "reference":"destination4",
+      "latitude":51.945593,
+      "longitude":-1.535071
+    },
+    {
+      "reference":"destination5",
+      "latitude":51.590556,
+      "longitude":-1.437412
+    }
+  ]
+}

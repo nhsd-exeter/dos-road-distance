@@ -1,81 +1,68 @@
 import json
-from locust import HttpUser, task, between, tag
-import build.docker
-
-wait_time = between(1, 2)
+from locust import HttpUser, task
 
 
-class FiveRequest(HttpUser):
+
+class FiveDest(HttpUser):
     weight = 80
 
-    host = ' '
-
     def on_start(self):
-        with open('/application/mock/requests/ccs_5_destinations.json') as json_file:
+        with open('locust/files/ccs_5_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
-    @tag('tag1')
-    @task(100)
+    @task
     def do_test(self):
         headers = {'content-type': 'application/json'}
-        self.client.post("/core-dos-road-distance-test", data=self.payload, headers=headers)
+        self.client.post("Test/", data=json.dumps(self.payload), headers=headers)
 
 
-class FiftyRequest(HttpUser):
+class FiftyDest(HttpUser):
     weight = 15
-    host = ''
 
     def on_start(self):
-        with open('application/mock/requests/ccs_50_destinations.json') as json_file:
+        with open('locust/files/ccs_50_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
-    @tag('tag2')
     @task
     def do_test(self):
         headers = {'content-type': 'application/json'}
-        self.client.post("/core-dos-road-distance-test", data=self.payload, headers=headers)
+        self.client.post("Test/", data=json.dumps(self.payload), headers=headers)
 
 
-class FiveHundredRequest(HttpUser):
+class FiveHundredDest(HttpUser):
     weight = 3
-    host = ''
 
     def on_start(self):
-        with open('application/mock/requests/ccs_500_destinations.json') as json_file:
+        with open('locust/files/ccs_500_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
-    @tag('tag3')
     @task
     def do_test(self):
         headers = {'content-type': 'application/json'}
-        self.client.post("/core-dos-road-distance-test", data=self.payload, headers=headers)
+        self.client.post("Test/", data=json.dumps(self.payload), headers=headers)
 
 
-class OneThousandFiveHundredRequest(HttpUser):
+class OneThousandFiveHundredDest(HttpUser):
     weight = 1
-    host = ''
 
     def on_start(self):
-        with open('application/mock/requests/ccs_1500_destinations.json') as json_file:
+        with open('locust/files/ccs_1500_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
-    @tag('tag4')
     @task
     def do_test(self):
         headers = {'content-type': 'application/json'}
-        self.client.post("/core-dos-road-distance-test", data=self.payload, headers=headers)
+        self.client.post("Test/", data=json.dumps(self.payload), headers=headers)
 
 
-class ThreeThousandRequest(HttpUser):
+class ThreeThousandDest(HttpUser):
     weight = 1
-    host = ''
 
     def on_start(self):
-        with open('application/mock/requests/ccs_3000_destinations.json') as json_file:
+        with open('locust/files/ccs_3000_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
-    @tag('tag5')
     @task
     def do_test(self):
         headers = {'content-type': 'application/json'}
-        self.client.post("/core-dos-road-distance-test", data=self.payload, headers=headers)
+        self.client.post("Test/", data=json.dumps(self.payload), headers=headers)
