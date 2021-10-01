@@ -14,6 +14,7 @@ services:
     volumes:
       - $APPLICATION_DIR/tests:/var/task/tests
       - $APPLICATION_DIR:/var/task/application
+      - $APPLICATION_DIR/mock:/var/task/mock
 
 networks:
   default:
