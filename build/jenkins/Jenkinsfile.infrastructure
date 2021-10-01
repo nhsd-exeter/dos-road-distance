@@ -1,0 +1,87 @@
+pipeline {
+  agent { label "jenkins-slave" }
+  parameters {
+    choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploy from a task branch?')
+  }
+  options {
+    buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
+    disableConcurrentBuilds()
+    parallelsAlwaysFailFast()
+    timeout(time: 25, unit: "MINUTES")
+  }
+  environment {
+    BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
+    PROFILE = "nonprod"
+    ENVIRONMENT = "nonprod"
+  }
+  triggers { pollSCM("* * * * *") }
+  stages {
+    stage("Show Configuration") {
+      when {
+        beforeAgent true
+        anyOf {
+          expression { params.DeployTask == "Yes" }
+          branch 'master'
+        }
+      }
+      steps {
+        script { sh "make show-configuration" }
+      }
+    }
+    stage("Build App") {
+      when {
+        beforeAgent true
+        anyOf {
+          expression { params.DeployTask == "Yes" }
+          branch 'master'
+        }
+      }
+      steps {
+        script { sh "make build" }
+        script { sh "make unit-test" }
+        script { sh "make push" }
+      }
+    }
+    stage("Deploy") {
+      when {
+        beforeAgent true
+        anyOf {
+          expression { params.DeployTask == "Yes" }
+          branch 'master'
+        }
+      }
+      steps {
+        script { sh "make provision | tee /tmp/terraform_changes.txt" }
+        script { sh "make lambda-alias" }
+      }
+    }
+    stage("Test") {
+      when {
+        beforeAgent true
+        anyOf {
+          expression { params.DeployTask == "Yes" }
+          branch 'master'
+        }
+      }
+      steps { sh "echo Running Tests..." }
+    }
+    stage("Deployment Summary") {
+      when {
+        beforeAgent true
+        anyOf {
+          expression { params.DeployTask == "Yes" }
+          branch 'master'
+        }
+      }
+      steps {
+        script {
+          sh "make deployment-summary"
+        }
+      }
+    }
+  }
+  post {
+    cleanup { sh "make stop" }
+    always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Infrastructure)' BUILD_STATUS=${currentBuild.currentResult}" }
+  }
+}

@@ -110,6 +110,10 @@ terraform-export-variables-from-secret: ### Get secret as TF_VAR_[name] variable
 		secret=$$(make secret-fetch NAME=$(NAME))
 		exports=$$(make terraform-export-variables-from-json JSON="$$secret")
 		echo "$$exports"
+	else
+		secret=$$(make secret-fetch NAME=$(DEPLOYMENT_SECRETS))
+		exports=$$(make terraform-export-variables-from-json JSON="$$secret")
+		echo "$$exports"
 	fi
 
 terraform-export-variables-from-shell: ### Convert environment variables as TF_VAR_[name] variables - mandatory: VARS=[comma-separated environment variable names]|PATTERN="^AWS_"; optional: EXCLUDE=[pattern]; return: [variables export]

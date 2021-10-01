@@ -9,29 +9,35 @@ setup: # Set up project
 	make python-virtualenv PYTHON_VENV_NAME=$(PROJECT_ID)
 	pip install -r application/requirements.txt
 
-build: project-config # Build project
-	make docker-build NAME=NAME_TEMPLATE_TO_REPLACE
+build: # Build image
+	make docker-build-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
 
-start: project-start # Start project
+start: project-start
 
-stop: project-stop # Stop project
+restart:
+	make \
+		stop \
+		start
 
-restart: stop start # Restart project
+stop: project-stop
 
-log: project-log # Show project logs
+log: project-log
 
-test: # Test project
+unit-test: # Test project
 	make start
+	make run-unit-test
 	make stop
 
 push: # Push project artefacts to the registry
-	make docker-push NAME=NAME_TEMPLATE_TO_REPLACE
+	eval "$$(make aws-assume-role-export-variables)"
+	make docker-push NAME=roaddistance-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
 
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
-	make project-deploy STACK=application PROFILE=$(PROFILE)
+	make sls-deploy STACK=application PROFILE=$(PROFILE)
 
-provision: # Provision environment - mandatory: PROFILE=[name]
-	make terraform-apply-auto-approve STACK=database PROFILE=$(PROFILE)
+provision: # Provision environment - mandatory: PROFILE=[name],STACKS=[comma separated names]
+	eval "$$(make secret-fetch-and-export-variables)"
+	make terraform-apply-auto-approve PROFILE=$(PROFILE) STACKS=$(STACKS)
 
 clean: # Clean up project
 
@@ -40,46 +46,21 @@ clean: # Clean up project
 
 trust-certificate: ssl-trust-certificate-project ## Trust the SSL development certificate
 
-# ==============================================================================
-# Pipeline targets
-
-build-artefact:
-	echo TODO: $(@)
-
-publish-artefact:
-	echo TODO: $(@)
-
-backup-data:
-	echo TODO: $(@)
-
-provision-infractructure:
-	echo TODO: $(@)
-
-deploy-artefact:
-	echo TODO: $(@)
-
-apply-data-changes:
-	echo TODO: $(@)
-
 # --------------------------------------
 
-run-static-analisys:
-	echo TODO: $(@)
-
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	if [ -z $(TEST_FILE) ]; then
-		docker exec roaddistance-lambda \
-			/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done'
-	else
-		docker exec roaddistance-lambda \
-			python -m pytest -rA -q tests/unit/$(TEST_FILE) -k "$(NAME)"
-	fi
-
-run-smoke-test:
-	echo TODO: $(@)
-
-run-integration-test:
-	echo TODO: $(@)
+		if [ $(BUILD_ID) == 0 ]; then
+			container=roaddistance-lambda
+		else
+			container=roaddistance-lambda-$(BUILD_ID)
+		fi
+		if [ -z $(TEST_FILE) ]; then
+			docker exec $$container \
+				/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done'
+		else
+			docker exec $$container \
+				python -m pytest -rA -q tests/unit/$(TEST_FILE) -k "$(NAME)"
+		fi
 
 run-contract-test: # Run contract only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_contracts.py
@@ -102,18 +83,6 @@ run-traveltimeresponse-test: # Run TravelTime protobuf response only unit tests,
 run-mock-test: # Run mock TravelTime protobuf only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	make run-unit-test TEST_FILE=test_mock.py
 
-run-functional-test:
-	[ $$(make project-branch-func-test) != true ] && exit 0
-	echo TODO: $(@)
-
-run-performance-test:
-	[ $$(make project-branch-perf-test) != true ] && exit 0
-	echo TODO: $(@)
-
-run-security-test:
-	[ $$(make project-branch-sec-test) != true ] && exit 0
-	echo TODO: $(@)
-
 generate-contract-json: # Generate the JSON files used for contract testing
 	cd application && \
 		python yaml_to_json.py
@@ -134,25 +103,10 @@ docker-build-lambda: # Build the local lambda Docker image
 	make docker-image NAME=roaddistance-lambda
 	rm -rf $(DOCKER_DIR)/roaddistance-lambda/assets/*
 
-docker-run-lambda: # Run the local lambda Docker container
-	docker run --rm -p 9000:8080 \
-		--mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests \
-		--mount type=bind,source=$(APPLICATION_DIR)/mock,target=/var/task/mock \
-		--mount type=bind,source=$(APPLICATION_DIR),target=/var/task/application \
-		--name roaddistance-lambda $(DOCKER_REGISTRY)/roaddistance-lambda:latest
-	# make docker-run IMAGE=$(DOCKER_REGISTRY)/roaddistance-lambda:latest \
-	# 	ARGS="-p 9000:8080 --mount type=bind,source=$(APPLICATION_DIR)/tests,target=/var/task/tests" \
-	# 	CONTAINER=roaddistance-lambda
-
 docker-update-root: # Update the root files on the running lambda docker container without a rebuild
 		docker exec \
 			roaddistance-lambda \
 			cp -v application/*.py ./
-
-docker-bash-lambda: # Bash into the running lambda docker container
-		docker exec -it \
-			roaddistance-lambda \
-			/bin/bash
 
 local-ccs-lambda-request: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
 	curl -v -POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
@@ -164,16 +118,31 @@ local-ccs-lambda-request-invalid: # Perform a sample valid request from CCS to t
 
 # --------------------------------------
 
-remove-unused-environments:
-	echo TODO: $(@)
+lambda-alias: ### Updates new lambda version with alias based on commit hash - Mandatory PROFILE=[profile]
+	eval "$$(make aws-assume-role-export-variables)"
+	function=$(SERVICE_PREFIX)-rd-lambda
+	versions=$$(make -s aws-lambda-get-latest-version NAME=$$function)
+	version=$$(echo $$versions | make -s docker-run-tools CMD="jq '.Versions[-1].Version'" | tr -d '"')
+	make aws-lambda-create-alias NAME=$$function VERSION=$$version
 
-remove-old-artefacts:
-	echo TODO: $(@)
+aws-lambda-get-latest-version: ### Fetches the latest function version for a lambda function - Mandatory NAME=[lambda function name]
+	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
+		$(AWSCLI) lambda list-versions-by-function \
+			--function-name $(NAME) \
+			--output json \
+		"
 
-remove-old-backups:
-	echo TODO: $(@)
+aws-lambda-create-alias: ### Creates an alias for a lambda version - Mandatory NAME=[lambda function name], VERSION=[lambda version]
+	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
+		$(AWSCLI) lambda create-alias \
+			--name $(VERSION)-$(BUILD_COMMIT_HASH) \
+			--function-name $(NAME) \
+			--function-version $(VERSION) \
+		"
 
-# --------------------------------------
+deployment-summary: # Returns a deployment summary
+	echo Terraform Changes
+	cat /tmp/terraform_changes.txt | grep -E 'Apply...'
 
 pipeline-finalise: ## Finalise pipeline execution - mandatory: PIPELINE_NAME,BUILD_STATUS
 	# Check if BUILD_STATUS is SUCCESS or FAILURE
@@ -181,7 +150,7 @@ pipeline-finalise: ## Finalise pipeline execution - mandatory: PIPELINE_NAME,BU
 
 pipeline-send-notification: ## Send Slack notification with the pipeline status - mandatory: PIPELINE_NAME,BUILD_STATUS
 	eval "$$(make aws-assume-role-export-variables)"
-	eval "$$(make secret-fetch-and-export-variables NAME=$(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)-$(PROFILE)/deployment)"
+	eval "$$(make secret-fetch-and-export-variables NAME=$(DEPLOYMENT_SECRETS))"
 	make slack-it
 
 # --------------------------------------
@@ -215,4 +184,9 @@ pipeline-create-resources: ## Create all the pipeline deployment supporting reso
 
 # ==============================================================================
 
-.SILENT:
+create-artefact-repositories: # Create ECR repositories to store the artefacts
+	make docker-create-repository NAME=road-distance
+
+# ==============================================================================
+.SILENT: \
+	parse-profile-from-branch

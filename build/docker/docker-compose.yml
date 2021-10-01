@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  lambda:
+    image: $AWS_LAMBDA_ECR/$PROJECT_GROUP_SHORT/$PROJECT_NAME_SHORT/roaddistance-lambda:latest
+    container_name: roaddistance-lambda
+    hostname: roaddistance-lambda
+    environment:
+      DRD_ENDPOINT: "http://localhost"
+      DRD_BASICAUTH: ""
+      DRD_MOCK_MODE: "True"
+    ports:
+      - 9000:8080
+    volumes:
+      - $APPLICATION_DIR/tests:/var/task/tests
+      - $APPLICATION_DIR:/var/task/application
+      - $APPLICATION_DIR/mock:/var/task/mock
+
+networks:
+  default:
+    external:
+      name: $DOCKER_NETWORK
