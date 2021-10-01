@@ -4,7 +4,7 @@ resource "aws_apigatewayv2_stage" "road_distance_api_stage" {
   auto_deploy = true
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.road_distance_lambda_log_group.arn
-    format          = "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\", \"responseLength\":\"$context.responseLength\" }"
+    format          = "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\", \"responseLength\":\"$context.responseLength\", \"error\":\"$context.error.message\", \"authError\":\"$context.authorizer.error\", \"integrationError\":\"$context.integration.error\" }"
   }
   stage_variables = {
     "version" = var.lambda_version

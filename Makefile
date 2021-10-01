@@ -7,10 +7,11 @@ include $(abspath $(PROJECT_DIR)/build/automation/init.mk)
 setup: # Set up project
 	make project-config
 	make python-virtualenv PYTHON_VENV_NAME=$(PROJECT_ID)
-	pip install -r application/requirements.txt
+	pip install -r $(APPLICATION_DIR)/roaddistance/requirements.txt
 
 build: # Build image
 	make docker-build-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
+	make docker-build-auth AWS_ECR=$(AWS_LAMBDA_ECR)
 
 start: project-start
 
@@ -31,6 +32,7 @@ unit-test: # Test project
 push: # Push project artefacts to the registry
 	eval "$$(make aws-assume-role-export-variables)"
 	make docker-push NAME=roaddistance-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
+	make docker-push NAME=authoriser-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
 
 deploy: # Deploy artefacts - mandatory: PROFILE=[name]
 	make sls-deploy STACK=application PROFILE=$(PROFILE)
@@ -84,37 +86,43 @@ run-mock-test: # Run mock TravelTime protobuf only unit tests, add NAME="xxx" or
 	make run-unit-test TEST_FILE=test_mock.py
 
 generate-contract-json: # Generate the JSON files used for contract testing
-	cd application && \
+	cd $(APPLICATION_DIR)/roaddistance && \
 		python yaml_to_json.py
 
 generate-proto-python: # Generate the Python code from the protobuf proto files
-	SRC_DIR=application/proto/traveltime && \
-	DST_DIR=application/proto/traveltime&& \
+	SRC_DIR=$(APPLICATION_DIR)/roaddistance/proto/traveltime && \
+	DST_DIR=$(APPLICATION_DIR)/roaddistance/proto/traveltime&& \
 	protoc -I=$$SRC_DIR --python_out=$$DST_DIR $$SRC_DIR/*.proto && \
 	ls -l $$SRC_DIR/*.py
 
 docker-build-lambda: # Build the local lambda Docker image
 	rm -rf $(DOCKER_DIR)/roaddistance-lambda/assets/*
 	mkdir $(DOCKER_DIR)/roaddistance-lambda/assets/log
-	cp $(APPLICATION_DIR)/requirements.txt $(DOCKER_DIR)/roaddistance-lambda/assets/
-	cp $(APPLICATION_DIR)/*.py $(DOCKER_DIR)/roaddistance-lambda/assets/
-	cp -r $(APPLICATION_DIR)/proto $(DOCKER_DIR)/roaddistance-lambda/assets/
-	cp -r $(APPLICATION_DIR)/openapi_schemas $(DOCKER_DIR)/roaddistance-lambda/assets/
+	cp $(APPLICATION_DIR)/roaddistance/requirements.txt $(DOCKER_DIR)/roaddistance-lambda/assets/
+	cp $(APPLICATION_DIR)/roaddistance/*.py $(DOCKER_DIR)/roaddistance-lambda/assets/
+	cp -r $(APPLICATION_DIR)/roaddistance/proto $(DOCKER_DIR)/roaddistance-lambda/assets/
+	cp -r $(APPLICATION_DIR)/roaddistance/openapi_schemas $(DOCKER_DIR)/roaddistance-lambda/assets/
 	make docker-image NAME=roaddistance-lambda
 	rm -rf $(DOCKER_DIR)/roaddistance-lambda/assets/*
+
+docker-build-auth: # Build the local lambda Docker image
+	rm -rf $(DOCKER_DIR)/authoriser-lambda/assets/*
+	cp $(APPLICATION_DIR)/authoriser/*.py $(DOCKER_DIR)/authoriser-lambda/assets/
+	make docker-image NAME=authoriser-lambda
+	rm -rf $(DOCKER_DIR)/authoriser-lambda/assets/*
 
 docker-update-root: # Update the root files on the running lambda docker container without a rebuild
 		docker exec \
 			roaddistance-lambda \
-			cp -v application/*.py ./
+			cp -v application/roaddistance/*.py ./
 
 local-ccs-lambda-request: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
 	curl -v -POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
-		-d @application/tests/unit/test_json/dos_road_distance_api_happy.json
+		-d @application/roaddistance/tests/unit/test_json/dos_road_distance_api_happy.json
 
 local-ccs-lambda-request-invalid: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
 	curl -v -POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
-		-d @application/tests/unit/test_json/dos_road_distance_api_invalid_coord.json
+		-d @application/roaddistance/tests/unit/test_json/dos_road_distance_api_invalid_coord.json
 
 # --------------------------------------
 
@@ -185,7 +193,8 @@ pipeline-create-resources: ## Create all the pipeline deployment supporting reso
 # ==============================================================================
 
 create-artefact-repositories: # Create ECR repositories to store the artefacts
-	make docker-create-repository NAME=road-distance
+	make docker-create-repository NAME=roaddistance-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
+	make docker-create-repository NAME=authoriser-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
 
 # ==============================================================================
 .SILENT: \

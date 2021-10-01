@@ -21,9 +21,11 @@ resource "aws_apigatewayv2_stage" "road_distance_api_stage" {
 }
 
 resource "aws_apigatewayv2_route" "road_distance_api_route" {
-  api_id    = aws_apigatewayv2_api.road_distance_apigateway.id
-  route_key = "POST /"
-  target    = "integrations/${aws_apigatewayv2_integration.road_distance_api_integration.id}"
+  api_id             = aws_apigatewayv2_api.road_distance_apigateway.id
+  route_key          = "POST /"
+  target             = "integrations/${aws_apigatewayv2_integration.road_distance_api_integration.id}"
+  authorization_type = "CUSTOM"
+  authorizer_id      = aws_apigatewayv2_authorizer.road_distance_api_auth.id
 }
 
 resource "aws_lambda_permission" "road_distance_invoke_lambda_permission" {
@@ -33,4 +35,25 @@ resource "aws_lambda_permission" "road_distance_invoke_lambda_permission" {
   source_arn    = "${aws_apigatewayv2_api.road_distance_apigateway.execution_arn}/*/*/"
 }
 
-# Auth probably required also
+resource "aws_apigatewayv2_authorizer" "road_distance_api_auth" {
+  name                              = "${var.service_prefix}-rd-api-authoriser"
+  api_id                            = aws_apigatewayv2_api.road_distance_apigateway.id
+  authorizer_type                   = "REQUEST"
+  authorizer_uri                    = data.terraform_remote_state.lambda.outputs.auth_lambda_arn
+  authorizer_payload_format_version = "2.0"
+  authorizer_result_ttl_in_seconds  = 0
+  enable_simple_responses           = true
+  # identity_sources                  = ["event.headers.authorization"]
+}
+
+resource "aws_lambda_permission" "auth_invoke_lambda_permission" {
+  action        = "lambda:InvokeFunction"
+  function_name = "${var.service_prefix}-auth-lambda"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.road_distance_apigateway.execution_arn}/*"
+}
+
+resource "aws_cloudwatch_log_group" "road_distance_lambda_log_group" {
+  name              = "/aws/api-gateway/${var.service_prefix}-rd-api"
+  retention_in_days = "0"
+}
