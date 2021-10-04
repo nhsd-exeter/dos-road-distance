@@ -61,3 +61,7 @@ variable "drd_basicauth" {
 variable "drd_endpoint" {
   description = "Endpoint for DRD"
 }
+
+variable "deployment_secrets" {
+  description = "Deployment Secret Store"
+}

@@ -12,9 +12,9 @@ services:
     ports:
       - 9000:8080
     volumes:
-      - $APPLICATION_DIR/tests:/var/task/tests
-      - $APPLICATION_DIR:/var/task/application
-      - $APPLICATION_DIR/mock:/var/task/mock
+      - $APPLICATION_DIR/roaddistance/tests:/var/task/tests
+      - $APPLICATION_DIR/roaddistance:/var/task/application
+      - $APPLICATION_DIR/roaddistance/mock:/var/task/mock
 
 networks:
   default:
