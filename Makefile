@@ -102,7 +102,6 @@ docker-build-lambda: # Build the local lambda Docker image
 	cp $(APPLICATION_DIR)/roaddistance/*.py $(DOCKER_DIR)/roaddistance-lambda/assets/
 	cp -r $(APPLICATION_DIR)/roaddistance/proto $(DOCKER_DIR)/roaddistance-lambda/assets/
 	cp -r $(APPLICATION_DIR)/roaddistance/openapi_schemas $(DOCKER_DIR)/roaddistance-lambda/assets/
-	cp -r $(APPLICATION_DIR)/roaddistance/mock $(DOCKER_DIR)/roaddistance-lambda/assets/
 	make docker-image NAME=roaddistance-lambda
 	rm -rf $(DOCKER_DIR)/roaddistance-lambda/assets/*
 
