@@ -29,12 +29,12 @@ class RoadDistance(Common):
 
     def __init__(self, request):
         self.request = request
-        log_name = os.environ.get("LOGGER", "Audit")
-        self.logger = RDLogger(log_name, self.request_id, self.transaction_id)
-        self.logger.log_formatted(str(self.request), "ccs_request")
-
         self.transaction_id = str(self.request["transactionid"]) if "transactionid" in self.request else ""
         self.request_id = str(uuid.uuid4())
+        log_name = os.environ.get("LOGGER", "Audit")
+
+        self.logger = RDLogger(log_name, self.request_id, self.transaction_id)
+        self.logger.log_formatted(str(self.request), "ccs_request")
 
     def process_request(self) -> int:
         if not self.validate_against_schema(self.request, "local"):
