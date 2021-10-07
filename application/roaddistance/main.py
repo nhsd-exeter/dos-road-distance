@@ -32,9 +32,7 @@ class RoadDistance(Common):
         self.transaction_id = str(self.request["transactionid"]) if "transactionid" in self.request else ""
         self.request_id = str(uuid.uuid4())
         log_name = os.environ.get("LOGGER", "Audit")
-
         self.logger = RDLogger(log_name, self.request_id, self.transaction_id)
-        self.logger.log_formatted(str(self.request), "ccs_request")
 
     def process_request(self) -> int:
         if not self.validate_against_schema(self.request, "local"):
@@ -127,7 +125,8 @@ class RoadDistance(Common):
             contract = self.fetch_json(self.contracts[schema_name] + ".json")
             validate(instance=json, schema=contract)
             return True
-        except (ValidationError, SchemaError, Exception):
+        except (ValidationError, SchemaError, Exception) as ex:
+            self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
             return False
 
     def fetch_json(self, file_name: str) -> dict:
