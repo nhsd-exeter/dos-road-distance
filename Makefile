@@ -24,6 +24,9 @@ stop: project-stop
 
 log: project-log
 
+bash:
+	docker exec --interactive --tty roaddistance-lambda bash
+
 unit-test: # Test project
 	make start
 	make run-unit-test
