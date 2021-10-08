@@ -62,6 +62,10 @@ variable "drd_endpoint" {
   description = "Endpoint for DRD"
 }
 
+variable "drd_mock" {
+  description = "Mock mode enabled/disabled"
+}
+
 variable "deployment_secrets" {
   description = "Deployment Secret Store"
 }

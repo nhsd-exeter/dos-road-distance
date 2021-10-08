@@ -2,6 +2,7 @@ pipeline {
   agent { label "jenkins-slave" }
   parameters {
     choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploy from a task branch?')
+    choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -51,7 +52,7 @@ pipeline {
         }
       }
       steps {
-        script { sh "make provision | tee /tmp/terraform_changes.txt" }
+        script { sh "make provision TF_VAR_drd_mock=${params.Mock} | tee /tmp/terraform_changes.txt" }
         script { sh "make lambda-alias" }
       }
     }
