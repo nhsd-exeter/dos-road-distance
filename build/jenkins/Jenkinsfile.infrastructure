@@ -14,6 +14,7 @@ pipeline {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
     PROFILE = "nonprod"
     ENVIRONMENT = "nonprod"
+    TF_VAR_drd_mock = "${params.Mock}"
   }
   triggers { pollSCM("* * * * *") }
   stages {
@@ -52,7 +53,7 @@ pipeline {
         }
       }
       steps {
-        script { sh "make provision TF_VAR_drd_mock=${params.Mock} | tee /tmp/terraform_changes.txt" }
+        script { sh "make provision | tee /tmp/terraform_changes.txt" }
         script { sh "make lambda-alias" }
       }
     }
