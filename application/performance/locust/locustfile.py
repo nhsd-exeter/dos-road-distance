@@ -76,7 +76,7 @@ class ColdStartFiveDest(FastHttpUser):
         with open(config.ccs_prefix + 'ccs_5_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
-    @tag('coldStart', 'load')
+    @tag('coldStart')
     @task
     def start_test(self):
         self.client.post("", data=json.dumps(self.payload), headers=config.headers)
@@ -90,7 +90,7 @@ class ColdStartFiftyDest(FastHttpUser):
         with open(config.ccs_prefix + 'ccs_50_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
-    @tag('coldStart', 'load')
+    @tag('coldStart')
     @task
     def start_test(self):
         self.client.post("", data=json.dumps(self.payload), headers=config.headers)
@@ -104,7 +104,7 @@ class ColdStartFiveHundredDest(FastHttpUser):
         with open(config.ccs_prefix + 'ccs_500_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
-    @tag('coldStart', 'load')
+    @tag('coldStart')
     @task
     def start_test(self):
         self.client.post("", data=json.dumps(self.payload), headers=config.headers)
@@ -118,7 +118,7 @@ class ColdStartOneThousandFiveHundredDest(FastHttpUser):
         with open(config.ccs_prefix + 'ccs_1500_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
-    @tag('coldStart', 'load')
+    @tag('coldStart')
     @task
     def start_test(self):
         self.client.post("", data=json.dumps(self.payload), headers=config.headers)
@@ -132,7 +132,7 @@ class ColdStartThreeThousandDest(FastHttpUser):
         with open(config.ccs_prefix + "ccs_3000_destinations.json") as json_file:
             self.payload = json.load(json_file)
 
-    @tag('coldStart', 'load')
+    @tag('coldStart')
     @task
     def start_test(self):
         self.client.post("", data=json.dumps(self.payload), headers=config.headers)
