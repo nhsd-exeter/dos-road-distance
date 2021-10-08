@@ -2,6 +2,7 @@ pipeline {
   agent { label "jenkins-slave" }
   parameters {
     choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploy from a task branch?')
+    choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -13,6 +14,7 @@ pipeline {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
     PROFILE = "nonprod"
     ENVIRONMENT = "nonprod"
+    TF_VAR_drd_mock = "${params.Mock}"
   }
   triggers { pollSCM("* * * * *") }
   stages {

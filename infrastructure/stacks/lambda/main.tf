@@ -9,6 +9,7 @@ resource "aws_lambda_function" "road_distance_lambda" {
     variables = {
       "DRD_BASICAUTH" = "Basic ${var.drd_basicauth}"
       "DRD_ENDPOINT"  = var.drd_endpoint
+      "DRD_MOCK_MODE" = var.drd_mock
     }
   }
   depends_on = [
