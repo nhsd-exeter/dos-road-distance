@@ -29,4 +29,4 @@ jobs:
           projectBaseDir: ./application
           args: >
             -Dsonar.organization=nhsd-exeter
-            -Dsonar.projectKey=dos-road-distance
+            -Dsonar.projectKey=uec-dos-rd

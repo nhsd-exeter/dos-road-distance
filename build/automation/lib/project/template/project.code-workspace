@@ -12,9 +12,13 @@
   "settings": {
     "breadcrumbs.enabled": true,
     "editor.autoIndent": "full",
-    "editor.fontSize": 18,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.fontSize": 14,
     "editor.formatOnSave": true,
     "editor.renderWhitespace": "all",
+    "editor.rulers": [
+      120
+    ],
     "editor.suggestSelection": "recentlyUsedByPrefix",
     "explorer.autoReveal": true,
     "explorer.sortOrder": "type",
@@ -56,14 +60,14 @@
       "--max-line-length=120"
     ],
     "python.linting.flake8Enabled": true,
-    "python.linting.flake8Path": "~/.pyenv/versions/3.9.5/bin/flake8",
+    "python.linting.flake8Path": "~/.pyenv/versions/3.9.7/bin/flake8",
     "python.linting.mypyArgs": [],
     "python.linting.mypyEnabled": true,
-    "python.linting.mypyPath": "~/.pyenv/versions/3.9.5/bin/mypy",
+    "python.linting.mypyPath": "~/.pyenv/versions/3.9.7/bin/mypy",
     "python.linting.pylintArgs": [],
     "python.linting.pylintEnabled": true,
-    "python.linting.pylintPath": "~/.pyenv/versions/3.9.5/bin/pylint",
-    "python.pythonPath": "~/.pyenv/versions/3.9.5/bin/python",
+    "python.linting.pylintPath": "~/.pyenv/versions/3.9.7/bin/pylint",
+    "python.pythonPath": "~/.pyenv/versions/3.9.7/bin/python",
     "python.terminal.activateEnvironment": false,
     "search.exclude": {
       "**/.git": true,
@@ -77,7 +81,7 @@
     "terminal.integrated.fontFamily": "Hack Nerd Font",
     "window.title": "${activeEditorMedium}${separator}${rootName}${separator}${rootPath}",
     "window.zoomLevel": 0,
-    "workbench.colorTheme": "Better Solarized Dark Italics",
+    "workbench.colorTheme": "Noctis Azureus",
     "workbench.editor.enablePreview": false,
     "workbench.tree.indent": 24,
     "[dockerfile]": {
@@ -137,6 +141,35 @@
       "editor.insertSpaces": true,
       "editor.tabSize": 2
     },
+    "yaml.customTags": [
+      "!And",
+      "!And sequence",
+      "!If",
+      "!If sequence",
+      "!Not",
+      "!Not sequence",
+      "!Equals",
+      "!Equals sequence",
+      "!Or",
+      "!Or sequence",
+      "!FindInMap",
+      "!FindInMap sequence",
+      "!Base64",
+      "!Join",
+      "!Join sequence",
+      "!Cidr",
+      "!Ref",
+      "!Sub",
+      "!Sub sequence",
+      "!GetAtt",
+      "!GetAZs",
+      "!ImportValue",
+      "!ImportValue sequence",
+      "!Select",
+      "!Select sequence",
+      "!Split",
+      "!Split sequence"
+    ],
     "emeraldwalk.runonsave": {
       "commands": [
         {

@@ -29,7 +29,7 @@ git-config: ### Configure local git repository
 
 git-check-if-branch-name-is-correct: ### Check if the branch name meets the accepted convention - optional: BUILD_BRANCH
 	if [[ $(BUILD_BRANCH) =~ $(GIT_BRANCH_PATTERN) ]] && \
-			[ "$$(echo '$(BUILD_BRANCH)' | wc -m)" -le $(GIT_COMMIT_MESSAGE_MAX_LENGTH) ]; then
+			[ "$$(echo '$(BUILD_BRANCH)' | wc -m)" -le $(GIT_BRANCH_MAX_LENGTH) ]; then
 		echo true
 	else
 		echo false
@@ -47,6 +47,11 @@ git-check-if-commit-msg-is-correct: ### Check if the commit message meets the ac
 	else
 		echo false
 	fi
+
+git-check-if-pull-request-title-is-correct: ### Check if the pull request title meets the accepted convention - mandatory - PULL_REQUEST_TITLE; optional: BUILD_BRANCH
+	make git-check-if-commit-msg-is-correct \
+		BUILD_COMMIT_MESSAGE="$(PULL_REQUEST_TITLE)" \
+		GIT_COMMIT_MESSAGE_MAX_LENGTH=$(GIT_PULL_REQUEST_TITLE_MAX_LENGTH)
 
 # ==============================================================================
 
@@ -158,6 +163,7 @@ git-tag-clear: ### Remove tags from the specified commit - optional: COMMIT=[co
 .SILENT: \
 	git-check-if-branch-name-is-correct \
 	git-check-if-commit-msg-is-correct \
+	git-check-if-pull-request-title-is-correct \
 	git-commit-get-hash git-hash \
 	git-commit-get-message git-msg \
 	git-commit-get-timestamp git-ts \

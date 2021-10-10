@@ -19,6 +19,7 @@ macos-prepare:: ### Prepare for installation and configuration of the developmen
 	sudo chown -R $$(id -u) $$(brew --prefix)/*
 
 macos-update:: ### Update all currently installed development dependencies
+	softwareupdate --all --install --force ||:
 	xcode-select --install 2> /dev/null ||:
 	which mas > /dev/null 2>&1 || brew install mas
 	sudo xcodebuild -license accept ||:; mas list | grep Xcode || ( mas install $$(mas search Xcode | head -n 1 | awk '{ print $$1 }') && mas upgrade $$(mas list | grep Xcode | awk '{ print $$1 }') ) ||:
@@ -65,6 +66,7 @@ macos-install-essential:: ### Install essential development dependencies - optio
 	brew $$install grep ||:
 	brew $$install helm ||:
 	brew $$install httpie ||:
+	brew $$install jc ||:
 	brew $$install jenv ||:
 	brew $$install jq ||:
 	brew $$install kns ||:
@@ -168,11 +170,13 @@ macos-install-recommended:: ### Install recommended dependencies - optional: REI
 	if [[ "$$REINSTALL" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]]; then
 		install="reinstall --force"
 	fi
+	brew $$install alt-tab ||:
+	brew $$install hiddenbar ||:
 	brew $$install --cask appcleaner ||:
 	brew $$install --cask dcommander ||:
 	brew $$install --cask dropbox ||:
 	brew $$install --cask enpass ||:
-	brew $$install --cask google-backup-and-sync ||:
+	brew $$install --cask google-drive ||:
 	brew $$install --cask hammerspoon ||:
 	brew $$install --cask istat-menus ||:
 	brew $$install --cask karabiner-elements ||:
@@ -180,7 +184,6 @@ macos-install-recommended:: ### Install recommended dependencies - optional: REI
 	brew $$install --cask raindropio ||:
 	brew $$install --cask sourcetree ||:
 	brew $$install --cask tripmode ||:
-	brew $$install --cask vanilla ||:
 	brew $$install --cask vlc ||:
 	brew $$install --cask wifi-explorer ||:
 
