@@ -1,0 +1,16 @@
+resources:
+  - namespace.yaml
+  - network-policy/default-deny-ingress.yaml
+  - performance-job.yaml
+  - performance-sa.yaml
+
+configMapGenerator:
+  - name: performance-config
+    literals:
+      - PROFILE=PROFILE_TO_REPLACE
+      - ENVIRONMENT=ENVIRONMENT_TO_REPLACE
+
+namespace: K8S_APP_NAMESPACE_TO_REPLACE
+
+commonLabels:
+  env: ENVIRONMENT_TO_REPLACE

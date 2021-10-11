@@ -1,0 +1,3 @@
+*.yaml
+!stacks/*/base/template/*
+!stacks/*/base/template/**/*.yaml

@@ -1,0 +1,55 @@
+pipeline {
+  agent { label "jenkins-slave" }
+  parameters {
+    choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'regression'], description: 'Environment of the Stage to deploy')
+  }
+  options {
+    buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
+    disableConcurrentBuilds()
+    parallelsAlwaysFailFast()
+  }
+  environment {
+    BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
+    PROFILE = "nonprod"
+    ENVIRONMENT = "${params.ENVIRONMENT}"
+  }
+  stages {
+    stage("Show Configuration") {
+      steps { sh "make show-configuration" }
+    }
+    stage("Delete Previous Job"){
+      steps{
+        script {
+          try { sh "make performance-delete" }
+          catch (Exception e) { echo 'Job not deleted' }
+        }
+      }
+    }
+    stage ("Run Terraform") {
+      steps {
+        script { sh "make provision STACKS=performance | tee /tmp/terraform_changes.txt" }
+      }
+    }
+    stage ("Performance Build"){
+      steps {
+        script {
+          sh "make performance-build"
+          sh "make performance-push"
+        }
+      }
+    }
+    stage ("Performance Deploy Job) {
+      steps {
+        script { sh "make performance-deploy" }
+      }
+    }
+    stage ("Deployment Summary") {
+      steps {
+        script { sh "make deployment-summary" }
+      }
+    }
+  }
+  post {
+    always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Performance)' BUILD_STATUS=${currentBuild.currentResult}" }
+  }
+}
