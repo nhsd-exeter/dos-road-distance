@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-exit 0
-
 [ $(make project-check-if-tech-is-included-in-stack NAME=python) == false ] && exit 0
 
 if [ $(make git-check-if-commit-changed-directory DIR=application PRECOMMIT=true) == true ]; then

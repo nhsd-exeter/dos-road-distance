@@ -98,9 +98,10 @@ devops-copy: ### Copy the DevOps automation toolchain scripts from this codebase
 			build/* \
 			$(DIR)/build
 		# ---
+		[ ! -f $(DIR)/build/automation/var/project.mk ] && cp -fv build/automation/lib/project/template/build/automation/var/project.mk $(DIR)/build/automation/var/project.mk
 		make _devops-project-update-variables DIR=$(DIR)
 		# ---
-		[ $$is_github == true ] && (
+		[ $$is_github == true ] || [ ! -d $(DIR)/.git ] && (
 			mkdir -p $(DIR)/.github/workflows
 			cp -fv build/automation/lib/project/template/.github/workflows/*.yml $(DIR)/.github/workflows
 			make file-replace-variables-in-dir DIR=$(DIR)/.github/workflows
@@ -111,12 +112,11 @@ devops-copy: ### Copy the DevOps automation toolchain scripts from this codebase
 		cp -fv LICENSE.md $(DIR)/build/automation/LICENSE.md
 		[ -f $(DIR)/docker/docker-compose.yml ] && rm -fv $(DIR)/docker/.gitkeep
 		# Project key files
-		[ ! -f $(DIR)/build/automation/var/project.mk ] && cp -fv build/automation/lib/project/template/build/automation/var/project.mk $(DIR)/build/automation/var/project.mk
 		[ ! -f $(DIR)/Makefile ] && cp -fv build/automation/lib/project/template/Makefile $(DIR)
 		cp -fv build/automation/lib/project/template/.editorconfig $(DIR)
 		cp -fv build/automation/lib/project/template/.gitignore $(DIR)
 		(
-			cp -fv $(DIR)/project.code-workspace /tmp/project.code-workspace || cp -fv build/automation/lib/project/template/project.code-workspace /tmp/project.code-workspace
+			cp -fv $(DIR)/project.code-workspace /tmp/project.code-workspace 2> /dev/null || cp -fv build/automation/lib/project/template/project.code-workspace /tmp/project.code-workspace
 			which npx && cat /tmp/project.code-workspace | npx strip-json-comments-cli > /tmp/project.code-workspace.tmp && mv -fv /tmp/project.code-workspace.tmp /tmp/project.code-workspace ||:
 			cp -fv build/automation/lib/project/template/project.code-workspace $(DIR)
 			jq --argjson data "$$(cat /tmp/project.code-workspace | jq '.folders')" '.folders = $$data' $(DIR)/project.code-workspace > $(DIR)/project.code-workspace.new
@@ -133,12 +133,9 @@ devops-copy: ### Copy the DevOps automation toolchain scripts from this codebase
 		[ ! -f $(DIR)/README.md ] && cp -fv build/automation/lib/project/template/README.md $(DIR)
 		[ -f $(DIR)/TODO.md ] && mv -fv $(DIR)/TODO.md $(DIR)/documentation; [ ! -f $(DIR)/documentation/TODO.md ] && cp -fv build/automation/lib/project/template/documentation/TODO.md $(DIR)/documentation
 		cp -fv build/automation/lib/project/template/documentation/adr/README.md $(DIR)/documentation/adr
-		[ ! -f "$(DIR)/documentation/diagrams/C4 model.drawio" ] && (
-			cp -fv "build/automation/lib/project/template/documentation/diagrams/C4 model.drawio" $(DIR)/documentation/diagrams
-			cp -fv "build/automation/lib/project/template/documentation/diagrams/C4 model - *.png" $(DIR)/documentation/diagrams
-		)
-		[ ! -f $(DIR)/documentation/diagrams/Infrastructure.drawio ] && cp -fv build/automation/lib/project/template/documentation/diagrams/Infrastructure.drawio $(DIR)/documentation/diagrams
-		cp -fv build/automation/lib/project/template/documentation/diagrams/DevOps-Pipelines.png $(DIR)/documentation/diagrams
+		[ ! -f $(DIR)/documentation/diagrams/C4model.drawio ] && cp -fv build/automation/lib/project/template/documentation/diagrams/C4model* $(DIR)/documentation/diagrams
+		[ ! -f $(DIR)/documentation/diagrams/Infrastructure.drawio ] && cp -fv build/automation/lib/project/template/documentation/diagrams/Infrastructure* $(DIR)/documentation/diagrams
+		[ ! -f $(DIR)/documentation/diagrams/DevOps.drawio ] && cp -fv build/automation/lib/project/template/documentation/diagrams/DevOps* $(DIR)/documentation/diagrams
 		[ ! -f $(DIR)/documentation/CONTRIBUTING.md ] && cp -fv build/automation/lib/project/template/documentation/CONTRIBUTING.md $(DIR)/documentation
 		[ ! -f $(DIR)/documentation/ONBOARDING.md ] && cp -fv build/automation/lib/project/template/documentation/ONBOARDING.md $(DIR)/documentation
 		# ---
@@ -154,7 +151,7 @@ devops-copy: ### Copy the DevOps automation toolchain scripts from this codebase
 	}
 	sync && version
 
-devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolchain scripts used by this project - optional: LATEST=true, NO_COMMIT=true
+devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolchain scripts used by this project - optional: SELECT_BY_TAG=true, PERFORM_COMMIT=true
 	function _print() {
 		(
 			set +x
@@ -184,7 +181,7 @@ devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolc
 		git submodule add --force \
 			https://github.com/$(DEVOPS_PROJECT_ORG)/$(DEVOPS_PROJECT_NAME).git \
 			$$(echo $(abspath $(TMP_DIR)/$(DEVOPS_PROJECT_NAME)) | sed "s;$(PROJECT_DIR);;g")
-		if [[ ! "$(LATEST)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]]; then
+		if [[ "$(SELECT_BY_TAG)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]]; then
 			tag=$$(make _devops-synchronise-select-tag-to-install)
 			cd $(TMP_DIR)/$(DEVOPS_PROJECT_NAME)
 			git checkout $$tag
@@ -218,9 +215,10 @@ devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolc
 			build/* \
 			$(PARENT_PROJECT_DIR)/build
 		# ---
+		[ ! -f $(PARENT_PROJECT_DIR)/build/automation/var/project.mk ] && cp -fv build/automation/lib/project/template/build/automation/var/project.mk $(PARENT_PROJECT_DIR)/build/automation/var/project.mk
 		make _devops-project-update-variables DIR=$(PARENT_PROJECT_DIR)
 		# ---
-		[ $$is_github == true ] && (
+		[ $$is_github == true ] || [ ! -d $(DIR)/.git ] && (
 			mkdir -p $(PARENT_PROJECT_DIR)/.github/workflows
 			cp -fv build/automation/lib/project/template/.github/workflows/*.yml $(PARENT_PROJECT_DIR)/.github/workflows
 			make file-replace-variables-in-dir DIR=$(PARENT_PROJECT_DIR)/.github/workflows
@@ -231,12 +229,11 @@ devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolc
 		cp -fv LICENSE.md $(PARENT_PROJECT_DIR)/build/automation/LICENSE.md
 		[ -f $(PARENT_PROJECT_DIR)/docker/docker-compose.yml ] && rm -fv $(PARENT_PROJECT_DIR)/docker/.gitkeep
 		# Project key files
-		[ ! -f $(PARENT_PROJECT_DIR)/build/automation/var/project.mk ] && cp -fv build/automation/lib/project/template/build/automation/var/project.mk $(PARENT_PROJECT_DIR)/build/automation/var/project.mk
 		[ ! -f $(PARENT_PROJECT_DIR)/Makefile ] && cp -fv build/automation/lib/project/template/Makefile $(PARENT_PROJECT_DIR)
 		cp -fv build/automation/lib/project/template/.editorconfig $(PARENT_PROJECT_DIR)
 		cp -fv build/automation/lib/project/template/.gitignore $(PARENT_PROJECT_DIR)
 		(
-			cp -fv $(PARENT_PROJECT_DIR)/project.code-workspace /tmp/project.code-workspace || cp -fv build/automation/lib/project/template/project.code-workspace /tmp/project.code-workspace
+			cp -fv $(PARENT_PROJECT_DIR)/project.code-workspace /tmp/project.code-workspace 2> /dev/null || cp -fv build/automation/lib/project/template/project.code-workspace /tmp/project.code-workspace
 			which npx && cat /tmp/project.code-workspace | npx strip-json-comments-cli > /tmp/project.code-workspace.tmp && mv -fv /tmp/project.code-workspace.tmp /tmp/project.code-workspace ||:
 			cp -fv build/automation/lib/project/template/project.code-workspace $(PARENT_PROJECT_DIR)
 			jq --argjson data "$$(cat /tmp/project.code-workspace | jq '.folders')" '.folders = $$data' $(PARENT_PROJECT_DIR)/project.code-workspace > $(PARENT_PROJECT_DIR)/project.code-workspace.new
@@ -253,12 +250,9 @@ devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolc
 		[ ! -f $(PARENT_PROJECT_DIR)/README.md ] && cp -fv build/automation/lib/project/template/README.md $(PARENT_PROJECT_DIR)
 		[ -f $(PARENT_PROJECT_DIR)/TODO.md ] && mv -fv $(PARENT_PROJECT_DIR)/TODO.md $(PARENT_PROJECT_DIR)/documentation; [ ! -f $(PARENT_PROJECT_DIR)/documentation/TODO.md ] && cp -fv build/automation/lib/project/template/documentation/TODO.md $(PARENT_PROJECT_DIR)/documentation
 		cp -fv build/automation/lib/project/template/documentation/adr/README.md $(PARENT_PROJECT_DIR)/documentation/adr
-		[ ! -f "$(PARENT_PROJECT_DIR)/documentation/diagrams/C4 model.drawio" ] && (
-			cp -fv "build/automation/lib/project/template/documentation/diagrams/C4 model.drawio" $(PARENT_PROJECT_DIR)/documentation/diagrams
-			cp -fv "build/automation/lib/project/template/documentation/diagrams/C4 model - *.png" $(PARENT_PROJECT_DIR)/documentation/diagrams
-		)
-		[ ! -f $(PARENT_PROJECT_DIR)/documentation/diagrams/Infrastructure.drawio ] && cp -fv build/automation/lib/project/template/documentation/diagrams/Infrastructure.drawio $(PARENT_PROJECT_DIR)/documentation/diagrams
-		cp -fv build/automation/lib/project/template/documentation/diagrams/DevOps-Pipelines.png $(PARENT_PROJECT_DIR)/documentation/diagrams
+		[ ! -f $(PARENT_PROJECT_DIR)/documentation/diagrams/C4model.drawio ] && cp -fv build/automation/lib/project/template/documentation/diagrams/C4model* $(PARENT_PROJECT_DIR)/documentation/diagrams
+		[ ! -f $(PARENT_PROJECT_DIR)/documentation/diagrams/Infrastructure.drawio ] && cp -fv build/automation/lib/project/template/documentation/diagrams/Infrastructure* $(PARENT_PROJECT_DIR)/documentation/diagrams
+		[ ! -f $(PARENT_PROJECT_DIR)/documentation/diagrams/DevOps.drawio ] && cp -fv build/automation/lib/project/template/documentation/diagrams/DevOps* $(PARENT_PROJECT_DIR)/documentation/diagrams
 		[ ! -f $(PARENT_PROJECT_DIR)/documentation/CONTRIBUTING.md ] && cp -fv build/automation/lib/project/template/documentation/CONTRIBUTING.md $(PARENT_PROJECT_DIR)/documentation
 		[ ! -f $(PARENT_PROJECT_DIR)/documentation/ONBOARDING.md ] && cp -fv build/automation/lib/project/template/documentation/ONBOARDING.md $(PARENT_PROJECT_DIR)/documentation
 		# ---
@@ -289,7 +283,9 @@ devops-update devops-synchronise: ### Update/upgrade the DevOps automation toolc
 		version=$$(make get-variable NAME=DEVOPS_PROJECT_VERSION)
 		if [ 0 -lt $$(git status -s | wc -l) ]; then
 			git add .
-			[ "$(NO_COMMIT)" != true ] && git commit -S -m "Update automation scripts to $$version" || echo "Please, check and commit the changes with the following message: \"Update automation scripts to $$version\""
+			if [[ "$(PERFORM_COMMIT)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]]; then
+				git commit -S -m "Update automation scripts to $$version" || echo "Please, check and commit the changes with the following message: \"Update automation scripts to $$version\""
+			fi
 		fi
 	}
 	if [ -z "$(__DEVOPS_SYNCHRONISE)" ]; then
@@ -310,7 +306,7 @@ _devops-project-update-variables: ### Set up project variables - mandatory: DIR=
 	pns=$$(cat $$file | grep "PROJECT_NAME_SHORT = " | sed "s/PROJECT_NAME_SHORT = //")
 	pdn=$$(cat $$file | grep "PROJECT_DISPLAY_NAME = " | sed "s/PROJECT_DISPLAY_NAME = //")
 	if [[ ! "$(ALWAYS_ASK)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]]; then
-		if [ "$$pg" != 'uec/tools' ] && [ "$$pgs" != 'uec-tools' ] && [ "$$pn" != 'make-devops' ] && [ "$$pns" != 'mdo' ] && [ "$$pdn" != 'Make DevOps' ]; then
+		if [ "$$pg" != '[uec/dos-api]' ] && [ "$$pgs" != '[uec-dos-api]' ] && [ "$$pn" != '[project-name]' ] && [ "$$pns" != '[pns]' ] && [ "$$pdn" != '[Project Name]' ]; then
 			exit 0
 		fi
 	fi
@@ -552,7 +548,11 @@ DEVOPS_PROJECT_ORG := nhsd-exeter
 DEVOPS_PROJECT_NAME := make-devops
 DEVOPS_PROJECT_DIR := $(abspath $(lastword $(MAKEFILE_LIST))/..)
 ifeq (true, $(shell [ ! -f $(PROJECT_DIR)/build/automation/VERSION ] && echo true))
-DEVOPS_PROJECT_VERSION := $(or $(shell git tag --points-at HEAD 2> /dev/null | sed "s/v//g" ||:), $(shell echo $$(git show -s --format=%cd --date=format:%Y%m%d%H%M%S 2> /dev/null ||:)-$$(git rev-parse --short HEAD 2> /dev/null ||:)))
+ifeq (true, $(shell [ -n "$$(git tag --points-at HEAD 2> /dev/null)" ] && echo true))
+DEVOPS_PROJECT_VERSION := $(shell echo $$(git show -s --format=%cd --date=format:%Y%m%d%H%M%S 2> /dev/null ||:)-$$(git rev-parse --short HEAD 2> /dev/null ||:)-$(shell git tag --points-at HEAD 2> /dev/null | sed "s/v//g" ||:))
+else
+DEVOPS_PROJECT_VERSION := $(shell echo $$(git show -s --format=%cd --date=format:%Y%m%d%H%M%S 2> /dev/null ||:)-$$(git rev-parse --short HEAD 2> /dev/null ||:)-snapshot)
+endif
 else
 DEVOPS_PROJECT_VERSION := $(shell cat $(PROJECT_DIR)/build/automation/VERSION)
 endif
@@ -593,13 +593,14 @@ JQ_DIR_REL := $(shell echo $(abspath $(LIB_DIR)/jq) | sed "s;$(PROJECT_DIR);;g")
 GIT_BRANCH_PATTERN_MAIN := ^(master|develop)$$
 GIT_BRANCH_PATTERN_PREFIX := ^(task|spike|automation|test|bugfix|hotfix|fix|release|migration)
 GIT_BRANCH_PATTERN_SUFFIX := ([A-Z]{2,5}-([0-9]{1,5}|X{1,5})_[A-Z][a-z]+_[A-Za-z0-9]+_[A-Za-z0-9_]+)$$
-GIT_BRANCH_PATTERN_ADDITIONAL := ^(task/Update_(automation_scripts|dependencies|documentation|tests|versions)|task/Refactor|devops/[A-Z][a-z]+_[A-Za-z0-9_]+_[A-Za-z0-9_]+)$$
+GIT_BRANCH_PATTERN_ADDITIONAL := ^(task/Update_(automation_scripts|dependencies|documentation|tests|versions)|task/Refactor|devops/[A-Z][a-z]+_[A-Za-z0-9_]+_[A-Za-z0-9_]+|alignment/[A-Z][a-z]+_[A-Za-z0-9_]+_[A-Za-z0-9_]+)$$
 GIT_BRANCH_PATTERN := $(GIT_BRANCH_PATTERN_MAIN)|$(GIT_BRANCH_PATTERN_PREFIX)/$(GIT_BRANCH_PATTERN_SUFFIX)|$(GIT_BRANCH_PATTERN_ADDITIONAL)
 GIT_BRANCH_MAX_LENGTH := 72
 GIT_TAG_PATTERN := [0-9]{12,14}-[a-z]{3,10}
 GIT_COMMIT_MESSAGE_PATTERN_MAIN := ^(([A-Z]{2,5}-([0-9]{1,5}|X{1,5}) [A-Z][a-z]+ [[:print:]]+ [[:print:]]+[^!?,.:;=-]|Update (automation scripts|dependencies|documentation|tests|versions))([[:print:]][^!?,.:;=-])*)$$|^((Update|Refactor|Automate|Test|Fix|Release|Migrate) [[:print:]]+ [[:print:]]+[^!?,.:;=-])$$
 GIT_COMMIT_MESSAGE_PATTERN_ADDITIONAL := ^([A-Z]{2,5}-([0-9]{1,5}|X{1,5}) [A-Z][a-z]+ [[:print:]]+ [[:print:]]+[^!?,.:;=-]|[A-Z][a-z]+ [[:print:]]+ [[:print:]]+[^!?,.:;=-])$$|([A-Z][[:print:]]+ \[ci:[[:blank:]]?[,a-z0-9-]+\])
 GIT_COMMIT_MESSAGE_MAX_LENGTH := 72
+GIT_PULL_REQUEST_TITLE_MAX_LENGTH := $(shell echo $$(( $(GIT_COMMIT_MESSAGE_MAX_LENGTH) + 12 )))
 
 BUILD_DATE := $(or $(BUILD_DATE), $(shell date -u +"%Y-%m-%dT%H:%M:%S%z"))
 BUILD_TIMESTAMP := $(shell date --date=$(BUILD_DATE) -u +"%Y%m%d%H%M%S" 2> /dev/null)
@@ -623,6 +624,10 @@ SETUP_COMPLETE_FLAG_FILE := $(TMP_DIR)/.make-devops-setup-complete
 PROFILE := $(or $(PROFILE), local)
 ENVIRONMENT := $(or $(ENVIRONMENT), $(or $(shell ([ $(PROFILE) = local ] && echo local) || (echo $(BUILD_BRANCH) | grep -Eoq '$(GIT_BRANCH_PATTERN_SUFFIX)' && (echo $(BUILD_BRANCH) | grep -Eo '[A-Za-z]{2,5}-[0-9]{1,5}' | tr '[:upper:]' '[:lower:]') || (echo $(BUILD_BRANCH) | grep -Eoq '^tags/$(GIT_TAG_PATTERN)' && echo $(PROFILE)) || ([ $(BUILD_BRANCH) = master ] && echo $(PROFILE)))), unknown))
 
+PATH_HOMEBREW := /opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/opt/findutils/libexec/gnubin:/opt/homebrew/opt/grep/libexec/gnubin:/opt/homebrew/opt/gnu-sed/libexec/gnubin:/opt/homebrew/opt/gnu-tar/libexec/gnubin:/opt/homebrew/opt/make/libexec/gnubin:/opt/homebrew/bin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/grep/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gnu-tar/libexec/gnubin:/usr/local/opt/make/libexec/gnubin
+PATH_DEVOPS := $(BIN_DIR):$(HOME)/.pyenv/bin:$(HOME)/.pyenv/shims
+PATH_SYSTEM := /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+
 # ==============================================================================
 # `make` configuration
 
@@ -632,7 +637,7 @@ ENVIRONMENT := $(or $(ENVIRONMENT), $(or $(shell ([ $(PROFILE) = local ] && echo
 .ONESHELL:
 .PHONY: *
 MAKEFLAGS := --no-print-director
-PATH := /usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gnu-tar/libexec/gnubin:/usr/local/opt/grep/libexec/gnubin:/usr/local/opt/make/libexec/gnubin:/opt/homebrew/bin:$(BIN_DIR):$(PATH)
+PATH := $(PATH_DEVOPS):$(PATH_HOMEBREW):$(PATH_SYSTEM)
 SHELL := /bin/bash
 ifeq (true, $(shell [[ "$(DEBUG)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]] && echo true))
 	.SHELLFLAGS := -cex
@@ -736,8 +741,12 @@ endif
 # ==============================================================================
 # Check if all the prerequisites are met
 
+ifeq (true, $(shell $(PROJECT_DIR)/build/automation/lib/system.sh > $(PROJECT_DIR)/build/automation/tmp/.system.env && echo true))
+include $(abspath $(PROJECT_DIR)/build/automation/tmp/.system.env)
+endif
+
 ifeq (true, $(shell [ ! -f $(SETUP_COMPLETE_FLAG_FILE) ] && echo true))
-ifeq (true, $(shell [ "Darwin" = "$$(uname)" ] && echo true))
+ifeq (true, $(shell [ $(SYSTEM_DIST) = "macos" ] && echo true))
 # macOS: Xcode Command Line Tools
 ifneq (0, $(shell xcode-select -p > /dev/null 2>&1; echo $$?))
 $(info )
@@ -746,11 +755,9 @@ $(info )
 $(error $(shell tput setaf 202; echo "WARNING: Please, before proceeding install the Xcode Command Line Tools. Then, run the \`curl\` installation command"; tput sgr0))
 endif
 # macOS: Homebrew
-ifneq (0, $(shell which brew > /dev/null 2>&1; echo $$?))
+ifneq (0, $(shell which brew > /dev/null 2>&1 || test -x /opt/homebrew/bin/brew; echo $$?))
 $(info )
 $(info Run $(shell tput setaf 4; echo '/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'; tput sgr0))
-$(info )
-$(info or alternatively $(shell tput setaf 4; echo '/usr/bin/ruby -e "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'; tput sgr0))
 $(info )
 $(error $(shell tput setaf 202; echo "WARNING: Please, before proceeding install the brew package manager. Copy and paste in your terminal the above command and execute it. If it fails to install try setting your DNS server to 8.8.8.8. Then, run the \`curl\` installation command"; tput sgr0))
 endif
