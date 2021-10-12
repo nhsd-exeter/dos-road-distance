@@ -36,10 +36,10 @@ class RoadDistance(Common):
         log_name = os.environ.get("LOGGER", "Audit")
         self.logger = RDLogger(log_name, self.request_id, self.transaction_id)
 
-        start_time = datetime.now().microsecond
+        self.start_time = datetime.now().microsecond
 
         self.logger.log(
-            "Started road distance request. start_time: " + str(start_time),
+            "Started road distance request. start_time: " + str(self.start_time),
         )
 
     def process_request(self) -> int:
