@@ -10,6 +10,7 @@ from traveltime_response import TravelTimeResponse
 import config as config
 import requests
 from traveltime_mock import TravelTimeMock
+from datetime import datetime
 
 
 class RoadDistance(Common):
@@ -26,6 +27,7 @@ class RoadDistance(Common):
     contracts: dict = config.Contracts
     request_id: str = ""
     transaction_id: str = ""
+    start_time:
 
     def __init__(self, request):
         self.request = request
@@ -33,6 +35,12 @@ class RoadDistance(Common):
         self.request_id = str(uuid.uuid4())
         log_name = os.environ.get("LOGGER", "Audit")
         self.logger = RDLogger(log_name, self.request_id, self.transaction_id)
+
+        start_time = datetime.now().microsecond
+
+        self.logger.log(
+            "Started road distance request. start_time: " + str(start_time),
+        )
 
     def process_request(self) -> int:
         if not self.validate_against_schema(self.request, "local"):
@@ -52,6 +60,12 @@ class RoadDistance(Common):
         except Exception as ex:
             self.status_code = 500
             self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
+
+        end_time = datetime.now().microsecond
+        total_time = end_time - self.start_time
+        self.logger.log(
+            "Completed road distance request. end_time: " + str(end_time) + ", total_time: " + str(total_time)
+        )
 
         return self.status_code
 
