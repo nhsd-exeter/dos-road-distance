@@ -27,7 +27,7 @@ class RoadDistance(Common):
     contracts: dict = config.Contracts
     request_id: str = ""
     transaction_id: str = ""
-    start_time:
+    start_time: int
 
     def __init__(self, request):
         self.request = request
