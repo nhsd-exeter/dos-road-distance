@@ -1,7 +1,12 @@
 pipeline {
   agent { label "jenkins-slave" }
   parameters {
-    choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'regression'], description: 'Environment of the Stage to deploy')
+    choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'regression'], description: 'Environment to test')
+    choice(name: 'SCENARIO', choices: ['locustfile.py'], description: 'Performance scenario to run')
+    string(name: 'TAGS', defaultValue: '[load]', description: 'List of tags to run e.g. [load,coldStart]')
+    string(name: 'USERS', defaultValue: '5', description: 'Number of users to run')
+    string(name: 'RATE', defaultValue: '1', description: 'Spawn rate of users per second')
+    string(name: 'RUNTIME', defaultValue: '60', description: 'Time to run tests in seconds')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -12,6 +17,11 @@ pipeline {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
     PROFILE = "nonprod"
     ENVIRONMENT = "${params.ENVIRONMENT}"
+    LOCUST_LOCUSTFILE = "${params.SCENARIO}"
+    LOCUST_TAGS = "${params.TAGS}"
+    LOCUST_USERS = "${params.USERS}"
+    LOCUST_SPAWN_RATE = "${params.RATE}"
+    LOCUST_RUN_TIME = "${params.RUNTIME}"
   }
   stages {
     stage("Show Configuration") {
@@ -27,7 +37,7 @@ pipeline {
     }
     stage ("Run Terraform") {
       steps {
-        script { sh "make provision STACKS=performance | tee /tmp/terraform_changes.txt" }
+        script { sh "make provision STACKS=performance ENVIRONMENT=nonprod | tee /tmp/terraform_changes.txt" }
       }
     }
     stage ("Performance Build"){

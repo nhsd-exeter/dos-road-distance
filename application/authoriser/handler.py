@@ -26,5 +26,5 @@ def get_secret_token():
         SecretId=os.environ['SECRET_STORE'],
     )
     secrets = json.loads(secrets_response['SecretString'])
-    token = secrets['ROAD_DISTANCE_API_TOKEN']
+    token = secrets['API_RD_TOKEN']
     return token

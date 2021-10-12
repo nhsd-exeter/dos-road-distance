@@ -52,11 +52,11 @@ trust-certificate: ssl-trust-certificate-project ## Trust the SSL development ce
 # --------------------------------------
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-		if [ $(BUILD_ID) == 0 ]; then
-			container=roaddistance-lambda
-		else
-			container=roaddistance-lambda-$(BUILD_ID)
-		fi
+	if [ $(BUILD_ID) == 0 ]; then
+		container=roaddistance-lambda
+	else
+		container=roaddistance-lambda-$(BUILD_ID)
+	fi
 	if [ -z $(TEST_FILE) ]; then
 			docker exec $$container \
 			/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done'
@@ -163,28 +163,34 @@ pipeline-send-notification: ## Send Slack notification with the pipeline status
 
 # --------------------------------------
 
-performance-build:
-	rm -rf $(DOCKER_DIR)/performance/assets/*
-	cp $(TEST_DIR)/performance/*.py $(DOCKER_DIR)/performance/assets/
-	make docker-image NAME=performance
-	rm -rf $(DOCKER_DIR)/performance/assets/*
+performance-build: # mandatory - PROFILE=[name]
+	rm -rf $(DOCKER_DIR)/performance/assets/locust/*
+	cp $(APPLICATION_TEST_DIR)/performance/*.py $(DOCKER_DIR)/performance/assets/locust/
+	cp $(APPLICATION_TEST_DIR)/performance/requirements.txt $(DOCKER_DIR)/performance/assets/locust/
+	cp $(APPLICATION_TEST_DIR)/performance/locust.conf $(DOCKER_DIR)/performance/assets/locust/
+	cp -r $(APPLICATION_DIR)/roaddistance/mock $(DOCKER_DIR)/performance/assets/locust/mock/
+	make docker-image NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
+	rm -rf $(DOCKER_DIR)/performance/assets/locust/*
 
-performance-push:
-	make docker-push NAME=performance
+performance-push: # mandatory - PROFILE=[name]
+	make docker-push NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
 
 performance-deploy: # mandatory - PROFILE=[name], SECONDS=[time of performance]
-	make k8s-deploy STACK=performance
-	make k8s-job-tester-wait-to-complete TESTER_NAME=$(SERVICE_PREFIX)-performance SECONDS=$(SECONDS)
-	make performance-upload
+	make secret-fetch-and-export-variables
+	make k8s-deploy STACK=performance AWS_ECR=$(AWS_LAMBDA_ECR)
+	make k8s-job-tester-wait-to-complete TESTER_NAME=$(SERVICE_PREFIX)-performance SECONDS=$(SECONDS) AWS_ECR=$(AWS_LAMBDA_ECR)
 
 performance-delete: # mandatory - PROFILE=[name]
-	make k8s-undeploy
+	make k8s-undeploy AWS_ECR=$(AWS_LAMBDA_ECR)
 
-performance-start:
-	make docker-image-start NAME=performance ARGS=""
+performance-start: # mandatory - PROFILE=[name]
+	if [ $(PROFILE) != local ]; then
+		eval "$$(make secret-fetch-and-export-variables)"
+	fi
+	make docker-image-start NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
 
 performance-stop:
-	make docker-image-stop NAME=performance
+	make docker-image-stop NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
 
 performance-test: # mandatory - PROFILE=[name]
 	make performance-stop
@@ -192,10 +198,7 @@ performance-test: # mandatory - PROFILE=[name]
 	make performance-start
 
 performance-clean:
-	rm -rf $(TEST_DIR)/performance/results/*
-
-performance-upload:
-	make aws-s3-upload FILE=$(FILE) URI=$(SERVICE_PREFIX)-performance
+	rm -rf $(APPLICATION_TEST_DIR)/performance/results/*
 
 performance-download:
 	make aws-s3-download FILE=$(FILE) URI=$(SERVICE_PREFIX)-performance
