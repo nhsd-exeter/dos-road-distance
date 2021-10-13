@@ -9,7 +9,7 @@ spec:
   template:
     metadata:
       labels:
-        name: performance
+        name: ${SERVICE_PREFIX_TO_REPLACE}-performance
     spec:
       serviceAccountName: ${SERVICE_PREFIX_TO_REPLACE}-performance-sa
       securityContext: {}
