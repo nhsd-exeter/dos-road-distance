@@ -32,7 +32,7 @@ resource "aws_iam_role_policy" "iam_role_policy" {
 module "performance_bucket" {
   source          = "../../modules/s3"
   bucket_name     = "${var.service_prefix}-performance"
-  bucket_iam_role = aws_iam_role.iam_host_role.id
+  bucket_iam_role = "${var.service_prefix}-performance-bucket-role"
   attach_policy   = true
   log_bucket      = var.texas_s3_logs_bucket
   service_name    = var.project_group_short
