@@ -50,11 +50,14 @@ def build_request_proto(origin: dict, destinations: list) -> bytes:
 def send_request(request):
     endpoint = os.environ.get("DRD_ENDPOINT")
     basic_auth = os.environ.get("DRD_BASICAUTH")
-    r = requests.post(url=endpoint, data=request, headers={
+    r = requests.post(
+        url=endpoint,
+        data=request,
+        headers={
             "Authorization": basic_auth,
             "Content-type": "application/octet-stream",
-            "Accept": "application/octet-stream"
-        }
+            "Accept": "application/octet-stream",
+        },
     )
     print(r.status_code)
     return r.content
@@ -81,10 +84,8 @@ def decode_response(response):
     return {"travelTimes": traveltimes, "distances": distances}
 
 
-origin = {'lat': 50.72179229048227, 'lng': -3.525942582444856}
-destinations = [
-    {'lat': 50.71731288843375, 'lng': -3.5389588298795496}
-]
+origin = {"lat": 50.72179229048227, "lng": -3.525942582444856}
+destinations = [{"lat": 50.71731288843375, "lng": -3.5389588298795496}]
 
 request = build_request_proto(origin, destinations)
 response = send_request(request)

@@ -122,15 +122,23 @@ class RDLogger:
             raise AttributeError(config.EXCEPTION_LOG_FORMATTER_NOT_FOUND + formatter)
 
     def log_provider_success(self, serviceuid: str, unreachable: str, distance: int = 0):
-        if(unreachable == "yes"):
+        if unreachable == "yes":
             meters = km = miles = ""
         else:
             meters = str(distance)
-            km = str(round(distance/1000, 1))
+            km = str(round(distance / 1000, 1))
             miles = str(round(distance * self.M_TO_MI, 1))
         log_message = (
-            "success|reference=" + serviceuid + "|unreachable=" + unreachable
-            + "|distance=" + meters + "|km=" + km + "|miles=" + miles
+            "success|reference="
+            + serviceuid
+            + "|unreachable="
+            + unreachable
+            + "|distance="
+            + meters
+            + "|km="
+            + km
+            + "|miles="
+            + miles
         )
         self.log_formatted(log_message, "provider_response")
 

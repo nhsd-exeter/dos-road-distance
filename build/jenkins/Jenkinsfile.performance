@@ -21,7 +21,7 @@ pipeline {
     LOCUST_TAGS = "${params.TAGS}"
     LOCUST_USERS = "${params.USERS}"
     LOCUST_SPAWN_RATE = "${params.RATE}"
-    LOCUST_RUN_TIME = "${params.RUNTIME}"
+    LOCUST_RUN_TIME = "${params.RUNTIME}s"
   }
   stages {
     stage("Show Configuration") {
@@ -50,7 +50,7 @@ pipeline {
     }
     stage ("Performance Deploy Job) {
       steps {
-        script { sh "make performance-deploy" }
+        script { sh "make performance-deploy SECONDS=${params.RUNTIME}" }
       }
     }
     stage ("Deployment Summary") {
