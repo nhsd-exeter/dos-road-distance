@@ -173,14 +173,17 @@ performance-build: # mandatory - PROFILE=[name]
 	rm -rf $(DOCKER_DIR)/performance/assets/locust/*
 
 performance-push: # mandatory - PROFILE=[name]
+	eval "$$(make aws-assume-role-export-variables)"
 	make docker-push NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
 
 performance-deploy: # mandatory - PROFILE=[name], SECONDS=[time of performance]
+	eval "$$(make aws-assume-role-export-variables)"
 	make secret-fetch-and-export-variables ENVIRONMENT=nonprod
 	make k8s-deploy STACK=performance AWS_ECR=$(AWS_LAMBDA_ECR)
 	make k8s-job-tester-wait-to-complete TESTER_NAME=$(SERVICE_PREFIX)-performance SECONDS=$(SECONDS) AWS_ECR=$(AWS_LAMBDA_ECR)
 
 performance-delete: # mandatory - PROFILE=[name]
+	eval "$$(make aws-assume-role-export-variables)"
 	make k8s-undeploy AWS_ECR=$(AWS_LAMBDA_ECR)
 
 performance-start: # mandatory - PROFILE=[name]
@@ -201,6 +204,7 @@ performance-clean:
 	rm -rf $(APPLICATION_TEST_DIR)/performance/results/*
 
 performance-download:
+	eval "$$(make aws-assume-role-export-variables)"
 	make aws-s3-download FILE=$(FILE) URI=$(SERVICE_PREFIX)-performance
 
 # ==============================================================================
