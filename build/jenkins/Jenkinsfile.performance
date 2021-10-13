@@ -27,7 +27,7 @@ pipeline {
     stage("Show Configuration") {
       steps { sh "make show-configuration" }
     }
-    stage("Delete Previous Job"){
+    stage("Delete Previous Job") {
       steps{
         script {
           try { sh "make performance-delete" }
@@ -40,7 +40,7 @@ pipeline {
         script { sh "make provision STACKS=performance ENVIRONMENT=nonprod | tee /tmp/terraform_changes.txt" }
       }
     }
-    stage ("Performance Build"){
+    stage ("Performance Build") {
       steps {
         script {
           sh "make performance-build"
@@ -48,7 +48,7 @@ pipeline {
         }
       }
     }
-    stage ("Performance Deploy Job) {
+    stage ("Performance Deploy Job") {
       steps {
         script { sh "make performance-deploy SECONDS=${params.RUNTIME}" }
       }
