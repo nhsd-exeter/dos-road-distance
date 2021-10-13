@@ -14,7 +14,7 @@ resource "aws_iam_role" "iam_host_role" {
         "Action": "sts:AssumeRoleWithWebIdentity",
         "Condition": {
           "StringLike": {
-            "${trimprefix(data.terraform_remote_state.eks.outputs.eks_oidc_issuer_url, "https://")}:sub": "system:serviceaccount:${var.k8s_app_namespace}*:${var.service_prefix}-performance-sa"
+            "${trimprefix(data.terraform_remote_state.eks.outputs.eks_oidc_issuer_url, "https://")}:sub": "system:serviceaccount:${var.project_group_short}-${var.project_name_short}*:${var.service_prefix}-performance-sa"
         }
       }
     }

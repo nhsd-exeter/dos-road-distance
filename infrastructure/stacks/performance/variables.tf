@@ -46,10 +46,10 @@ variable "project_group_short" {
   description = "Short name for the project group"
 }
 
-variable "programme" {
-  description = "Shorthand name of the project programme"
+variable "project_name_short" {
+  description = "Short name of the project"
 }
 
-variable "k8s_app_namespace" {
-  description = "Name of the kubernetes namespace"
+variable "programme" {
+  description = "Shorthand name of the project programme"
 }
