@@ -1,5 +1,5 @@
 import json
-from locust import task, FastHttpUser, tag, LoadTestShape, constant_pacing, between
+from locust import task, FastHttpUser, tag, between
 import config as config
 
 

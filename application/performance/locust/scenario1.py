@@ -1,16 +1,16 @@
 import json
-from locust import task, FastHttpUser, constant
+from locust import task, FastHttpUser, tag, between
 import config as config
 
 
 class FiveDest(FastHttpUser):
     weight = 80
-    wait_time = constant(300)
-
+    wait_time = between(0.5, 2)
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_5_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
+    @tag('load')
     @task
     def start_test(self):
         self.client.post("", data=json.dumps(self.payload), headers=config.headers)
@@ -18,12 +18,12 @@ class FiveDest(FastHttpUser):
 
 class FiftyDest(FastHttpUser):
     weight = 15
-    wait_time = constant(300)
 
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_50_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
+    @tag('load')
     @task
     def start_test(self):
         self.client.post("", data=json.dumps(self.payload), headers=config.headers)
@@ -31,12 +31,12 @@ class FiftyDest(FastHttpUser):
 
 class FiveHundredDest(FastHttpUser):
     weight = 3
-    wait_time = constant(300)
 
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_500_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
+    @tag('load')
     @task
     def start_test(self):
         self.client.post("", data=json.dumps(self.payload), headers=config.headers)
@@ -44,12 +44,12 @@ class FiveHundredDest(FastHttpUser):
 
 class OneThousandFiveHundredDest(FastHttpUser):
     weight = 1
-    wait_time = constant(300)
 
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_1500_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
+    @tag('load')
     @task
     def start_test(self):
         self.client.post("", data=json.dumps(self.payload), headers=config.headers)
@@ -57,12 +57,14 @@ class OneThousandFiveHundredDest(FastHttpUser):
 
 class ThreeThousandDest(FastHttpUser):
     weight = 1
-    wait_time = constant(300)
 
     def on_start(self):
         with open(config.ccs_prefix + "ccs_3000_destinations.json") as json_file:
             self.payload = json.load(json_file)
 
+    @tag('load')
     @task
     def start_test(self):
         self.client.post("", data=json.dumps(self.payload), headers=config.headers)
+
+
