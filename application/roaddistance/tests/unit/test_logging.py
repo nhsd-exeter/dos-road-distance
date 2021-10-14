@@ -34,9 +34,8 @@ class TestLogging(Common):
     LOG4_DETAILS_STATUS = r"\|system\|success\|message=([^\|]*)"
     LOG4_DETAILS_RAW = r"\|({}|{}|{})\|.*".format(STR_LOG_CCSREQUEST, STR_LOG_PROVIDERREQUEST, STR_LOG_PROVIDERRESPONSE)
     LOG4_CCS_FAILURE = r"\|{}\|failed\|statuscode=([^\|]*)|error=([^\|]+)|data=([^\|]*)".format(STR_LOG_CCSREQUEST)
-    LOG4_PROVIDER_FAILURE = (
-        r"\|{}\|failed\|statuscode=([^\|]*)|error=([^\|]+)|data=([^\|]*)"
-        .format(STR_LOG_PROVIDERRESPONSE)
+    LOG4_PROVIDER_FAILURE = r"\|{}\|failed\|statuscode=([^\|]*)|error=([^\|]+)|data=([^\|]*)".format(
+        STR_LOG_PROVIDERRESPONSE
     )
     LOG4_PROVIDER_RESPONSE = r"\|{}\|success\|reference=([^\|]*)\|unreachable=(yes|no)\|distance=([\d.]+)?".format(
         STR_LOG_PROVIDERRESPONSE
@@ -171,18 +170,16 @@ class TestLogging(Common):
     def test_content_provider_response_success_per_destination(self):
         self.rdlogger.purge()
         self.rdlogger.log_provider_success("1000001", "yes")
-        compare = (
-            "{}|success|reference=1000001|unreachable=yes|distance=|km=|miles="
-            .format(self.STR_LOG_PROVIDERRESPONSE)
+        compare = "{}|success|reference=1000001|unreachable=yes|distance=|km=|miles=".format(
+            self.STR_LOG_PROVIDERRESPONSE
         )
         result = self.rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
         self.rdlogger.purge()
         self.rdlogger.log_provider_success("1000001", "no", 1000)
-        compare = (
-            "{}|success|reference=1000001|unreachable=no|distance=1000|km=1.0|miles=0.6"
-            .format(self.STR_LOG_PROVIDERRESPONSE)
+        compare = "{}|success|reference=1000001|unreachable=no|distance=1000|km=1.0|miles=0.6".format(
+            self.STR_LOG_PROVIDERRESPONSE
         )
         result = self.rdlogger.read_log_output().find(compare)
         print(result)

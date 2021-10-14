@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: K8S_APP_NAMESPACE_TO_REPLACE
+  annotations:
+    splunk.com/index: eks_logs_dos_${AWS_ACCOUNT_NAME_TO_REPLACE}
+  labels:
+    ttl: K8S_TTL_TO_REPLACE
+    project-group: PROJECT_GROUP_SHORT_TO_REPLACE

@@ -44,8 +44,6 @@ provision: # Provision environment - mandatory: PROFILE=[name],STACKS=[comma sep
 	eval "$$(make secret-fetch-and-export-variables)"
 	make terraform-apply-auto-approve PROFILE=$(PROFILE) STACKS=$(STACKS)
 
-clean: # Clean up project
-
 # ==============================================================================
 # Supporting targets
 
@@ -54,11 +52,11 @@ trust-certificate: ssl-trust-certificate-project ## Trust the SSL development ce
 # --------------------------------------
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-		if [ $(BUILD_ID) == 0 ]; then
-			container=roaddistance-lambda
-		else
-			container=roaddistance-lambda-$(BUILD_ID)
-		fi
+	if [ $(BUILD_ID) == 0 ]; then
+		container=roaddistance-lambda
+	else
+		container=roaddistance-lambda-$(BUILD_ID)
+	fi
 	if [ -z $(TEST_FILE) ]; then
 			docker exec $$container \
 			/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done'
@@ -158,10 +156,6 @@ deployment-summary: # Returns a deployment summary
 	echo Terraform Changes
 	cat /tmp/terraform_changes.txt | grep -E 'Apply...'
 
-pipeline-finalise: ## Finalise pipeline execution - mandatory: PIPELINE_NAME,BUILD_STATUS
-	# Check if BUILD_STATUS is SUCCESS or FAILURE
-	make pipeline-send-notification
-
 pipeline-send-notification: ## Send Slack notification with the pipeline status - mandatory: PIPELINE_NAME,BUILD_STATUS
 	eval "$$(make aws-assume-role-export-variables)"
 	eval "$$(make secret-fetch-and-export-variables NAME=$(DEPLOYMENT_SECRETS))"
@@ -169,38 +163,56 @@ pipeline-send-notification: ## Send Slack notification with the pipeline status
 
 # --------------------------------------
 
-pipeline-check-resources: ## Check all the pipeline deployment supporting resources - optional: PROFILE=[name]
-	profiles="$$(make project-list-profiles)"
-	# for each profile
-	#export PROFILE=$$profile
-	# TODO:
-	# table: $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)-deployment
-	# secret: $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)-$(PROFILE)/deployment
-	# bucket: $(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)-$(PROFILE)-deployment
-	# certificate: SSL_DOMAINS_PROD
-	# repos: DOCKER_REPOSITORIES
+performance-build: # mandatory - PROFILE=[name]
+	rm -rf $(DOCKER_DIR)/performance/assets/locust/*
+	cp $(APPLICATION_TEST_DIR)/performance/*.py $(DOCKER_DIR)/performance/assets/locust/
+	cp $(APPLICATION_TEST_DIR)/performance/requirements.txt $(DOCKER_DIR)/performance/assets/locust/
+	cp $(APPLICATION_TEST_DIR)/performance/locust.conf $(DOCKER_DIR)/performance/assets/locust/
+	cp -r $(APPLICATION_DIR)/roaddistance/mock $(DOCKER_DIR)/performance/assets/locust/mock/
+	make docker-image NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
+	rm -rf $(DOCKER_DIR)/performance/assets/locust/*
 
-pipeline-create-resources: ## Create all the pipeline deployment supporting resources - optional: PROFILE=[name]
-	profiles="$$(make project-list-profiles)"
-	# for each profile
-	#export PROFILE=$$profile
-	# TODO:
-	# Per AWS accoount, i.e. `nonprod` and `prod`
+performance-push: # mandatory - PROFILE=[name]
 	eval "$$(make aws-assume-role-export-variables)"
-	#make aws-dynamodb-create NAME=$(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)-deployment ATTRIBUTE_DEFINITIONS= KEY_SCHEMA=
-	#make secret-create NAME=$(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)-$(PROFILE)/deployment VARS=DB_PASSWORD,SMTP_PASSWORD,SLACK_WEBHOOK_URL
-	#make aws-s3-create NAME=$(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)-$(PROFILE)-deployment
-	#make ssl-request-certificate-prod SSL_DOMAINS_PROD
-	# Centralised, i.e. `mgmt`
-	eval "$$(make aws-assume-role-export-variables AWS_ACCOUNT_ID=$(AWS_ACCOUNT_ID_MGMT))"
-	#make docker-create-repository NAME=NAME_TEMPLATE_TO_REPLACE
-	#make aws-codeartifact-setup REPOSITORY_NAME=$(PROJECT_GROUP_SHORT)
+	make docker-push NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
+
+performance-deploy: # mandatory - PROFILE=[name], SECONDS=[time of performance]
+	eval "$$(make aws-assume-role-export-variables)"
+	eval "$$(make secret-fetch-and-export-variables ENVIRONMENT=nonprod)"
+	make k8s-deploy STACK=performance AWS_ECR=$(AWS_LAMBDA_ECR)
+	make k8s-job-tester-wait-to-complete TESTER_NAME=$(SERVICE_PREFIX)-performance SECONDS=$(SECONDS) AWS_ECR=$(AWS_LAMBDA_ECR)
+
+performance-delete: # mandatory - PROFILE=[name]
+	eval "$$(make aws-assume-role-export-variables)"
+	make k8s-undeploy AWS_ECR=$(AWS_LAMBDA_ECR)
+
+performance-start: # mandatory - PROFILE=[name]
+	if [ $(PROFILE) != local ]; then
+		eval "$$(make secret-fetch-and-export-variables)"
+	fi
+	make docker-image-start NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
+
+performance-stop:
+	make docker-image-stop NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
+
+performance-test: # mandatory - PROFILE=[name]
+	make performance-stop
+	make performance-build
+	make performance-start
+
+performance-clean:
+	rm -rf $(APPLICATION_TEST_DIR)/performance/results/*
+
+performance-download:
+	eval "$$(make aws-assume-role-export-variables)"
+	make aws-s3-download FILE=$(FILE) URI=$(SERVICE_PREFIX)-performance
 
 # ==============================================================================
 
 create-artefact-repositories: # Create ECR repositories to store the artefacts
 	make docker-create-repository NAME=roaddistance-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
 	make docker-create-repository NAME=authoriser-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
+	make docker-create-repository NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
 
 # ==============================================================================
 .SILENT: \
