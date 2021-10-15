@@ -1,0 +1,45 @@
+pipeline {
+  agent { label "jenkins-slave" }
+  options {
+    buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
+    disableConcurrentBuilds()
+    parallelsAlwaysFailFast()
+    timeout(time: 25, unit: "MINUTES")
+  }
+  environment {
+    GIT_TAG = "${env.BRANCH_NAME}"
+    PROFILE = sh(returnStd: true, script: "make parse-profile-from-tag GIT_TAG=$GIT_TAG").trim()
+  }
+  triggers { pollSCM(env.BRANCH_NAME == "master" ? "* * * * *" : "") }
+  stages {
+    stage("Show Configuration") {
+      when { expression { env.PROFILE == "put" || env.PROFILE == "live" } }
+      steps {
+        script { sh "make show-configuration" }
+      }
+    }
+    stage("Propagate Artefacts") {
+      when { expression { env.PROFILE == "put" || env.PROFILE == "live" } }
+      steps{
+        script { sh "make propagate" }
+      }
+    }
+    stage("Deploy") {
+      when { expression { env.PROFILE == "put" || env.PROFILE == "live" } }
+      steps {
+        script { sh "make provision | tee /tmp/terraform_changes.txt" }
+        script { sh "make lambda-alias" }
+      }
+    }
+
+    stage("Deployment Summary") {
+      when { expression { env.PROFILE == "put" || env.PROFILE == "live" } }
+      steps {
+        script { sh "make deployment-summary" }
+      }
+    }
+  }
+  post {
+    always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Production)' BUILD_STATUS=${currentBuild.currentResult}" }
+  }
+}

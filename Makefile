@@ -152,6 +152,8 @@ aws-lambda-create-alias: ### Creates an alias for a lambda version - Mandatory N
 			--function-version $(VERSION) \
 		"
 
+# --------------------------------------
+
 deployment-summary: # Returns a deployment summary
 	echo Terraform Changes
 	cat /tmp/terraform_changes.txt | grep -E 'Apply...'
@@ -160,6 +162,33 @@ pipeline-send-notification: ## Send Slack notification with the pipeline status
 	eval "$$(make aws-assume-role-export-variables)"
 	eval "$$(make secret-fetch-and-export-variables NAME=$(DEPLOYMENT_SECRETS))"
 	make slack-it
+
+propagate: # Propagate the image to production ecr - mandatory: BUILD_COMMIT_HASH=[image hash],GIT_TAG=[git tag]
+	make artefact-pull-and-retag COMMIT=$(BUILD_COMMIT_HASH) ARTEFACTS=roaddistance-lambda,authoriser-lambda TAG=$(GIT_TAG) PROFILE=nonprod
+	make artefact-propagate TAG=$(GIT_TAG) ARTEFACTS=roaddistance-lambda,authoriser-lambda PROFILE=$(PROFILE)
+
+artefact-pull-and-retag: # Pulls image from nonprod and retags it ready for production - mandatory: COMMIT=[commit hash]TAG=[image tag],ARTEFACTS=[comma separated list of images],PROFILE=[profile]
+	eval "$$(make aws-assume-role-export-variables PROFILE=$(PROFILE))"
+	for image in $$(echo $(or $(ARTEFACTS), $(ARTEFACT)) | tr "," "\n"); do
+		hash=$$(make git-hash COMMIT=$(COMMIT))
+		digest=$$(make docker-image-get-digest NAME=$$image TAG=$$hash)
+		make docker-pull NAME=$$image DIGEST=$$digest AWS_ECR=$(AWS_LAMBDA_ECR)
+		docker tag $(AWS_LAMBDA_ECR)/$(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)/$$image@$$digest \
+			$(AWS_ACCOUNT_ID_PROD).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com/$(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)/$$image:$(TAG)
+	done
+
+artefact-propagate: # Pushes image to production - mandatory:TAG=[image tag],ARTEFACTS=[comma separated list of images],PROFILE=[profile]
+	eval "$$(make aws-assume-role-export-variables PROFILE=$(PROFILE))"
+	for image in $$(echo $(or $(ARTEFACTS), $(ARTEFACT)) | tr "," "\n"); do
+		make docker-push NAME=$$image TAG=$(TAG) AWS_ECR=$(AWS_LAMBDA_ECR)
+	done
+
+parse-profile-from-tag: # Return profile based off of git tag - Mandatory GIT_TAG=[git tag]
+	echo $(GIT_TAG) | cut -d "-" -f2
+
+create-production-tag: # Tag commit for production deployment as `[YYYYmmddHHMMSS]-[env]` - mandatory: PROFILE=[profile name],COMMIT=[hash]
+	hash=$$(make git-hash COMMIT=$(COMMIT))
+	make git-tag-create-environment-deployment PROFILE=$(PROFILE) COMMIT=$$hash
 
 # --------------------------------------
 
