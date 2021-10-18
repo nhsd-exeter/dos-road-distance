@@ -58,7 +58,7 @@ class TravelTimeMock(Common):
             )
             service_count = self.count_by_transaction_id[transaction_id]
         else:
-            self.status_message = "MOCK No match defaulting to 5"
+            self.status_message = "MOCK No match, defaulting to 5"
             self.content = super().fetch_mock_proto_bin(self.response_path + self.files_by_count[5])
             service_count = 5
         self.delay = randrange(self.server_delay[service_count]["min"], self.server_delay[service_count]["max"]) / 1000

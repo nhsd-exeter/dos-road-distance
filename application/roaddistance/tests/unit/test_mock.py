@@ -8,7 +8,7 @@ class TestMock(Common):
     transaction_id: str = "8fcb792e-b914-434d-aa94-b2cb2de25f48"
     STATUS_MSG_COUNT = "Matched on count of "
     STATUS_MSG_TR_ID = "Matched on transaction ID of "
-    STATUS_MSG_NONE = "No match defaulting to "
+    STATUS_MSG_NONE = "No match, defaulting to "
 
     def test_mock_count_5(self):
         r = TravelTimeMock().post(service_count=5)
@@ -35,7 +35,7 @@ class TestMock(Common):
         assert re.search(self.STATUS_MSG_NONE + "5$", r.status_message)
 
     def test_mock_incorrect_params(self):
-        r = TravelTimeMock().post(service_count=1)
+        r = TravelTimeMock().post(service_count=0)
         assert r.status_code == 200
         assert re.search(self.STATUS_MSG_NONE + "5$", r.status_message)
         r = TravelTimeMock().post(transaction_id="wrong")
