@@ -186,7 +186,7 @@ artefact-propagate: # Pushes image to production - mandatory:TAG=[image tag],ART
 parse-profile-from-tag: # Return profile based off of git tag - Mandatory GIT_TAG=[git tag]
 	echo $(GIT_TAG) | cut -d "-" -f2
 
-create-production-tag: # Tag commit for production deployment as `[YYYYmmddHHMMSS]-[env]` - mandatory: PROFILE=[profile name],COMMIT=[hash]
+tag: # Tag commit for production deployment as `[YYYYmmddHHMMSS]-[env]` - mandatory: PROFILE=[profile name],COMMIT=[hash]
 	hash=$$(make git-hash COMMIT=$(COMMIT))
 	make git-tag-create-environment-deployment PROFILE=$(PROFILE) COMMIT=$$hash
 
@@ -245,4 +245,4 @@ create-artefact-repositories: # Create ECR repositories to store the artefacts
 
 # ==============================================================================
 .SILENT: \
-	parse-profile-from-branch
+	parse-profile-from-tag
