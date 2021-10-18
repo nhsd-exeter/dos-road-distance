@@ -42,8 +42,8 @@ class RoadDistance(Common):
             "Started road distance request. start_time: " + str(self.start_time),
         )
 
-    def format_request_for_logging(self, request: dict) -> str:
-        copy = dict(request)
+    def format_request_for_logging(self) -> str:
+        copy = dict(self.request)
         exclusions = ["origin"]
         for exclusion in exclusions:
             copy.pop(exclusion, None)
@@ -53,13 +53,11 @@ class RoadDistance(Common):
     def process_request(self) -> int:
         if not self.validate_against_schema(self.request, "local"):
             self.status_code = 500
-            self.logger.log_ccs_error(
-                str(self.status_code), "Validation error", self.format_request_for_logging(self.request)
-            )
+            self.logger.log_ccs_error(str(self.status_code), "Validation error", self.format_request_for_logging())
             return self.status_code
 
         try:
-            self.logger.log_formatted(self.format_request_for_logging(self.request), "ccs_request")
+            self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
             self.send_request(self.build_request())
             if "error" in self.response and self.response["error"]:
                 self.status_code = 500
