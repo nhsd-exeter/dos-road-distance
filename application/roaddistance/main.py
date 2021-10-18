@@ -36,20 +36,28 @@ class RoadDistance(Common):
         log_name = os.environ.get("LOGGER", "Audit")
         self.logger = RDLogger(log_name, self.request_id, self.transaction_id)
 
-        start_time = datetime.now().microsecond
+        self.start_time = datetime.now().microsecond
 
         self.logger.log(
-            "Started road distance request. start_time: " + str(start_time),
+            "Started road distance request. start_time: " + str(self.start_time),
         )
+
+    def format_request_for_logging(self) -> str:
+        copy = dict(self.request)
+        exclusions = ["origin"]
+        for exclusion in exclusions:
+            copy.pop(exclusion, None)
+
+        return str(copy)
 
     def process_request(self) -> int:
         if not self.validate_against_schema(self.request, "local"):
             self.status_code = 500
-            self.logger.log_ccs_error(str(self.status_code), "Validation error", str(self.request))
+            self.logger.log_ccs_error(str(self.status_code), "Validation error", self.format_request_for_logging())
             return self.status_code
 
         try:
-            self.logger.log_formatted(str(self.request), "ccs_request")
+            self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
             self.send_request(self.build_request())
             if "error" in self.response and self.response["error"]:
                 self.status_code = 500
@@ -57,15 +65,16 @@ class RoadDistance(Common):
             else:
                 self.log_individual_service_responses()
                 self.status_code = 200
+
+                end_time = datetime.now().microsecond
+                total_time = end_time - self.start_time
+                self.logger.log(
+                    "Completed road distance request. end_time: " + str(end_time) + ", total_time: " + str(total_time)
+                )
+
         except Exception as ex:
             self.status_code = 500
             self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
-
-        end_time = datetime.now().microsecond
-        total_time = end_time - self.start_time
-        self.logger.log(
-            "Completed road distance request. end_time: " + str(end_time) + ", total_time: " + str(total_time)
-        )
 
         return self.status_code
 

@@ -58,7 +58,7 @@ class RDLogger:
             + request_id
             + "|"
             + transaction_id
-            + "|roaddistancepilot|%(message)s"
+            + "|road_distance|%(message)s"
         )
 
     def __create_stream_handler(self, formatter):

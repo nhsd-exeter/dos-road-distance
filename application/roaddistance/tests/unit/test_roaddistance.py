@@ -54,6 +54,7 @@ class TestRoadDistance(Common):
 
     def test_valid_request(self):
         json_content: dict = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
+        json_content_suppressed: dict = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY_SUPPRESSED)
         self.__setup(json_content)
         status_code = self.road_distance.process_request()
         assert status_code == 200
@@ -62,8 +63,8 @@ class TestRoadDistance(Common):
             + self.road_distance.request_id
             + "|"
             + json_content["transactionid"]
-            + "|roaddistancepilot|ccsrequest|"
-            + str(json_content)
+            + "|road_distance|ccsrequest|"
+            + str(json_content_suppressed)
         )
         result = self.road_distance.logger.read_log_output().find(compare)
         print("result: " + str(result))
@@ -81,7 +82,7 @@ class TestRoadDistance(Common):
             + self.road_distance.request_id
             + "|"
             + json_content["transactionid"]
-            + "|roaddistancepilot|Protobuf returned error in request: SOURCE_NOT_IN_GEOMETRY"
+            + "|road_distance|Protobuf returned error in request: SOURCE_NOT_IN_GEOMETRY"
         )
         print(compare)
         result = self.road_distance.logger.read_log_output().find(compare)

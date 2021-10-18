@@ -47,32 +47,32 @@ rdlogger.log_provider_error("422", "there was an error", <data> = "")
 ## Log format outputs
 ### Basic Log
 ```
-YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|<message>
-YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|roaddistancepilot|<message>
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|road_distance|<message>
+YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|road_distance|<message>
 ```
 ### Status Log - basic status/info (e.g. summary of provider response)
 ```
-YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|system|success|message=<message>
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|road_distance|system|success|message=<message>
 ```
 
 ### Raw request and response
 ```
-YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|ccsrequest|<data>
-YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerrequest|<data>
-YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|<data>
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|road_distance|ccsrequest|<data>
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|road_distance|providerrequest|<data>
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|road_distance|providerresponse|<data>
 ```
 
 ### CCS Request Failure
 ```
-YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|roaddistancepilot|ccsrequest|failed|statuscode=<statuscode>|error=<error>|data=<data>
+YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|road_distance|ccsrequest|failed|statuscode=<statuscode>|error=<error>|data=<data>
 ```
 
 ### Provider Response Failure (anything other than 200 response)
 ```
-YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|failed|statuscode=<statuscode>|error=<error>|data=<data>
+YYYY/MM/DD 00:00:00.000000+0100|error|lambda|<request_id>|<transaction_id>|road_distance|providerresponse|failed|statuscode=<statuscode>|error=<error>|data=<data>
 ```
 
 ### Provider Response Success - Per returned service
 ```
-YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|roaddistancepilot|providerresponse|success|reference=<serviceUid>|unreachable=<yes/no>|distance=####|km=##.#|miles=##.#
+YYYY/MM/DD 00:00:00.000000+0100|info|lambda|<request_id>|<transaction_id>|road_distance|providerresponse|success|reference=<serviceUid>|unreachable=<yes/no>|distance=####|km=##.#|miles=##.#
 ```
