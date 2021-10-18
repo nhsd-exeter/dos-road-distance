@@ -21,7 +21,7 @@ pipeline {
     stage("Propagate Artefacts") {
       when { expression { env.PROFILE == "put" || env.PROFILE == "live" } }
       steps{
-        script { sh "make propagate" }
+        script { sh "make propagate ARTEFACTS=roaddistance-lambda,authoriser-lambda" }
       }
     }
     stage("Deploy") {
