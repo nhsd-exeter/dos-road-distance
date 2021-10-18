@@ -15,6 +15,7 @@ STACKS := secrets,lambda,api-gateway
 
 TF_VAR_image_version := $(or $(BRANCH_NAME), latest)
 TF_VAR_deployment_secrets := $(DEPLOYMENT_SECRETS)
+TF_VAR_drd_mock := False
 TF_VAR_lambda_tf_state_key := $(PROJECT_ID)/$(ENV)/lambda/terraform.state
 TF_VAR_api_gateway_tf_state_key := $(PROJECT_ID)/$(ENV)/api-gateway/terraform.state
 TF_VAR_s3_tf_state_key := $(PROJECT_ID)/$(ENV)/s3/terraform.state
