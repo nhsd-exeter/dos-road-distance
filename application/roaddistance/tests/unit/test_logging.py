@@ -29,7 +29,7 @@ class TestLogging(Common):
     LOG2_INFO_PREFIX = r"\|INFO\|{}".format(STR_LOG_LAMBDA)
     LOG2_FAILURE_PREFIX = r"\|ERROR\|{}".format(STR_LOG_LAMBDA)
     LOG3_ID = r"\|([a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12})"
-    LOG3_SECOND_PREFIX = LOG3_ID + LOG3_ID + r"\|roaddistancepilot"
+    LOG3_SECOND_PREFIX = LOG3_ID + LOG3_ID + r"\|road_distance"
     LOG4_DETAILS_BASIC = r"\|([^\|]+)"
     LOG4_DETAILS_STATUS = r"\|system\|success\|message=([^\|]*)"
     LOG4_DETAILS_RAW = r"\|({}|{}|{})\|.*".format(STR_LOG_CCSREQUEST, STR_LOG_PROVIDERREQUEST, STR_LOG_PROVIDERRESPONSE)

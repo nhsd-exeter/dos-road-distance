@@ -62,7 +62,7 @@ class TestRoadDistance(Common):
             + self.road_distance.request_id
             + "|"
             + json_content["transactionid"]
-            + "|roaddistancepilot|ccsrequest|"
+            + "|road_distance|ccsrequest|"
             + str(json_content)
         )
         result = self.road_distance.logger.read_log_output().find(compare)
@@ -81,7 +81,7 @@ class TestRoadDistance(Common):
             + self.road_distance.request_id
             + "|"
             + json_content["transactionid"]
-            + "|roaddistancepilot|Protobuf returned error in request: SOURCE_NOT_IN_GEOMETRY"
+            + "|road_distance|Protobuf returned error in request: SOURCE_NOT_IN_GEOMETRY"
         )
         print(compare)
         result = self.road_distance.logger.read_log_output().find(compare)

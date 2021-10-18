@@ -65,15 +65,16 @@ class RoadDistance(Common):
             else:
                 self.log_individual_service_responses()
                 self.status_code = 200
+
+                end_time = datetime.now().microsecond
+                total_time = end_time - self.start_time
+                self.logger.log(
+                    "Completed road distance request. end_time: " + str(end_time) + ", total_time: " + str(total_time)
+                )
+
         except Exception as ex:
             self.status_code = 500
             self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
-
-        end_time = datetime.now().microsecond
-        total_time = end_time - self.start_time
-        self.logger.log(
-            "Completed road distance request. end_time: " + str(end_time) + ", total_time: " + str(total_time)
-        )
 
         return self.status_code
 
