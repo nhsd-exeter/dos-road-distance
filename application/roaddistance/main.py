@@ -42,7 +42,7 @@ class RoadDistance(Common):
             "Started road distance request. start_time: " + str(self.start_time),
         )
 
-    def format_request_for_logging(request: dict) -> str:
+    def format_request_for_logging(self, request: dict) -> str:
         copy = dict(request)
         exclusions = ["origin"]
         for exclusion in exclusions:
