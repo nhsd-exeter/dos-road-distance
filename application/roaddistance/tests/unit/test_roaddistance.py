@@ -1,8 +1,8 @@
 import os
 import pytest
-import task.config as config
-from task.common import Common
-from task.main import RoadDistance
+import config as config
+from common import Common
+from main import RoadDistance
 
 
 class TestRoadDistance(Common):

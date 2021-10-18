@@ -1,9 +1,9 @@
 import pytest
-import task.config as config
-from task.common import Common
-from task.traveltime_request import TravelTimeRequest
-from task.main import RoadDistance
-import task.proto.traveltime.TimeFilterFastRequest_pb2 as TimeFilterFastRequest
+import config as config
+from common import Common
+from traveltime_request import TravelTimeRequest
+from main import RoadDistance
+import proto.traveltime.TimeFilterFastRequest_pb2 as TimeFilterFastRequest
 
 
 class TestTravelTimeRequest(Common):

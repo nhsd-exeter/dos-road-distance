@@ -1,7 +1,7 @@
 import os
-import task.config as config
-from task.common import Common
-import task.handler as handler
+import config as config
+from common import Common
+import handler as handler
 
 
 class TestHandler(Common):

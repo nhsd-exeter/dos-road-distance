@@ -28,9 +28,13 @@ bash:
 	docker exec --interactive --tty roaddistance-lambda bash
 
 unit-test: # Test project
-	make start
-	make run-unit-test
-	make stop
+	if [ $(PROFILE) == local ]; then
+		make local-unit-test
+	else
+		make start
+		make run-unit-test
+		make stop
+	fi
 
 push: # Push project artefacts to the registry
 	eval "$$(make aws-assume-role-export-variables)"
@@ -51,6 +55,23 @@ trust-certificate: ssl-trust-certificate-project ## Trust the SSL development ce
 
 # --------------------------------------
 
+local-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
+	if [ -z $(TEST_FILE) ]; then
+		make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
+		ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
+			--env DRD_MOCK_MODE=True" \
+		CMD=" \
+			/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done' \
+		"
+	else
+		make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
+			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
+				--env DRD_MOCK_MODE=True" \
+			CMD=" \
+				python -m pytest -rA -q tests/unit/$(TEST_FILE) -k '$(NAME)' \
+			"
+	fi
+
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	if [ $(BUILD_ID) == 0 ]; then
 		container=roaddistance-lambda
@@ -66,25 +87,53 @@ run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run spec
 	fi
 
 run-contract-test: # Run contract only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	make run-unit-test TEST_FILE=test_contracts.py
+	if [ $(PROFILE) == local ]; then
+		make local-unit-test TEST_FILE=test_contracts.py
+	else
+		make run-unit-test TEST_FILE=test_contracts.py
+	fi
 
 run-logging-test: # Run logging only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	make run-unit-test TEST_FILE=test_logging.py
+	if [ $(PROFILE) == local ]; then
+		make local-unit-test TEST_FILE=test_logging.py
+	else
+		make run-unit-test TEST_FILE=test_logging.py
+	fi
 
 run-handler-test: # Run handler only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	make run-unit-test TEST_FILE=test_handler.py
+	if [ $(PROFILE) == local ]; then
+		make local-unit-test TEST_FILE=test_handler.py
+	else
+		make run-unit-test TEST_FILE=test_handler.py
+	fi
 
 run-roaddistance-test: # Run road distance only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	make run-unit-test TEST_FILE=test_roaddistance.py
+	if [ $(PROFILE) == local ]; then
+		make local-unit-test test_roaddistance.py
+	else
+		make run-unit-test TEST_FILE=test_roaddistance.py
+	fi
 
 run-traveltimerequest-test: # Run TravelTime protobuf request only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	make run-unit-test TEST_FILE=test_traveltimerequest.py
+	if [ $(PROFILE) == local ]; then
+		make local-unit-test TEST_FILE=test_traveltimerequest.py
+	else
+		make run-unit-test TEST_FILE=test_traveltimerequest.py
+	fi
 
 run-traveltimeresponse-test: # Run TravelTime protobuf response only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	make run-unit-test TEST_FILE=test_traveltimeresponse.py
+	if [ $(PROFILE) == local ]; then
+		make local-unit-test TEST_FILE=test_traveltimeresponse.py
+	else
+		make run-unit-test TEST_FILE=test_traveltimeresponse.py
+	fi
 
 run-mock-test: # Run mock TravelTime protobuf only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	make run-unit-test TEST_FILE=test_mock.py
+	if [ $(PROFILE) == local ]; then
+		make local-unit-test TEST_FILE=test_mock.py
+	else
+		make run-unit-test TEST_FILE=test_mock.py
+	fi
 
 generate-contract-json: # Generate the JSON files used for contract testing
 	cd $(APPLICATION_DIR)/roaddistance && \

@@ -1,5 +1,5 @@
-import task.config as config
-from task.common import Common
+import config as config
+from common import Common
 from traveltime_response import TravelTimeResponse
 
 
