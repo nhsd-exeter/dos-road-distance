@@ -58,11 +58,11 @@ trust-certificate: ssl-trust-certificate-project ## Trust the SSL development ce
 local-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	if [ -z $(TEST_FILE) ]; then
 		make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
-		ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
-			--env DRD_MOCK_MODE=True" \
-		CMD=" \
-			/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done' \
-		"
+			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
+				--env DRD_MOCK_MODE=True" \
+			CMD=" \
+				/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done' \
+			"
 	else
 		make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
 			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
@@ -109,7 +109,7 @@ run-handler-test: # Run handler only unit tests, add NAME="xxx" or NAME="xxx or 
 
 run-roaddistance-test: # Run road distance only unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	if [ $(PROFILE) == local ]; then
-		make local-unit-test test_roaddistance.py
+		make local-unit-test TEST_FILE=test_roaddistance.py
 	else
 		make run-unit-test TEST_FILE=test_roaddistance.py
 	fi
