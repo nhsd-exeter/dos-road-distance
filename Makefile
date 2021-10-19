@@ -57,19 +57,15 @@ trust-certificate: ssl-trust-certificate-project ## Trust the SSL development ce
 
 local-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	if [ -z $(TEST_FILE) ]; then
-		make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
+		make docker-run-tools DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
 			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
 				--env DRD_MOCK_MODE=True" \
-			CMD=" \
-				/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done' \
-			"
+			CMD="/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q \$$\$$f; done'"
 	else
 		make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
 			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
 				--env DRD_MOCK_MODE=True" \
-			CMD=" \
-				python -m pytest -rA -q tests/unit/$(TEST_FILE) -k '$(NAME)' \
-			"
+			CMD="python -m pytest -rA -q tests/unit/$(TEST_FILE) -k '$(NAME)'"
 	fi
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
