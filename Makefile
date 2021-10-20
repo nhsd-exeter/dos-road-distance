@@ -152,6 +152,8 @@ aws-lambda-create-alias: ### Creates an alias for a lambda version - Mandatory N
 			--function-version $(VERSION) \
 		"
 
+# --------------------------------------
+
 deployment-summary: # Returns a deployment summary
 	echo Terraform Changes
 	cat /tmp/terraform_changes.txt | grep -E 'Apply...'
@@ -160,6 +162,19 @@ pipeline-send-notification: ## Send Slack notification with the pipeline status
 	eval "$$(make aws-assume-role-export-variables)"
 	eval "$$(make secret-fetch-and-export-variables NAME=$(DEPLOYMENT_SECRETS))"
 	make slack-it
+
+propagate: # Propagate the image to production ecr - mandatory: BUILD_COMMIT_HASH=[image hash],GIT_TAG=[git tag],ARTEFACTS=[comma separated list]
+	eval "$$(make aws-assume-role-export-variables PROFILE=$(PROFILE))"
+	for image in $$(echo $(or $(ARTEFACTS), $(ARTEFACT)) | tr "," "\n"); do
+		make docker-image-find-and-version-as COMMIT=$(BUILD_COMMIT_HASH) NAME=$$image TAG=$(GIT_TAG) AWS_ECR=$(AWS_LAMBDA_ECR)
+	done
+
+parse-profile-from-tag: # Return profile based off of git tag - Mandatory GIT_TAG=[git tag]
+	echo $(GIT_TAG) | cut -d "-" -f2
+
+tag: # Tag commit for production deployment as `[YYYYmmddHHMMSS]-[env]` - mandatory: PROFILE=[profile name],COMMIT=[hash]
+	hash=$$(make git-hash COMMIT=$(COMMIT))
+	make git-tag-create-environment-deployment PROFILE=$(PROFILE) COMMIT=$$hash
 
 # --------------------------------------
 
@@ -216,4 +231,4 @@ create-artefact-repositories: # Create ECR repositories to store the artefacts
 
 # ==============================================================================
 .SILENT: \
-	parse-profile-from-branch
+	parse-profile-from-tag

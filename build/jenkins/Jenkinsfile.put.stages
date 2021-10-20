@@ -1,0 +1,40 @@
+pipeline {
+  agent { label "jenkins-slave" }
+  parameters {
+    choice(name: 'ENVIRONMENT', choices: ['uat1', 'uat2', 'uat3', 'uat4', 'ut'], description: 'Environment of the Stage to deploy')
+    string(name: 'LAMBDA_VERSION', defaultValue: '1', description:  'Version or alias of the RD Lambda for stage to point at')
+  }
+  options {
+    buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
+    disableConcurrentBuilds()
+    parallelsAlwaysFailFast()
+    timeout(time: 25, unit: "MINUTES")
+  }
+  environment {
+    ENVIRONMENT = "${params.ENVIRONMENT}"
+    PROFILE = "put"
+    TF_VAR_lambda_version = "${params.LAMBDA_VERSION}"
+  }
+  stages{
+    stage("Show Configuration") {
+      steps {
+        script { sh "make show-configuration" }
+      }
+    }
+    stage("Deploy") {
+      steps {
+        script { sh "make provision STACKS=api-stage | tee /tmp/terraform_changes.txt" }
+      }
+    }
+    stage("Deployment Summary") {
+      steps {
+        script {
+          sh "make deployment-summary"
+        }
+      }
+    }
+  }
+  post {
+    always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (PUT Stage)' BUILD_STATUS=${currentBuild.currentResult}" }
+  }
+}

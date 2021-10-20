@@ -17,7 +17,6 @@ else
   locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/
   echo "Performance tests finished"
   cd /opt/locust/results
-  cd /opt/locust/results
   zip -r results.zip ./
   aws s3 cp results.zip s3://${SERVICE_PREFIX}-performance/${ENVIRONMENT}-${BUILD_DATE}.zip
 fi
