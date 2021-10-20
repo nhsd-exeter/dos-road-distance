@@ -5,6 +5,9 @@ resource "aws_lambda_function" "road_distance_lambda" {
   package_type  = "Image"
   timeout       = "30"
   image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/roaddistance-lambda:${var.image_version}"
+  tracing_config {
+    mode = "active"
+  }
   environment {
     variables = {
       "DRD_BASICAUTH" = "Basic ${var.drd_basicauth}"
@@ -17,6 +20,11 @@ resource "aws_lambda_function" "road_distance_lambda" {
     aws_iam_role_policy.road_distance_lambda_role_policy,
     aws_cloudwatch_log_group.road_distance_lambda_log_group
   ]
+}
+
+resource "aws_lambda_function_event_invoke_config" "road_distance_lambda_invoke_config" {
+  function_name          = aws_lambda_function.road_distance_lambda.function_name
+  maximum_retry_attempts = 0
 }
 
 resource "aws_iam_role" "road_distance_lambda_role" {
@@ -71,6 +79,9 @@ resource "aws_lambda_function" "auth_lambda" {
   package_type  = "Image"
   timeout       = "30"
   image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/authoriser-lambda:${var.image_version}"
+  tracing_config {
+    mode = "active"
+  }
   environment {
     variables = {
       "SECRET_STORE" = var.deployment_secrets
@@ -81,6 +92,11 @@ resource "aws_lambda_function" "auth_lambda" {
     aws_iam_role_policy.auth_lambda_role_policy,
     aws_cloudwatch_log_group.auth_lambda_log_group
   ]
+}
+
+resource "aws_lambda_function_event_invoke_config" "auth_lambda_invoke_config" {
+  function_name          = aws_lambda_function.auth_lambda.function_name
+  maximum_retry_attempts = 0
 }
 
 resource "aws_iam_role" "auth_lambda_role" {
