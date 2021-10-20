@@ -6,7 +6,7 @@ resource "aws_lambda_function" "road_distance_lambda" {
   timeout       = "30"
   image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/roaddistance-lambda:${var.image_version}"
   tracing_config {
-    mode = "active"
+    mode = "Active"
   }
   environment {
     variables = {
@@ -80,7 +80,7 @@ resource "aws_lambda_function" "auth_lambda" {
   timeout       = "30"
   image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/authoriser-lambda:${var.image_version}"
   tracing_config {
-    mode = "active"
+    mode = "Active"
   }
   environment {
     variables = {
