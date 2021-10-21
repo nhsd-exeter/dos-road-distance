@@ -56,9 +56,15 @@ trust-certificate: ssl-trust-certificate-project ## Trust the SSL development ce
 # --------------------------------------
 
 coverage:
+	make python-requirements
 	make python-code-coverage DIR=$(APPLICATION_DIR_REL)/roaddistance \
 		ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
 					--env DRD_MOCK_MODE=True"
+
+python-requirements:
+	make docker-run-tools \
+		CMD="pip install -r requirements.txt" \
+		DIR=$(APPLICATION_DIR_REL)/roaddistance
 
 local-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
 	if [ -z $(TEST_FILE) ]; then
