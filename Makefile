@@ -65,7 +65,7 @@ local-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run sp
 		make docker-run-tools DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
 			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
 				--env DRD_MOCK_MODE=True" \
-			CMD="/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q \$$\$$f; done'"
+			CMD="python -m pytest"
 	else
 		make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
 			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
