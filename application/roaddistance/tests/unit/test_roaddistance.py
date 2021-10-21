@@ -7,7 +7,6 @@ from main import RoadDistance
 
 class TestRoadDistance(Common):
 
-    os.environ["LOGGER"] = "Test"
     road_distance: RoadDistance
     mock_mode = os.environ.get("DRD_MOCK_MODE")
 
@@ -89,6 +88,7 @@ class TestRoadDistance(Common):
         assert result is not -1
 
     def __setup(self, json={}):
+        os.environ["LOGGER"] = "Test"
         self.road_distance = RoadDistance(json)
         self.road_distance.logger.purge()
 
