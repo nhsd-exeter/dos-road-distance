@@ -1,5 +1,5 @@
 import re
-from task.common import Common
+from common import Common
 from traveltime_mock import TravelTimeMock
 
 

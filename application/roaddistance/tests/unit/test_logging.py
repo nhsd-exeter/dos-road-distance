@@ -1,9 +1,9 @@
 import re
 import uuid
 import pytest
-import task.config as config
-from task.common import Common
-from task.rdlogger import RDLogger
+import config as config
+from common import Common
+from rdlogger import RDLogger
 
 
 class TestLogging(Common):
@@ -45,164 +45,174 @@ class TestLogging(Common):
 
     request_id: str = str(uuid.uuid4())
     transaction_id: str = str(uuid.uuid4())
-    rdlogger = RDLogger("Test", request_id, transaction_id)
 
     def __fetch_json(self, file_name: str):
         return str(super().fetch_test_json(file_name))
 
     def test_basic_log_success(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         rx = self.LOG1_DATETIME + self.LOG2_INFO_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_DETAILS_BASIC
-        self.rdlogger.purge()
-        self.rdlogger.log(self.TEST_PAYLOAD)
-        result = re.search(rx, self.rdlogger.read_log_output())
+        rdlogger.purge()
+        rdlogger.log(self.TEST_PAYLOAD)
+        result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
         assert result is not None
         rx = self.LOG1_DATETIME + self.LOG2_FAILURE_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_DETAILS_BASIC
-        self.rdlogger.purge()
-        self.rdlogger.log(self.TEST_PAYLOAD, "error")
-        result = re.search(rx, self.rdlogger.read_log_output())
+        rdlogger.purge()
+        rdlogger.log(self.TEST_PAYLOAD, "error")
+        result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
         assert result is not None
 
     def test_status_log_success(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         rx = self.LOG1_DATETIME + self.LOG2_INFO_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_DETAILS_STATUS
-        self.rdlogger.purge()
-        self.rdlogger.log_formatted(self.TEST_PAYLOAD, "status")
-        result = re.search(rx, self.rdlogger.read_log_output())
+        rdlogger.purge()
+        rdlogger.log_formatted(self.TEST_PAYLOAD, "status")
+        result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
         assert result is not None
 
     def test_raw_log_success(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         rx = self.LOG1_DATETIME + self.LOG2_INFO_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_DETAILS_RAW
-        self.rdlogger.purge()
-        self.rdlogger.log_formatted(self.TEST_PAYLOAD, "ccs_request")
-        result = re.search(rx, self.rdlogger.read_log_output())
+        rdlogger.purge()
+        rdlogger.log_formatted(self.TEST_PAYLOAD, "ccs_request")
+        result = re.search(rx, rdlogger.read_log_output())
         assert result is not None
-        self.rdlogger.purge()
-        self.rdlogger.log_formatted(self.TEST_PAYLOAD, "provider_request")
-        result = re.search(rx, self.rdlogger.read_log_output())
+        rdlogger.purge()
+        rdlogger.log_formatted(self.TEST_PAYLOAD, "provider_request")
+        result = re.search(rx, rdlogger.read_log_output())
         assert result is not None
-        self.rdlogger.purge()
-        self.rdlogger.log_formatted(self.TEST_PAYLOAD, "provider_response")
-        result = re.search(rx, self.rdlogger.read_log_output())
+        rdlogger.purge()
+        rdlogger.log_formatted(self.TEST_PAYLOAD, "provider_response")
+        result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
         assert result is not None
 
     def test_provider_response_success_per_destination(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         rx = self.LOG1_DATETIME + self.LOG2_INFO_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_PROVIDER_RESPONSE
-        self.rdlogger.purge()
-        self.rdlogger.log_provider_success("1000001", "no", 1000)
-        result = re.search(rx, self.rdlogger.read_log_output())
+        rdlogger.purge()
+        rdlogger.log_provider_success("1000001", "no", 1000)
+        result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
         assert result is not None
-        self.rdlogger.purge()
-        self.rdlogger.log_provider_success("1000001", "yes", 0)
-        result = re.search(rx, self.rdlogger.read_log_output())
+        rdlogger.purge()
+        rdlogger.log_provider_success("1000001", "yes", 0)
+        result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
         assert result is not None
 
     def test_provider_response_failure(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         rx = self.LOG1_DATETIME + self.LOG2_FAILURE_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_PROVIDER_FAILURE
-        self.rdlogger.purge()
-        self.rdlogger.log_provider_error("422", self.TEST_PAYLOAD)
-        result = re.search(rx, self.rdlogger.read_log_output())
+        rdlogger.purge()
+        rdlogger.log_provider_error("422", self.TEST_PAYLOAD)
+        result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
         assert result is not None
 
     def test_ccs_request_failure(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         rx = self.LOG1_DATETIME + self.LOG2_FAILURE_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_CCS_FAILURE
-        self.rdlogger.purge()
-        self.rdlogger.log_ccs_error("422", self.TEST_PAYLOAD, "data example")
-        result = re.search(rx, self.rdlogger.read_log_output())
+        rdlogger.purge()
+        rdlogger.log_ccs_error("422", self.TEST_PAYLOAD, "data example")
+        result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
         assert result is not None
 
     def test_content_raw_ccs_request(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         json_content = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
         print(json_content)
-        self.rdlogger.purge()
-        self.rdlogger.log_formatted(json_content, "ccs_request")
+        rdlogger.purge()
+        rdlogger.log_formatted(json_content, "ccs_request")
         compare = "{}|".format(self.STR_LOG_CCSREQUEST) + json_content
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
         compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
 
     def test_content_raw_provider_request(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         json_content = self.__fetch_json(config.JSON_TRAVEL_TIME_REQUEST_HAPPY)
         print(json_content)
-        self.rdlogger.purge()
-        self.rdlogger.log_formatted(json_content, "provider_request")
+        rdlogger.purge()
+        rdlogger.log_formatted(json_content, "provider_request")
         compare = "{}|".format(self.STR_LOG_PROVIDERREQUEST) + json_content
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
         compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
 
     def test_content_raw_provider_response(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         json_content = self.__fetch_json(config.JSON_TRAVEL_TIME_RESPONSE_HAPPY)
         print(json_content)
-        self.rdlogger.purge()
-        self.rdlogger.log_formatted(json_content, "provider_response")
+        rdlogger.purge()
+        rdlogger.log_formatted(json_content, "provider_response")
         compare = "{}|".format(self.STR_LOG_PROVIDERRESPONSE) + json_content
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
         compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
 
     def test_content_provider_response_success_per_destination(self):
-        self.rdlogger.purge()
-        self.rdlogger.log_provider_success("1000001", "yes")
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
+        rdlogger.purge()
+        rdlogger.log_provider_success("1000001", "yes")
         compare = "{}|success|reference=1000001|unreachable=yes|distance=|km=|miles=".format(
             self.STR_LOG_PROVIDERRESPONSE
         )
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
-        self.rdlogger.purge()
-        self.rdlogger.log_provider_success("1000001", "no", 1000)
+        rdlogger.purge()
+        rdlogger.log_provider_success("1000001", "no", 1000)
         compare = "{}|success|reference=1000001|unreachable=no|distance=1000|km=1.0|miles=0.6".format(
             self.STR_LOG_PROVIDERRESPONSE
         )
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
         compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
 
     def test_content_provider_failure(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         json_content = self.__fetch_json(config.JSON_TRAVEL_TIME_ERROR_500)
         print(json_content)
-        self.rdlogger.purge()
-        self.rdlogger.log_provider_error("500", self.TEST_PAYLOAD, json_content)
+        rdlogger.purge()
+        rdlogger.log_provider_error("500", self.TEST_PAYLOAD, json_content)
         compare = (
             "{}|failed|statuscode=500|error={}|data=".format(self.STR_LOG_PROVIDERRESPONSE, self.TEST_PAYLOAD)
             + json_content
         )
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
         compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
-        result = self.rdlogger.read_log_output().find(compare)
+        result = rdlogger.read_log_output().find(compare)
         print(result)
         assert result is not -1
 

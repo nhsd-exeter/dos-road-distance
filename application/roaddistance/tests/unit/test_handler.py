@@ -1,7 +1,7 @@
 import os
-import task.config as config
-from task.common import Common
-import task.handler as handler
+import config as config
+from common import Common
+import handler as handler
 
 
 class TestHandler(Common):
@@ -30,6 +30,7 @@ class TestHandler(Common):
         response = handler.process_road_distance_request(request, None)
         assert response["statusCode"] == 502
         assert not os.path.isfile(self.log_path)
+        del os.environ["LOGGER"]
 
     def purge_test_logs(self):
         if os.path.isfile(self.log_path):
