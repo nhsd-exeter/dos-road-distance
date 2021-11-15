@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /opt/locust
 BUILD_DATE=$(date +"%Y-%m-%dT%H:%M:%S")
-if [[ $PROFILE != "nonprod" ]]
+if [[ $PROFILE == "local" ]]
 then
   echo "Local Performance Tests"
   locust --config locust.conf --host ${API_ENDPOINT}
@@ -14,7 +14,7 @@ then
   cp csv_stats_history.csv /project/test/performance/results/csv-stats-history-${ENVIRONMENT}-${BUILD_DATE}.csv
 else
   echo "Remote Performance Tests"
-  locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/
+  locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/perf
   echo "Performance tests finished"
   cd /opt/locust/results
   zip -r results.zip ./
