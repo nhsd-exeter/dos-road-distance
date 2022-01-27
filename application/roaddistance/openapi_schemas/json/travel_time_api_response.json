@@ -16,7 +16,7 @@
           "locations": {
             "type": "array",
             "minItems": 1,
-            "maxItems": 2000,
+            "maxItems": 3000,
             "items": {
               "type": "object",
               "description": "Details for each returned locations",
@@ -50,7 +50,7 @@
       },
       "unreachable": {
         "type": "array",
-        "maxItems": 2000,
+        "maxItems": 3000,
         "items": {
           "type": "string",
           "description": "Id of the location that has been deemed too distance to reach within travel_time"

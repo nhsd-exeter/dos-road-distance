@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "required": [
+    "status",
+    "transactionid",
+    "destinations",
+    "unreachable"
+  ],
+  "properties": {
+    "status": {
+      "type": "integer",
+      "description": "HTTP status code"
+    },
+    "message": {
+      "type": "string",
+      "description": "Blank for 200 status"
+    },
+    "transactionid": {
+      "type": "string",
+      "description": "Unique identifier supplied in request"
+    },
+    "destinations": {
+      "type": "object",
+      "minProperties": 0,
+      "maxProperties": 3000,
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 999999
+      }
+    },
+    "unreachable": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 3000,
+      "description": "unreachable destination references",
+      "items": {
+        "type": "string",
+        "description": "destination reference"
+      }
+    }
+  },
+  "example": {
+    "status": 200,
+    "message": "",
+    "transactionid": "43c31af7-1f53-470f-9edc-fed8f447dc8f",
+    "destinations": {
+      "123409584": 12546,
+      "567834756": 4563
+    },
+    "unreachable": [
+      674756978,
+      768621653
+    ]
+  }
+}

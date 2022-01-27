@@ -4,7 +4,6 @@ info:
   description: Road distance API to return distance in meters from a given origin point to multiple destination points
   version: 0.0.1
 
-
 paths:
   /road-distance:
     post:
@@ -59,6 +58,7 @@ paths:
                     properties:
                       reference:
                         type: string
+                        pattern: "^[A-Za-z0-9_ .-]{1,150}$"
                         description: Unique reference to identify destination item in response
                       latitude:
                         type: number
@@ -88,3 +88,99 @@ paths:
       responses:
         200:
           description: The request was received successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - transactionid
+                  - destinations
+                  - unreachable
+                properties:
+                  status:
+                    type: integer
+                    description: HTTP status code
+                  message:
+                    type: string
+                    description: Blank for 200 status
+                  transactionid:
+                    type: string
+                    description: Unique identifier supplied in request
+                  destinations:
+                    type: object
+                    minProperties: 0
+                    maxProperties: 3000
+                    additionalProperties:
+                      type: integer
+                      minimum: 1
+                      maximum: 999999
+                  unreachable:
+                    type: array
+                    minItems: 0
+                    maxItems: 3000
+                    description: unreachable destination references
+                    items:
+                      type: string
+                      description: destination reference
+                example:
+                  status: 200
+                  message: ""
+                  transactionid: "43c31af7-1f53-470f-9edc-fed8f447dc8f"
+                  destinations:
+                    123409584: 12546
+                    567834756: 4563
+                  unreachable:
+                    - 674756978
+                    - 768621653
+        400:
+          description: The request failed
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - message
+                  - transactionid
+                properties:
+                  status:
+                    type: integer
+                    description: HTTP status code
+                  message:
+                    type: string
+                    description: Description of the cause of failure
+                  transactionid:
+                    type: string
+                    description: Unique identifier supplied in request
+                example:
+                  status: 400
+                  message: "Invalid request format"
+                  transactionid: "43c31af7-1f53-470f-9edc-fed8f447dc8f"
+        500:
+          description: An internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - message
+                properties:
+                  status:
+                    type: integer
+                    description: HTTP status code
+                  message:
+                    type: string
+                    description: Specifies an internal server error occurred
+                example:
+                  status: 500
+                  message: "An internal server error occurred"
+
+components:
+  schemas:
+    response.destination.Distance:
+      type: integer
+      minimum: 0
+      maximum: 999999
+      description: The distance in meters for a given destination

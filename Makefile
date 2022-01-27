@@ -71,16 +71,18 @@ python-requirements:
 		DIR=$(APPLICATION_DIR_REL)/roaddistance
 
 local-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
-	if [ -z $(TEST_FILE) ]; then
+	if [ -z application/roaddistance/tests/unit/$(TEST_FILE) ]; then
+		echo "Running local unit test without test file"
 		make docker-run-tools DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
 			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
 				--env DRD_MOCK_MODE=True" \
-			CMD="python -m pytest"
+			CMD="pip install -r requirements.txt; python -m pytest"
 	else
+		echo "Running local unit test with test file $(TEST_FILE)"
 		make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
 			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
 				--env DRD_MOCK_MODE=True" \
-			CMD="python -m pytest -rA -q tests/unit/$(TEST_FILE) -k '$(NAME)'"
+			CMD="pip install -r requirements.txt; python -m pytest -rA -q tests/unit/$(TEST_FILE) -k '$(NAME)'"
 	fi
 
 run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run specific tests
@@ -89,10 +91,12 @@ run-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run spec
 	else
 		container=roaddistance-lambda-$(BUILD_ID)
 	fi
-	if [ -z $(TEST_FILE) ]; then
+	if [ -z application/roaddistance/tests/unit/$(TEST_FILE) ]; then
+			echo "Running roaddistance-lambda unit test without test file"
 			docker exec $$container \
 			/bin/sh -c 'for f in tests/unit/test_*.py; do python -m pytest -rsx -q $$f; done'
 	else
+			echo "Running roaddistance-lambda unit test with test file $(TEST_FILE)"
 			docker exec $$container \
 			python -m pytest -rA -q tests/unit/$(TEST_FILE) -k "$(NAME)"
 	fi
@@ -291,4 +295,7 @@ create-artefact-repositories: # Create ECR repositories to store the artefacts
 
 # ==============================================================================
 .SILENT: \
-	parse-profile-from-tag
+	local-unit-test \
+	parse-profile-from-tag \
+	run-contract-test \
+	run-unit-test

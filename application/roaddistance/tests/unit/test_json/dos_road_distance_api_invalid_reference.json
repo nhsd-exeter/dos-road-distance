@@ -1,0 +1,15 @@
+{
+  "transactionid": "2fd0632c-0124-4bb1-b907-573658cc05f7",
+  "origin": {
+    "reference": "<locationId>",
+    "latitude": 50.72179229048227,
+    "longitude": -3.525942582444856
+  },
+  "destinations": [
+    {
+      "reference": "&1000",
+      "latitude": 50.71731288843375,
+      "longitude": -3.5389588298795496
+    }
+  ]
+}

@@ -6,7 +6,7 @@
       "type": "array",
       "description": "List of point locations",
       "minItems": 1,
-      "maxItems": 2000,
+      "maxItems": 3000,
       "items": {
         "type": "object",
         "required": ["id", "coords"],
@@ -59,7 +59,7 @@
             "type": "array",
             "description": "Array of ids from the locations array that identify one or more destination locations",
             "minItems": 1,
-            "maxItems": 2000,
+            "maxItems": 3000,
             "items": {
               "type": "string"
             }

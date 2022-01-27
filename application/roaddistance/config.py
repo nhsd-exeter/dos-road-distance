@@ -4,6 +4,9 @@ Logging = {"Audit": {"Path": ""}, "Test": {"Path": "tests/unit/test_log/rd.log"}
 # Contract file names (excluding extension)
 Contracts = {
     "local": "dos_road_distance_api",
+    "local-response": "dos_road_distance_api_response",
+    "local-response-400": "dos_road_distance_api_response-400",
+    "local-response-500": "dos_road_distance_api_response-500",
     "provider": "travel_time_api",
     "provider-response": "travel_time_api_response",
 }
@@ -21,8 +24,12 @@ EXCEPTION_DOS_ROADDISTANCE = "dos-road-distance exception: "
 
 # Request and response files
 JSON_DOS_ROAD_DISTANCE_HAPPY = "dos_road_distance_api_happy.json"
+JSON_DOS_ROAD_DISTANCE_RESPONSE_HAPPY = "dos_road_distance_api_response_happy.json"
+JSON_DOS_ROAD_DISTANCE_RESPONSE_MISSING_TRANSACTION_ID = "dos_road_distance_api_response_missing_transaction_id.json"
+JSON_DOS_ROAD_DISTANCE_RESPONSE_INVALID_DISTANCE = "dos_road_distance_api_response_invalid_distance.json"
 JSON_DOS_ROAD_DISTANCE_HAPPY_SUPPRESSED = "dos_road_distance_api_happy_suppressed.json"
 JSON_DOS_ROAD_DISTANCE_INVALID = "dos_road_distance_api_invalid_missing_element.json"
+JSON_DOS_ROAD_DISTANCE_INVALID_REFERENCE = "dos_road_distance_api_invalid_reference.json"
 JSON_DOS_ROAD_DISTANCE_INVALID_COORD = "dos_road_distance_api_invalid_coord.json"
 JSON_TRAVEL_TIME_REQUEST_HAPPY = "travel_time_api_happy.json"
 JSON_TRAVEL_TIME_REQUEST_INVALID = "travel_time_api_invalid_missing_element.json"
