@@ -16,21 +16,21 @@ A failure status code will be 400 series if an error in contract or data based a
 
 ```json
 {
- "status":200,
- "message":"",
- "transactionid":"43c31af7-1f53-470f-9edc-fed8f447dc8f",
- "destinations":[
-  {
-   "reference":"1001",
-   "unreachable":"no",
-   "distance":15595,
-  },
-  {
-   "reference":"1001",
-   "unreachable":"no",
-   "distance":15595,
-  }
- ]
+  "status":200,
+  "message":"",
+  "transactionid":"43c31af7-1f53-470f-9edc-fed8f447dc8f",
+  "destinations":[
+    {
+    "reference":"1001",
+    "unreachable":"no",
+    "distance":15595,
+    },
+    {
+    "reference":"1002",
+    "unreachable":"no",
+    "distance":17595,
+    }
+  ]
 }
 ```
 
@@ -38,15 +38,15 @@ A failure status code will be 400 series if an error in contract or data based a
 
 ```json
 {
- "status":400,
- "message":"Contract failed for response format",
- "transactionid":"43c31af7-1f53-470f-9edc-fed8f447dc8f"
+  "status":400,
+  "message":"Contract failed for response format",
+  "transactionid":"43c31af7-1f53-470f-9edc-fed8f447dc8f"
 }
 ```
 
 ```json
 {
- "status":500,
- "message":"Contract failed for response format"
+  "status":500,
+  "message":"Contract failed for response format"
 }
 ```
