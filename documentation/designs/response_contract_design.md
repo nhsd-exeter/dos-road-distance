@@ -4,6 +4,8 @@
 
 The response will have status 200, with a blank message, and include the transaction-id plus an array of destinations. The destinations will include the destination reference, unreachable status and the distance in metres.
 
+A design decision was taken to return metres as we have various systems that have different units and this provides a good granularity for all of them. It is also what we receive from TravelTime.
+
 ## Fail structure
 
 A failure status code will be 400 series if an error in contract or data based along with a message and the transaction-id. 500 series will be used for errors before the data is being processed - e.g. gateway issue, internal server error.
