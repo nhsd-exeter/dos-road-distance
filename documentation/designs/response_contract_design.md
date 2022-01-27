@@ -23,12 +23,12 @@ A failure status code will be 400 series if an error in contract or data based a
     {
     "reference":"1001",
     "unreachable":"no",
-    "distance":15595,
+    "distance":15595
     },
     {
     "reference":"1002",
     "unreachable":"no",
-    "distance":17595,
+    "distance":17595
     }
   ]
 }
