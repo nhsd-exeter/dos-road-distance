@@ -1,12 +1,16 @@
 {
   "type": "object",
-  "required": ["results"],
+  "required": [
+    "results"
+  ],
   "properties": {
     "results": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["search_id"],
+        "required": [
+          "search_id"
+        ],
         "description": "Results wrapper",
         "properties": {
           "search_id": {
@@ -16,11 +20,14 @@
           "locations": {
             "type": "array",
             "minItems": 1,
-            "maxItems": 3000,
+            "maxItems": 2000,
             "items": {
               "type": "object",
               "description": "Details for each returned locations",
-              "required": ["id", "properties"],
+              "required": [
+                "id",
+                "properties"
+              ],
               "properties": {
                 "id": {
                   "type": "string",
@@ -34,7 +41,9 @@
                   "items": {
                     "type": "object",
                     "description": "Requested data attributes",
-                    "required": ["distance"],
+                    "required": [
+                      "distance"
+                    ],
                     "properties": {
                       "distance": {
                         "type": "integer",
@@ -50,7 +59,7 @@
       },
       "unreachable": {
         "type": "array",
-        "maxItems": 3000,
+        "maxItems": 2000,
         "items": {
           "type": "string",
           "description": "Id of the location that has been deemed too distance to reach within travel_time"

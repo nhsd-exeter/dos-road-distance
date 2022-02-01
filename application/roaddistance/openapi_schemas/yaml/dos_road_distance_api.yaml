@@ -131,8 +131,8 @@ paths:
                     123409584: 12546
                     567834756: 4563
                   unreachable:
-                    - 674756978
-                    - 768621653
+                    - "674756978"
+                    - "768621653"
         400:
           description: The request failed
           content:
@@ -176,11 +176,3 @@ paths:
                 example:
                   status: 500
                   message: "An internal server error occurred"
-
-components:
-  schemas:
-    response.destination.Distance:
-      type: integer
-      minimum: 0
-      maximum: 999999
-      description: The distance in meters for a given destination
