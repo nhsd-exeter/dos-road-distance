@@ -54,6 +54,5 @@ class TestContracts(Common):
         json_content = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_RESPONSE_MISSING_TRANSACTION_ID)
         assert not self.road_distance.validate_against_schema(json_content, "local-response")
 
-
     def fetch_json(self, file_name: str):
         return super().fetch_test_json(file_name)
