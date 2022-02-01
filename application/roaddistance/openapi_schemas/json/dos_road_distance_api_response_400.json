@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "required": [
+    "status",
+    "message",
+    "transactionid"
+  ],
+  "properties": {
+    "status": {
+      "type": "integer",
+      "description": "HTTP status code"
+    },
+    "message": {
+      "type": "string",
+      "description": "Description of the cause of failure"
+    },
+    "transactionid": {
+      "type": "string",
+      "description": "Unique identifier supplied in request"
+    }
+  },
+  "example": {
+    "status": 400,
+    "message": "Invalid request format",
+    "transactionid": "43c31af7-1f53-470f-9edc-fed8f447dc8f"
+  }
+}

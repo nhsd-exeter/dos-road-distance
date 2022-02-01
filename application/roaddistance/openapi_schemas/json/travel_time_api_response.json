@@ -1,12 +1,16 @@
 {
   "type": "object",
-  "required": ["results"],
+  "required": [
+    "results"
+  ],
   "properties": {
     "results": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["search_id"],
+        "required": [
+          "search_id"
+        ],
         "description": "Results wrapper",
         "properties": {
           "search_id": {
@@ -20,7 +24,10 @@
             "items": {
               "type": "object",
               "description": "Details for each returned locations",
-              "required": ["id", "properties"],
+              "required": [
+                "id",
+                "properties"
+              ],
               "properties": {
                 "id": {
                   "type": "string",
@@ -34,7 +41,9 @@
                   "items": {
                     "type": "object",
                     "description": "Requested data attributes",
-                    "required": ["distance"],
+                    "required": [
+                      "distance"
+                    ],
                     "properties": {
                       "distance": {
                         "type": "integer",

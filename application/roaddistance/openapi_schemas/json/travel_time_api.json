@@ -1,6 +1,9 @@
 {
   "type": "object",
-  "required": ["locations", "departure_searches"],
+  "required": [
+    "locations",
+    "departure_searches"
+  ],
   "properties": {
     "locations": {
       "type": "array",
@@ -9,7 +12,10 @@
       "maxItems": 2000,
       "items": {
         "type": "object",
-        "required": ["id", "coords"],
+        "required": [
+          "id",
+          "coords"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -27,7 +33,10 @@
                 "description": "Longitude point of origin"
               }
             },
-            "required": ["lat", "lng"]
+            "required": [
+              "lat",
+              "lng"
+            ]
           }
         }
       }
@@ -71,11 +80,15 @@
               "type": {
                 "type": "string",
                 "description": "Type of transport - limited to 'driving'",
-                "enum": ["driving"]
+                "enum": [
+                  "driving"
+                ]
               },
               "parking_time": {
                 "type": "integer",
-                "enum": [0],
+                "enum": [
+                  0
+                ],
                 "description": "Time in minutes to account for parking - limited to 0"
               }
             }
@@ -92,7 +105,9 @@
             "maxItems": 1,
             "items": {
               "type": "string",
-              "enum": ["distance"]
+              "enum": [
+                "distance"
+              ]
             }
           },
           "travel_time": {
@@ -126,7 +141,9 @@
       {
         "id": "description of search",
         "departure_location_id": "1001",
-        "arrival_location_ids": ["1002"],
+        "arrival_location_ids": [
+          "1002"
+        ],
         "transportation": [
           {
             "type": "driving",
@@ -134,7 +151,9 @@
           }
         ],
         "arrival_time_period": "weekday_morning",
-        "properties": ["distance"],
+        "properties": [
+          "distance"
+        ],
         "travel_time": 7200
       }
     ]

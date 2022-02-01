@@ -485,4 +485,3 @@ paths:
                   additional_info:
                     type: object
                     description: Additional error specific information
-

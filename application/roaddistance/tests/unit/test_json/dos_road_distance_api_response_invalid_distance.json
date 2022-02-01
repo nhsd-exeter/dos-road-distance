@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "message": "",
+  "transactionid": "43c31af7-1f53-470f-9edc-fed8f447dc8f",
+  "destinations": {
+    "1001": 15595,
+    "1002": 1000000
+  },
+  "unreachable": ["1003", "1004"]
+}
