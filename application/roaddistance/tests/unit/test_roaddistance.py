@@ -89,7 +89,7 @@ class TestRoadDistance(Common):
 
     def test_process_successful_response(self):
         self.status_code = 200
-        self.road_distance.response = "{}"
+        self.road_distance.response = super().fetch_test_proto(config.PROTO_TRAVEL_TIME_RESPONSE_HAPPY)
         result = self.road_distance.process_response()
         assert result.isinstance(dict)
         assert result["status"] == 200
@@ -99,7 +99,7 @@ class TestRoadDistance(Common):
 
     def test_process_provider_error_response_400(self):
         self.status_code = 400
-        self.road_distance.response = "{}"
+        self.road_distance.response = super().fetch_test_proto(config.PROTO_TRAVEL_TIME_RESPONSE_ERROR_4)
         result = self.road_distance.process_error_response()
         assert result.isinstance(dict)
         assert result["status"] == 400
@@ -109,7 +109,7 @@ class TestRoadDistance(Common):
 
     def test_process_provider_error_response_500(self):
         self.status_code = 500
-        self.road_distance.response = "{}"
+        self.road_distance.response = super().fetch_test_proto(config.PROTO_TRAVEL_TIME_RESPONSE_ERROR_4)
         result = self.road_distance.process_error_response()
         assert result.isinstance(dict)
         assert result["status"] == 500
