@@ -7,7 +7,7 @@ from main import RoadDistance
 
 class TestRoadDistance(Common):
 
-    road_distance: RoadDistance
+    road_distance = RoadDistance ({})
     mock_mode = os.environ.get("DRD_MOCK_MODE")
 
     def test_missing_contract_logs_exception(self):
@@ -87,35 +87,35 @@ class TestRoadDistance(Common):
         result = self.road_distance.logger.read_log_output().find(compare)
         assert result is not -1
 
-    def test_process_successful_response(self):
+    def test_process_ccs_response_success(self):
         self.road_distance.status_code = 200
         self.road_distance.response = super().fetch_test_proto(config.PROTO_TRAVEL_TIME_RESPONSE_HAPPY)
-        result = self.road_distance.process_response()
-        assert result.isinstance(dict)
-        assert result["status"] == 200
-        assert "transactionid" in result
-        assert "destinations" in result
-        assert "unreachable" in result
+        ccs_response = self.road_distance.process_ccs_response_success()
+        assert ccs_response.isinstance(dict)
+        assert ccs_response["status"] == 200
+        assert "transactionid" in ccs_response
+        assert "destinations" in ccs_response
+        assert "unreachable" in ccs_response
 
-    def test_process_provider_error_response_400(self):
+    def test_process_ccs_response_error_400(self):
         self.road_distance.status_code = 400
         self.road_distance.response = super().fetch_test_proto(config.PROTO_TRAVEL_TIME_RESPONSE_ERROR_4)
-        result = self.road_distance.process_error_response()
-        assert result.isinstance(dict)
-        assert result["status"] == 400
-        assert "transactionid" in result
-        assert "message" in result
-        assert self.road_distance.response["error"] in result["message"]
+        ccs_response = self.road_distance.process_ccs_response_error()
+        assert ccs_response.isinstance(dict)
+        assert ccs_response["status"] == 400
+        assert "transactionid" in ccs_response
+        assert "message" in ccs_response
+        assert self.road_distance.response["error"] in ccs_response["message"]
 
-    def test_process_provider_error_response_500(self):
+    def test_process_ccs_response_error_500(self):
         self.road_distance.status_code = 500
         self.road_distance.response = "{}"
-        result = self.road_distance.process_error_response()
-        assert result.isinstance(dict)
-        assert result["status"] == 500
-        assert "message" in result
-        assert "transactionid" not in result
-        assert result["message"] == "An internal server error occurred"
+        ccs_response = self.road_distance.process_ccs_response_error()
+        assert ccs_response.isinstance(dict)
+        assert ccs_response["status"] == 500
+        assert "message" in ccs_response
+        assert "transactionid" not in ccs_response
+        assert ccs_response["message"] == "An internal server error occurred"
 
     def __setup(self, json={}):
         os.environ["LOGGER"] = "Test"

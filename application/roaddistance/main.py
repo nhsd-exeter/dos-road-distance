@@ -143,6 +143,12 @@ class RoadDistance(Common):
     def fetch_coords(self, location: dict) -> dict:
         return {"lat": location["latitude"], "lng": location["longitude"]}
 
+    def process_ccs_response_success(self):
+        return None
+
+    def process_ccs_response_error(self):
+        return None
+
     def validate_against_schema(self, json: dict, schema_name: str) -> bool:
         try:
             contract = self.fetch_json(self.contracts[schema_name] + ".json")
