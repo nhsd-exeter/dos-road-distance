@@ -69,7 +69,7 @@ paths:
               example:
                 transactionid: "a-unique-string-of-characters"
                 origin:
-                  reference: "<locationId>"
+                  reference: "locationReference"
                   latitude: 50.72179229048227
                   longitude: -3.525942582444856
                 destinations:
