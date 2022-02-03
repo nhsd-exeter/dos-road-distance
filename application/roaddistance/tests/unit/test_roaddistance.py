@@ -90,19 +90,19 @@ class TestRoadDistance(Common):
     def test_process_ccs_response_success(self):
         self.road_distance.status_code = 200
         self.road_distance.response = super().fetch_test_proto(config.PROTO_TRAVEL_TIME_RESPONSE_HAPPY)
-        ccs_response = self.road_distance.process_ccs_response_success()
+        ccs_response = self.road_distance.process_provider_response_success()
         assert self.road_distance.validate_against_schema(ccs_response, "local-response")
 
     def test_process_ccs_response_error_400(self):
         self.road_distance.status_code = 400
         self.road_distance.response = super().fetch_test_proto(config.PROTO_TRAVEL_TIME_RESPONSE_ERROR_4)
-        ccs_response = self.road_distance.process_ccs_response_error()
+        ccs_response = self.road_distance.process_provider_response_error()
         assert self.road_distance.validate_against_schema(ccs_response, "local-response-400")
 
     def test_process_ccs_response_error_500(self):
         self.road_distance.status_code = 500
         self.road_distance.response = "{}"
-        ccs_response = self.road_distance.process_ccs_response_error()
+        ccs_response = self.road_distance.process_provider_response_error()
         assert self.road_distance.validate_against_schema(ccs_response, "local-response-500")
 
     def __setup(self, json={}):
