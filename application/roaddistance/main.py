@@ -66,9 +66,9 @@ class RoadDistance(Common):
             self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
             self.send_request(self.build_request())
             if not self.status_code == 200:
-                body = self.process_ccs_response_error()
+                body = self.process_provider_response_error()
             else:
-                body = self.process_ccs_response_success()
+                body = self.process_provider_response_success()
                 if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
                     raise Exception("Mismatch of destinations in response, problem forming")
         except Exception as ex:
