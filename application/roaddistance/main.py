@@ -56,23 +56,21 @@ class RoadDistance(Common):
         if not self.validate_against_schema(self.request, "local"):
             self.status_code = 400
             self.logger.log_ccs_error(self.status_code, "Validation error", self.format_request_for_logging())
-            print(self.validation_error)
             return {
                 "status": self.status_code,
                 "message": "Validation error: " + self.validation_error,
-                "transactionid": self.transaction_id,
+                "transactionid": self.transaction_id
             }
 
         try:
             self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
             self.send_request(self.build_request())
-            if "error" in self.response and self.response["error"]:
+            if not self.status_code == 200:
                 body = self.process_ccs_response_error()
             else:
                 body = self.process_ccs_response_success()
                 if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
                     raise Exception("Mismatch of destinations in response, problem forming")
-
         except Exception as ex:
             body = self.process_ccs_fatal_error(str(ex))
 
@@ -90,21 +88,22 @@ class RoadDistance(Common):
             "message": "",
             "transactionid": self.transaction_id,
             "destinations": self.destinations,
-            "unreachable": self.unreachable,
+            "unreachable": self.unreachable
         }
 
     def process_ccs_response_error(self) -> dict:
-        self.logger.log_ccs_error(
-            str(self.status_code), "Protobuf endpoint error, status code: " + str(self.status_code)
-        )
-        self.logger.log("Protobuf endpoint error, status code: " + str(self.status_code), "error")
-        self.logger.log("Protobuf returned error in request: " + self.response["error"], "error")
-        if self.status_code[0] == "4":
-            return {"status": 400, "message": self.response["error"], "transactionid": self.transaction_id}
-        else:
-            return {"status": 500, "message": self.response["error"]}
 
-    def process_ccs_fatal_error(self, error) -> dict:
+        error_response = self.response.replace("\n", "")
+
+        self.logger.log_ccs_error(self.status_code, "Protobuf endpoint error")
+        self.logger.log("Protobuf endpoint error", "error")
+        self.logger.log("Protobuf returned error in request: " + error_response, "error")
+        if str(self.status_code)[0] == "4":
+            return {"status": 400, "message": error_response, "transactionid": self.transaction_id}
+        else:
+            return {"status": 500, "message": error_response}
+
+    def process_fatal_error(self, error) -> dict:
         self.status_code = 500
         self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + error, "error")
         return {"status": 500, "message": error}

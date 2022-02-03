@@ -24,8 +24,6 @@ class TestHandler(Common):
         self.purge_test_logs()
         request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID)
         response = handler.process_road_distance_request(request, None)
-        print("HERE IS THE RESPONSE")
-        print(response)
         assert response["status"] == 400
         assert "transactionid" in response
         assert "message" in response

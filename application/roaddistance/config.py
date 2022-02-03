@@ -5,8 +5,8 @@ Logging = {"Audit": {"Path": ""}, "Test": {"Path": "tests/unit/test_log/rd.log"}
 Contracts = {
     "local": "dos_road_distance_api",
     "local-response": "dos_road_distance_api_response",
-    "local-response-400": "dos_road_distance_api_response-400",
-    "local-response-500": "dos_road_distance_api_response-500",
+    "local-response-400": "dos_road_distance_api_response_400",
+    "local-response-500": "dos_road_distance_api_response_500",
     "provider": "travel_time_api",
     "provider-response": "travel_time_api_response",
 }

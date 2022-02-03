@@ -55,8 +55,8 @@ class TestRoadDistance(Common):
         json_content: dict = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
         json_content_suppressed: dict = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY_SUPPRESSED)
         self.__setup(json_content)
-        status_code = self.road_distance.process_request()
-        assert status_code == 200
+        response = self.road_distance.process_request()
+        assert response["status"] == 200
         compare = (
             "|"
             + self.road_distance.request_id
@@ -91,31 +91,19 @@ class TestRoadDistance(Common):
         self.road_distance.status_code = 200
         self.road_distance.response = super().fetch_test_proto(config.PROTO_TRAVEL_TIME_RESPONSE_HAPPY)
         ccs_response = self.road_distance.process_ccs_response_success()
-        assert ccs_response.isinstance(dict)
-        assert ccs_response["status"] == 200
-        assert "transactionid" in ccs_response
-        assert "destinations" in ccs_response
-        assert "unreachable" in ccs_response
+        assert self.road_distance.validate_against_schema(ccs_response, "local-response")
 
     def test_process_ccs_response_error_400(self):
         self.road_distance.status_code = 400
         self.road_distance.response = super().fetch_test_proto(config.PROTO_TRAVEL_TIME_RESPONSE_ERROR_4)
         ccs_response = self.road_distance.process_ccs_response_error()
-        assert ccs_response.isinstance(dict)
-        assert ccs_response["status"] == 400
-        assert "transactionid" in ccs_response
-        assert "message" in ccs_response
-        assert self.road_distance.response["error"] in ccs_response["message"]
+        assert self.road_distance.validate_against_schema(ccs_response, "local-response-400")
 
     def test_process_ccs_response_error_500(self):
         self.road_distance.status_code = 500
         self.road_distance.response = "{}"
         ccs_response = self.road_distance.process_ccs_response_error()
-        assert ccs_response.isinstance(dict)
-        assert ccs_response["status"] == 500
-        assert "message" in ccs_response
-        assert "transactionid" not in ccs_response
-        assert ccs_response["message"] == "An internal server error occurred"
+        assert self.road_distance.validate_against_schema(ccs_response, "local-response-500")
 
     def __setup(self, json={}):
         os.environ["LOGGER"] = "Test"
