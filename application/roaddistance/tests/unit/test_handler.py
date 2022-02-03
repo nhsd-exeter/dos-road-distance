@@ -17,18 +17,20 @@ class TestHandler(Common):
         assert "transactionid" in response
         assert "destinations" in response
         assert "unreachable" in response
-        assert (response["destinations"].len() + response["unreachable"].len()) == request["destinations"].len()
+        assert (len(response["destinations"]) + len(response["unreachable"])) == len(request["destinations"])
         assert os.path.isfile(self.log_path)
 
     def test_invalid_ccs_request_returns_400_response_with_message(self):
         self.purge_test_logs()
         request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID)
         response = handler.process_road_distance_request(request, None)
+        print("HERE IS THE RESPONSE")
+        print(response)
         assert response["status"] == 400
         assert "transactionid" in response
         assert "message" in response
-        assert response["transactionid"].len() == 0
-        assert response["message"] == "'transactionid' is a required property"
+        assert len(response["transactionid"]) == 0
+        assert response["message"] == "Validation error: 'transactionid' is a required property"
         assert os.path.isfile(self.log_path)
 
     def test_invalid_log_name_raises_value_error(self):

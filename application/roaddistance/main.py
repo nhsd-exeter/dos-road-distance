@@ -28,6 +28,7 @@ class RoadDistance(Common):
     request_id: str = ""
     transaction_id: str = ""
     start_time: int
+    validation_error: str = ""
 
     def __init__(self, request):
         self.request = request
@@ -53,9 +54,14 @@ class RoadDistance(Common):
     def process_request(self) -> dict:
         body: dict = {}
         if not self.validate_against_schema(self.request, "local"):
-            self.status_code = 500
-            self.logger.log_ccs_error(str(self.status_code), "Validation error", self.format_request_for_logging())
-            return self.status_code
+            self.status_code = 400
+            self.logger.log_ccs_error(self.status_code, "Validation error", self.format_request_for_logging())
+            print(self.validation_error)
+            return {
+                "status": self.status_code,
+                "message": "Validation error: " + self.validation_error,
+                "transactionid": self.transaction_id,
+            }
 
         try:
             self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
@@ -64,7 +70,7 @@ class RoadDistance(Common):
                 body = self.process_ccs_response_error()
             else:
                 body = self.process_ccs_response_success()
-                if(len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable))):
+                if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
                     raise Exception("Mismatch of destinations in response, problem forming")
 
         except Exception as ex:
@@ -84,7 +90,7 @@ class RoadDistance(Common):
             "message": "",
             "transactionid": self.transaction_id,
             "destinations": self.destinations,
-            "unreachable": self.unreachable
+            "unreachable": self.unreachable,
         }
 
     def process_ccs_response_error(self) -> dict:
@@ -117,8 +123,10 @@ class RoadDistance(Common):
                 else:
                     unreachable = "no"
                     self.destinations[self.request["destinations"][i]["reference"]] = distance
-                self.logger.log_provider_success(str(self.request["destinations"][i]["reference"]), unreachable, distance)
-        except:
+                self.logger.log_provider_success(
+                    str(self.request["destinations"][i]["reference"]), unreachable, distance
+                )
+        except Exception:
             return None
 
     def send_request(self, request: bytes):
@@ -174,6 +182,8 @@ class RoadDistance(Common):
             validate(instance=json, schema=contract)
             return True
         except (ValidationError, SchemaError, Exception) as ex:
+            error_chunks = str(ex).split("\n")
+            self.validation_error = error_chunks[0]
             self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
             return False
 

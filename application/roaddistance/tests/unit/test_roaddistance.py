@@ -7,7 +7,7 @@ from main import RoadDistance
 
 class TestRoadDistance(Common):
 
-    road_distance = RoadDistance ({})
+    road_distance = RoadDistance({})
     mock_mode = os.environ.get("DRD_MOCK_MODE")
 
     def test_missing_contract_logs_exception(self):

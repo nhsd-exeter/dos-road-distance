@@ -12,7 +12,7 @@ class TestContracts(Common):
 
     road_distance = RoadDistance({})
 
-    def test_css_to_lambda_contract_happy(self):
+    def test_ccs_to_lambda_contract_happy(self):
         json_content = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
         assert self.road_distance.validate_against_schema(json_content, "local")
 
@@ -24,11 +24,11 @@ class TestContracts(Common):
         json_content = self.fetch_json(config.JSON_TRAVEL_TIME_RESPONSE_HAPPY)
         assert self.road_distance.validate_against_schema(json_content, "provider-response")
 
-    def test_contract_css_to_lambda_bad_request(self):
+    def test_contract_ccs_to_lambda_bad_request(self):
         json_content = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID)
         assert not self.road_distance.validate_against_schema(json_content, "local")
 
-    def test_contract_css_to_lambda_bad_reference(self):
+    def test_contract_ccs_to_lambda_bad_reference(self):
         json_content = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID_REFERENCE)
         assert not self.road_distance.validate_against_schema(json_content, "local")
 
