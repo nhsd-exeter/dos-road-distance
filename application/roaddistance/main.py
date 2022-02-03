@@ -59,7 +59,7 @@ class RoadDistance(Common):
             return {
                 "status": self.status_code,
                 "message": "Validation error: " + self.validation_error,
-                "transactionid": self.transaction_id
+                "transactionid": self.transaction_id,
             }
 
         try:
@@ -72,11 +72,11 @@ class RoadDistance(Common):
                 if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
                     raise Exception("Mismatch of destinations in response, problem forming")
         except Exception as ex:
-            body = self.process_ccs_fatal_error(str(ex))
+            body = self.process_fatal_error(str(ex))
 
         return body
 
-    def process_ccs_response_success(self) -> dict:
+    def process_provider_response_success(self) -> dict:
         end_time = datetime.now().microsecond
         total_time = end_time - self.start_time
         self.logger.log(
@@ -88,11 +88,10 @@ class RoadDistance(Common):
             "message": "",
             "transactionid": self.transaction_id,
             "destinations": self.destinations,
-            "unreachable": self.unreachable
+            "unreachable": self.unreachable,
         }
 
-    def process_ccs_response_error(self) -> dict:
-
+    def process_provider_response_error(self) -> dict:
         error_response = self.response.replace("\n", "")
 
         self.logger.log_ccs_error(self.status_code, "Protobuf endpoint error")
@@ -103,7 +102,7 @@ class RoadDistance(Common):
         else:
             return {"status": 500, "message": error_response}
 
-    def process_fatal_error(self, error) -> dict:
+    def process_fatal_error(self, error: str) -> dict:
         self.status_code = 500
         self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + error, "error")
         return {"status": 500, "message": error}
