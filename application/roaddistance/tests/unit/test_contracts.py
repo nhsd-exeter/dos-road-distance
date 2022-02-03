@@ -17,11 +17,11 @@ class TestContracts(Common):
         assert self.road_distance.validate_against_schema(json_content, "local")
 
     def test_lambda_to_provider_contract_happy(self):
-        json_content = self.fetch_json(self.road_distance.contracts["provider"] + "_happy.json")
+        json_content = self.fetch_json(config.JSON_TRAVEL_TIME_REQUEST_HAPPY)
         assert self.road_distance.validate_against_schema(json_content, "provider")
 
     def test_provider_to_lambda_contract_happy(self):
-        json_content = self.fetch_json(self.road_distance.contracts["provider"] + "_response_happy.json")
+        json_content = self.fetch_json(config.JSON_TRAVEL_TIME_RESPONSE_HAPPY)
         assert self.road_distance.validate_against_schema(json_content, "provider-response")
 
     def test_contract_css_to_lambda_bad_request(self):
@@ -33,13 +33,11 @@ class TestContracts(Common):
         assert not self.road_distance.validate_against_schema(json_content, "local")
 
     def test_contract_lambda_to_provider_bad_request(self):
-        json_content = self.fetch_json(self.road_distance.contracts["provider"] + "_invalid_missing_element.json")
+        json_content = self.fetch_json(config.JSON_TRAVEL_TIME_REQUEST_INVALID)
         assert not self.road_distance.validate_against_schema(json_content, "provider")
 
     def test_contract_lambda_to_provider_bad_response(self):
-        json_content = self.fetch_json(
-            self.road_distance.contracts["provider"] + "_response_invalid_missing_element.json"
-        )
+        json_content = self.fetch_json(config.JSON_TRAVEL_TIME_RESPONSE_INVALID)
         assert not self.road_distance.validate_against_schema(json_content, "provider-response")
 
     def test_contract_lambda_to_ccs_happy(self):
