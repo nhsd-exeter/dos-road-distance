@@ -163,6 +163,7 @@ generate-proto-python: # Generate the Python code from the protobuf proto files
 docker-build-lambda: # Build the local lambda Docker image
 	rm -rf $(DOCKER_DIR)/roaddistance-lambda/assets/*
 	mkdir $(DOCKER_DIR)/roaddistance-lambda/assets/log
+	cp $(DOCKER_DIR)/roaddistance-lambda/.bashrc $(DOCKER_DIR)/roaddistance-lambda/assets/
 	cp $(APPLICATION_DIR)/roaddistance/requirements.txt $(DOCKER_DIR)/roaddistance-lambda/assets/
 	cp $(APPLICATION_DIR)/roaddistance/*.py $(DOCKER_DIR)/roaddistance-lambda/assets/
 	cp -r $(APPLICATION_DIR)/roaddistance/proto $(DOCKER_DIR)/roaddistance-lambda/assets/
