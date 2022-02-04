@@ -61,7 +61,6 @@ class RoadDistance(Common):
                 "message": "Validation error: " + self.validation_error,
                 "transactionid": self.transaction_id,
             }
-
         try:
             self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
             self.send_request(self.build_request())
@@ -71,7 +70,7 @@ class RoadDistance(Common):
                 body = self.process_provider_response_success()
                 if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
                     raise RuntimeError("Mismatch of destinations in response, problem forming")
-        except (RuntimeError, ValidationError, SchemaError) as er:
+        except (RuntimeError) as er:
             body = self.process_fatal_error(str(er))
 
         return body
@@ -179,9 +178,8 @@ class RoadDistance(Common):
             contract = self.fetch_json(self.contracts[schema_name] + ".json")
             validate(instance=json, schema=contract)
             return True
-        except (ValidationError, SchemaError) as ex:
-            error_chunks = str(ex).split("\n")
-            self.validation_error = error_chunks[0]
+        except (ValidationError, SchemaError, FileNotFoundError) as ex:
+            self.validation_error = str(ex).split("\n")[0]
             self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
             return False
 

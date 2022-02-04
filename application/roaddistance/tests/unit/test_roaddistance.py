@@ -19,9 +19,10 @@ class TestRoadDistance(Common):
         self.__setup()
         tmp_local = self.road_distance.contracts["local"]
         self.road_distance.contracts["local"] = "some_unknown_contract"
-
+        # with pytest.raises(FileNotFoundError):
         result = self.road_distance.validate_against_schema({}, "local")
         assert not result
+        print(result)
         compare = "Unable to open file openapi_schemas/json/some_unknown_contract"
         log = self.road_distance.logger.read_log_output().find(compare)
         assert log is not -1
