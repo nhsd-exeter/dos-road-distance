@@ -28,8 +28,8 @@ class TestTravelTimeRequest(Common):
         except (UnicodeDecodeError, AttributeError):
             assert False
 
-    def test_invalid_request_data_raises_exception(self):
+    def test_invalid_request_data_raises_key_error(self):
         origin = {"latitude": 2.345648375, "longitude": -3.4356837}
         destinations = []
-        with pytest.raises(Exception):
-            self.tt_request.build_request_proto(origin, destinations)
+        with pytest.raises(KeyError):
+            self.travel_time_request.build_request_proto(origin, destinations)

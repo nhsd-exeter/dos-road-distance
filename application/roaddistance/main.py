@@ -55,26 +55,29 @@ class RoadDistance(Common):
         body: dict = {}
         try:
             if not self.validate_against_schema(self.request, "local"):
-                self.status_code = 400
-                self.logger.log_ccs_error(self.status_code, "Validation error", self.format_request_for_logging())
-                return {
-                    "status": self.status_code,
-                    "message": "Validation error: " + self.validation_error,
-                    "transactionid": self.transaction_id,
-                }
-
-            self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
-            self.send_request(self.build_request())
-            if not self.status_code == 200:
-                body = self.process_provider_response_error()
+                body = self.process_validation_error()
             else:
-                body = self.process_provider_response_success()
-                if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
-                    raise RuntimeError("Mismatch of destinations in response, problem forming")
+                self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
+                self.send_request(self.build_request())
+                if not self.status_code == 200:
+                    body = self.process_provider_response_error()
+                else:
+                    body = self.process_provider_response_success()
+                    if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
+                        raise RuntimeError("Mismatch of destinations in response, problem forming")
         except (RuntimeError, Exception) as er:
             body = self.process_fatal_error(str(er))
 
         return body
+
+    def process_validation_error(self):
+        self.status_code = 400
+        self.logger.log_ccs_error(self.status_code, "Validation error", self.format_request_for_logging())
+        return {
+            "status": self.status_code,
+            "message": "Validation error: " + self.validation_error,
+            "transactionid": self.transaction_id,
+        }
 
     def process_provider_response_success(self) -> dict:
         end_time = datetime.now().microsecond

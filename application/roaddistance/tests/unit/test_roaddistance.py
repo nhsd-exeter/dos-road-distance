@@ -13,7 +13,7 @@ class TestRoadDistance(Common):
 
     def test_missing_contract_logs_exception(self):
         self.__setup()
-        with pytest.raises(Exception):
+        with pytest.raises(FileNotFoundError):
             self.road_distance.fetch_json("some_unknown_contract")
 
     def test_process_request_exception_logs_error(self):
@@ -33,12 +33,6 @@ class TestRoadDistance(Common):
         assert isinstance(result, dict)
         assert "lat" in result
         assert "lng" in result
-
-    def test_fetch_coords_invalid_location(self):
-        self.__setup()
-        with pytest.raises(Exception):
-            json_content = {"transaction_id": "AAA-BBBB-CCCC-DDD", "lat": 2.34534535, "lng": -5.89457968}
-            self.road_distance.coords(json_content["origin"])
 
     def test_fetch_destinations_successful(self):
         self.__setup()
