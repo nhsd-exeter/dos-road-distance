@@ -9,24 +9,22 @@ class TestRoadDistance(Common):
 
     road_distance = RoadDistance({})
     mock_mode = os.environ.get("DRD_MOCK_MODE")
+    orig_local = road_distance.contracts["local"]
 
     def test_missing_contract_logs_exception(self):
         self.__setup()
         with pytest.raises(Exception):
             self.road_distance.fetch_json("some_unknown_contract")
 
-    def test_validate_against_schema_logs_error(self):
-        self.__setup()
-        tmp_local = self.road_distance.contracts["local"]
+    def test_process_request_exception_logs_error(self):
+        self.__setup({})
         self.road_distance.contracts["local"] = "some_unknown_contract"
-        # with pytest.raises(FileNotFoundError):
-        result = self.road_distance.validate_against_schema({}, "local")
-        assert not result
+        result = self.road_distance.process_request()
         print(result)
+        assert result["status"] == 500
         compare = "Unable to open file openapi_schemas/json/some_unknown_contract"
         log = self.road_distance.logger.read_log_output().find(compare)
         assert log is not -1
-        self.road_distance.contracts["local"] = tmp_local
 
     def test_fetch_coords_successful(self):
         self.__setup()
@@ -109,6 +107,7 @@ class TestRoadDistance(Common):
     def __setup(self, json={}):
         os.environ["LOGGER"] = "Test"
         self.road_distance = RoadDistance(json)
+        self.road_distance.contracts["local"] = self.orig_local
         self.road_distance.logger.purge()
 
     def __fetch_json(self, file_name: str):

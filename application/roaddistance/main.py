@@ -53,15 +53,16 @@ class RoadDistance(Common):
 
     def process_request(self) -> dict:
         body: dict = {}
-        if not self.validate_against_schema(self.request, "local"):
-            self.status_code = 400
-            self.logger.log_ccs_error(self.status_code, "Validation error", self.format_request_for_logging())
-            return {
-                "status": self.status_code,
-                "message": "Validation error: " + self.validation_error,
-                "transactionid": self.transaction_id,
-            }
         try:
+            if not self.validate_against_schema(self.request, "local"):
+                self.status_code = 400
+                self.logger.log_ccs_error(self.status_code, "Validation error", self.format_request_for_logging())
+                return {
+                    "status": self.status_code,
+                    "message": "Validation error: " + self.validation_error,
+                    "transactionid": self.transaction_id,
+                }
+
             self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
             self.send_request(self.build_request())
             if not self.status_code == 200:
@@ -70,7 +71,7 @@ class RoadDistance(Common):
                 body = self.process_provider_response_success()
                 if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
                     raise RuntimeError("Mismatch of destinations in response, problem forming")
-        except (RuntimeError) as er:
+        except (RuntimeError, Exception) as er:
             body = self.process_fatal_error(str(er))
 
         return body
@@ -178,7 +179,7 @@ class RoadDistance(Common):
             contract = self.fetch_json(self.contracts[schema_name] + ".json")
             validate(instance=json, schema=contract)
             return True
-        except (ValidationError, SchemaError, FileNotFoundError) as ex:
+        except (ValidationError, SchemaError) as ex:
             self.validation_error = str(ex).split("\n")[0]
             self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
             return False
