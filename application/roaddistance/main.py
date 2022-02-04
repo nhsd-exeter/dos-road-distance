@@ -71,8 +71,8 @@ class RoadDistance(Common):
                 body = self.process_provider_response_success()
                 if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
                     raise RuntimeError("Mismatch of destinations in response, problem forming")
-        except RuntimeError as ex:
-            body = self.process_fatal_error(str(ex))
+        except (RuntimeError, ValidationError, SchemaError) as er:
+            body = self.process_fatal_error(str(er))
 
         return body
 
@@ -179,7 +179,7 @@ class RoadDistance(Common):
             contract = self.fetch_json(self.contracts[schema_name] + ".json")
             validate(instance=json, schema=contract)
             return True
-        except (ValidationError, SchemaError, Exception) as ex:
+        except (ValidationError, SchemaError) as ex:
             error_chunks = str(ex).split("\n")
             self.validation_error = error_chunks[0]
             self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
