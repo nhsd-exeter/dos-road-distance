@@ -65,7 +65,7 @@ class RoadDistance(Common):
                     body = self.process_provider_response_success()
                     if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
                         raise RuntimeError("Mismatch of destinations in response, problem forming")
-        except (RuntimeError, Exception) as er:
+        except (Exception) as er:
             body = self.process_fatal_error(str(er))
 
         return body
