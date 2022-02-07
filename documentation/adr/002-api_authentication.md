@@ -2,7 +2,7 @@
 
 * Date: 2022/02/07
 * Status: Proposed
-* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk, Tamara Goldschmidt, Declan Heard, Christian Martin, Livsey Williams, Sarah Harding
+* Deciders: Jay Bush, Nick Miles, Jayne Chapman, Dan Stefaniuk, Declan Heard, Christian Martin, Livsey Williams, Sarah Harding
 
 ## Context
 Our API needs to be kept private and accessible only to the authorised actors. For the application we only have one actor, the DoS CCS system. This document will additionally discuss other access protections.
@@ -11,7 +11,7 @@ Our API needs to be kept private and accessible only to the authorised actors. F
 
 * Lambda authorizers: This is the method we currently use, however as it is using Python code we can add more dynamicismn into this to make it more secure and robust
 * JWT authorizers: This is for OpenID and Oauth connections - this would be useful if authenticating individuals, however our application is not doing this and therefore this would be vastly overkill and overcomplex.
-* Standard AWS IAM roles and policies: The Lambda is not located in the same cluster to have access to the IAM roles, and therefore this would be not only a non-trivial solution but would also expose it unnecessarily therefore not best practice.
+* Standard AWS IAM roles and policies: The Lambda is not located in the same cluster to have access to the IAM roles, and therefore this would not only be a non-trivial solution but would also expose it unnecessarily, therefore not best practice.
 
 
 ## Decision, Design and pseudocode
