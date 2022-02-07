@@ -19,11 +19,14 @@ Our API needs to be kept private and accessible only to the authorised actors. F
 ### Lambda authorizers
 Our solution is a code level one remaining on the Lambda authorizers. The password, held in AWS secrets, will be bcrypt hashed with salt. This algorithm is strong and common for both PHP and Python.
 
+For the request we have ensured the salting cost be kept to a minimum as this is not a stored password, therefore we do not need the additional hardening required for a password database.
+
+Sessions can also be used as a way to keep the connection alive for a limited period of time. This allows an already authenticated request to persist across multiple subsequent requests to prevent continuous hashing.
+
 ### HTTPS requirement
 
 It is a requirement that this communication is only permitted via HTTPS to ensure secure transmission preventing man in the middle. We may also need to ensure that the HTTPS certificate used is sending the details we expect as an additional check.
 
-For the request we have ensured the salting cost be kept to a minimum as this is not a stored password, therefore we do not need the additional hardening required for a password database.
 
 ### PHP
 
@@ -49,6 +52,10 @@ if bcrypt.checkpw(secrets_password, password_hash):
 else:
     print("does not match")
 ```
+
+# Sessions
+
+Session management will prevent hashing for every request and therefore reduce the impact of the cost.
 
 ## Consequences
 
