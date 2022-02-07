@@ -97,9 +97,7 @@ class RoadDistance(Common):
     def process_provider_response_error(self) -> dict:
         error_response = self.response.replace("\n", "")
 
-        self.logger.log_ccs_error(self.status_code, "Protobuf endpoint error")
-        self.logger.log("Protobuf endpoint error", "error")
-        self.logger.log("Protobuf returned error in request: " + error_response, "error")
+        self.logger.log_ccs_error(self.status_code, "Protobuf returned error in request: " + error_response)
         if str(self.status_code)[0] == "4":
             return {"status": 400, "message": error_response, "transactionid": self.transaction_id}
         else:
