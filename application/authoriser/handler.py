@@ -26,4 +26,4 @@ def check_authorisation_token(token_hash_sent: str) -> bool:
     )
     secrets = json.loads(secrets_response["SecretString"])
     token = secrets["API_RD_TOKEN"]
-    return bcrypt.checkpw(token, token_hash_sent)
+    return bcrypt.checkpw(token.encode('utf-8'), token_hash_sent.encode('utf-8'))
