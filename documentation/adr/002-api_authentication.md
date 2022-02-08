@@ -9,40 +9,40 @@ Our API needs to be kept private and accessible only to the authorised actors. F
 
 ## Options
 
+### Authorizers
+
 * Lambda authorizers: This is the method we currently use, however as it is using Python code we can add more dynamicismn into this to make it more secure and robust
 * JWT authorizers: This is for OpenID and Oauth connections - this would be useful if authenticating individuals, however our application is not doing this and therefore this would be vastly overkill and overcomplex.
 * Standard AWS IAM roles and policies: The Lambda is not located in the same cluster to have access to the IAM roles, and therefore this would not only be a non-trivial solution but would also expose it unnecessarily, therefore not best practice.
 
+### Sessions or caching
+
+Sessions or authorisation caching can also be used as a way to keep the connection alive for a limited period of time. This allows an already authenticated request to persist across multiple subsequent requests to prevent continuous hashing.
 
 ## Decision, Design and pseudocode
 
 ### Lambda authorizers
+
 Our solution is a code level one remaining on the Lambda authorizers. The password, held in AWS secrets, will be bcrypt hashed with salt. This algorithm is strong and common for both PHP and Python.
 
 For the request we have ensured the salting cost be kept to a minimum as this is not a stored password, therefore we do not need the additional hardening required for a password database.
 
-Sessions can also be used as a way to keep the connection alive for a limited period of time. This allows an already authenticated request to persist across multiple subsequent requests to prevent continuous hashing.
-
+We have also chosen to enable AWS authorisation token caching.
 ### HTTPS requirement
 
 It is a requirement that this communication is only permitted via HTTPS to ensure secure transmission preventing man in the middle. We may also need to ensure that the HTTPS certificate used is sending the details we expect as an additional check.
 
-
 ### PHP
 
 ```php
-$magic_string = '32bit string';
-$secrets_password = fetchPasswordFromSecrets().magic_string;
+$secrets_password = fetchPasswordFromSecrets() . time_factor;
 $password_hash = password_hash($secrets_password, PASSWORD_BCRYPT, ['cost' => 4]));
 ```
 
 ### Python
 
 ```python
-import bcrypt
-
-magic_string = '32bit string';
-secrets_password = fetchPasswordFromS3() + magic_string
+secrets_password = fetchPasswordFromS3() + time_factor
 password_hash = bcrypt.hashpw(secrets_password, bcrypt.gensalt())
 
 // ------------ checking back
@@ -53,9 +53,26 @@ else:
     print("does not match")
 ```
 
-# Sessions
+### Authorisation caching
 
-Session management will prevent hashing for every request and therefore reduce the impact of the cost.
+Authorisation caching will prevent the need for hashing of every request and therefore reduce the impact of the cost. The client would need to perform it's own TTL and token storage to resend if this is to be implemented.
+
+An example of how this could be implemented:
+
+Client
+
+```pseudocode
+if previous_time < (time()/1800) {
+  hashed_token = generate_token()
+  previous_time = time()/1800
+}
+send_request(authorization = hashed_token)
+```
+
+Lambda
+
+* Enable Authorization Caching with TTL 1920
+* New token received means new authorisation check and cache appended to
 
 ## Consequences
 
