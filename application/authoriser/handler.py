@@ -2,6 +2,7 @@ import boto3
 import json
 import os
 import bcrypt
+import time
 
 client = boto3.client("secretsmanager")
 
@@ -25,5 +26,6 @@ def check_authorisation_token(token_hash_sent: str) -> bool:
         SecretId=os.environ["SECRET_STORE"],
     )
     secrets = json.loads(secrets_response["SecretString"])
-    token = secrets["API_RD_TOKEN"]
+    time_factor = str(int(time.time()/1800))
+    token = str(secrets["API_RD_TOKEN"]) + time_factor
     return bcrypt.checkpw(token.encode('utf-8'), token_hash_sent.encode('utf-8'))
