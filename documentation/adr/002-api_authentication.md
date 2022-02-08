@@ -53,16 +53,15 @@ else:
     print("does not match")
 ```
 
-### Authorisation caching
+###  Token time chunking
 
-Authorisation caching will prevent the need for hashing of every request and therefore reduce the impact of the cost. The client would need to perform it's own TTL and token storage to resend if this is to be implemented.
+We have added a time element onto the password string to ensure the token hash dies. This can be seen in the example code above. We chunk this interval into time blocks so that it can persist a token for a period of time before rejecting it.
 
-> When caching is enabled for an authorizer, API Gateway uses the authorizer's identity sources as the cache key. If a client specifies the same parameters in identity sources within the configured TTL, API Gateway uses the cached authorizer result, rather than invoking your Lambda function.
-> [Source](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)
+### Client caching
 
-An example of how this could be implemented:
+We have used a time interval that is within the time period used for time chunking of the token password. The time interval used here segregates the regeneration periods required, therefore creating a caching period on the client by reusing the existing token. We may store this token using client sessions within PHP.
 
-Client
+An example of how this could be implemented on the client:
 
 ```pseudocode
 if previous_time < (time()/1800) {
@@ -72,7 +71,14 @@ if previous_time < (time()/1800) {
 send_request(authorization = hashed_token)
 ```
 
-Lambda
+### Authorisation caching
+
+Authorisation caching will prevent the need for hashing of every request and therefore reduce the impact of the cost. The client would need to perform it's own TTL and token storage to resend if this is to be implemented.
+
+> When caching is enabled for an authorizer, API Gateway uses the authorizer's identity sources as the cache key. If a client specifies the same parameters in identity sources within the configured TTL, API Gateway uses the cached authorizer result, rather than invoking your Lambda function.
+> [Source](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)
+
+An example of how this could be implemented for the Lambda gateway:
 
 * Enable Authorization Caching with TTL 1920
 * New token received means new authorisation check and cache appended to
