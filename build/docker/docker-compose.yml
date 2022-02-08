@@ -15,6 +15,7 @@ services:
       - $APPLICATION_DIR/roaddistance/tests:/var/task/tests
       - $APPLICATION_DIR/roaddistance:/var/task/application
       - $APPLICATION_DIR/roaddistance/mock:/var/task/mock
+    command: bash -c "/root/bin/init.sh"
 
 networks:
   default:
