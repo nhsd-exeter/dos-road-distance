@@ -57,6 +57,9 @@ else:
 
 Authorisation caching will prevent the need for hashing of every request and therefore reduce the impact of the cost. The client would need to perform it's own TTL and token storage to resend if this is to be implemented.
 
+> When caching is enabled for an authorizer, API Gateway uses the authorizer's identity sources as the cache key. If a client specifies the same parameters in identity sources within the configured TTL, API Gateway uses the cached authorizer result, rather than invoking your Lambda function.
+> [Source](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)
+
 An example of how this could be implemented:
 
 Client
