@@ -31,9 +31,9 @@ It is a requirement that this communication is only permitted via HTTPS to ensur
 ### PHP
 
 ```php
-magic_string = '32bit string';
-secrets_password = fetchPasswordFromS3().magic_string;
-password_hash = password_hash(secrets_password, PASSWORD_BCRYPT, ['cost' => 4]);
+$magic_string = '32bit string';
+$secrets_password = fetchPasswordFromSecrets().magic_string;
+$password_hash = password_hash($secrets_password, PASSWORD_BCRYPT, ['cost' => 4]));
 ```
 
 ### Python
