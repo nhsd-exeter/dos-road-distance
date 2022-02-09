@@ -16,11 +16,29 @@ class TestMock(Common):
         print(r.status_message)
         assert re.search(self.STATUS_MSG_COUNT + "5$", r.status_message)
 
+    def test_mock_count_40(self):
+        r = TravelTimeMock().post(service_count=40)
+        assert r.status_code == 200
+        print(r.status_message)
+        assert re.search("MOCK From count of 40 using adjusted count of 50$", r.status_message)
+
     def test_mock_count_3000(self):
         r = TravelTimeMock().post(service_count=3000)
         assert r.status_code == 200
         print(r.status_message)
         assert re.search(self.STATUS_MSG_COUNT + "3000$", r.status_message)
+
+    def test_mock_count_4000(self):
+        r = TravelTimeMock().post(service_count=4000)
+        assert r.status_code == 200
+        print(r.status_message)
+        assert re.search(self.STATUS_MSG_NONE + "5$", r.status_message)
+
+    def test_mock_count_0(self):
+        r = TravelTimeMock().post(service_count=0)
+        assert r.status_code == 200
+        print(r.status_message)
+        assert re.search(self.STATUS_MSG_NONE + "5$", r.status_message)
 
     def test_mock_transaction_id(self):
         r = TravelTimeMock().post(transaction_id=self.transaction_id)
