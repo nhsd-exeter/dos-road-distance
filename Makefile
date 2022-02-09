@@ -22,7 +22,8 @@ restart:
 
 stop: project-stop
 
-log: project-log
+log:
+	docker logs --tail 50 --follow roaddistance-lambda
 
 bash:
 	docker exec --interactive --tty roaddistance-lambda bash

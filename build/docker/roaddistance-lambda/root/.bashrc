@@ -1,2 +1,1 @@
-
-alias update='/root/bin/init.sh'
+/root/bin/init.sh
