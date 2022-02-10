@@ -28,6 +28,7 @@ class RoadDistance(Common):
     request_id: str = ""
     transaction_id: str = ""
     start_time: int
+    validation_error: str = ""
 
     def __init__(self, request):
         self.request = request
@@ -50,44 +51,82 @@ class RoadDistance(Common):
 
         return str(copy)
 
-    def process_request(self) -> int:
-        if not self.validate_against_schema(self.request, "local"):
-            self.status_code = 500
-            self.logger.log_ccs_error(str(self.status_code), "Validation error", self.format_request_for_logging())
-            return self.status_code
-
+    def process_request(self) -> dict:
+        body: dict = {}
         try:
-            self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
-            self.send_request(self.build_request())
-            if "error" in self.response and self.response["error"]:
-                self.status_code = 500
-                self.logger.log("Protobuf returned error in request: " + self.response["error"], "error")
+            if not self.validate_against_schema(self.request, "local"):
+                body = self.process_validation_error()
             else:
-                self.log_individual_service_responses()
-                self.status_code = 200
+                self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
+                self.send_request(self.build_request())
+                if not self.status_code == 200:
+                    body = self.process_provider_response_error()
+                else:
+                    body = self.process_provider_response_success()
+                    if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
+                        raise RuntimeError("Mismatch of destinations in response, problem forming")
+        except (Exception) as er:
+            body = self.process_fatal_error(str(er))
 
-                end_time = datetime.now().microsecond
-                total_time = end_time - self.start_time
-                self.logger.log(
-                    "Completed road distance request. end_time: " + str(end_time) + ", total_time: " + str(total_time)
+        return body
+
+    def process_validation_error(self):
+        self.status_code = 400
+        self.logger.log_ccs_error(self.status_code, "Validation error", self.format_request_for_logging())
+        return {
+            "status": self.status_code,
+            "message": "Validation error: " + self.validation_error,
+            "transactionid": self.transaction_id,
+        }
+
+    def process_provider_response_success(self) -> dict:
+        end_time = datetime.now().microsecond
+        total_time = end_time - self.start_time
+        self.logger.log(
+            "Completed road distance request. end_time: " + str(end_time) + ", total_time: " + str(total_time)
+        )
+        self.form_response_destinations()
+        return {
+            "status": self.status_code,
+            "message": "",
+            "transactionid": self.transaction_id,
+            "destinations": self.destinations,
+            "unreachable": self.unreachable,
+        }
+
+    def process_provider_response_error(self) -> dict:
+        error_response = self.response.replace("\n", "")
+
+        self.logger.log_ccs_error(self.status_code, "Protobuf returned error in request: " + error_response)
+        if str(self.status_code)[0] == "4":
+            return {"status": 400, "message": error_response, "transactionid": self.transaction_id}
+        else:
+            return {"status": 500, "message": error_response}
+
+    def process_fatal_error(self, error: str) -> dict:
+        self.status_code = 500
+        self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + error, "error")
+        return {"status": 500, "message": error}
+
+    def form_response_destinations(self) -> None:
+        self.destinations = {}
+        self.unreachable = []
+        try:
+            for i in range(len(self.request["destinations"])):
+                distance = self.response["distances"][i]
+                traveltime = self.response["travelTimes"][i]
+                if traveltime == -1:
+                    unreachable = "yes"
+                    distance = 999
+                    self.unreachable.append(self.request["destinations"][i]["reference"])
+                else:
+                    unreachable = "no"
+                    self.destinations[self.request["destinations"][i]["reference"]] = distance
+                self.logger.log_provider_success(
+                    str(self.request["destinations"][i]["reference"]), unreachable, distance
                 )
-
-        except Exception as ex:
-            self.status_code = 500
-            self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
-
-        return self.status_code
-
-    def log_individual_service_responses(self):
-        for i in range(len(self.request["destinations"])):
-            distance = self.response["distances"][i]
-            traveltime = self.response["travelTimes"][i]
-            if traveltime == -1:
-                unreachable = "yes"
-                distance = 999
-            else:
-                unreachable = "no"
-            self.logger.log_provider_success(str(self.request["destinations"][i]["reference"]), unreachable, distance)
+        except Exception:
+            return None
 
     def send_request(self, request: bytes):
         endpoint = os.environ.get("DRD_ENDPOINT")
@@ -109,15 +148,8 @@ class RoadDistance(Common):
                     "Accept": "application/octet-stream",
                 },
             )
-        if r.status_code == 200:
-            self.status_code = 200
-            self.response = self.decode_response(r.content)
-        else:
-            self.status_code = 500
-            self.logger.log_ccs_error(
-                str(self.status_code), "Protobuf endpoint error, status code: " + str(r.status_code)
-            )
-            self.logger.log("Protobuf endpoint error, status code: " + str(r.status_code), "error")
+        self.status_code = r.status_code
+        self.response = self.decode_response(r.content)
 
     def build_request(self):
         origin = self.fetch_coords(self.request["origin"])
@@ -148,7 +180,8 @@ class RoadDistance(Common):
             contract = self.fetch_json(self.contracts[schema_name] + ".json")
             validate(instance=json, schema=contract)
             return True
-        except (ValidationError, SchemaError, Exception) as ex:
+        except (ValidationError, SchemaError) as ex:
+            self.validation_error = str(ex).split("\n")[0]
             self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
             return False
 

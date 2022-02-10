@@ -163,6 +163,7 @@ generate-proto-python: # Generate the Python code from the protobuf proto files
 docker-build-lambda: # Build the local lambda Docker image
 	rm -rf $(DOCKER_DIR)/roaddistance-lambda/assets/*
 	mkdir $(DOCKER_DIR)/roaddistance-lambda/assets/log
+	cp $(DOCKER_DIR)/roaddistance-lambda/.bashrc $(DOCKER_DIR)/roaddistance-lambda/assets/
 	cp $(APPLICATION_DIR)/roaddistance/requirements.txt $(DOCKER_DIR)/roaddistance-lambda/assets/
 	cp $(APPLICATION_DIR)/roaddistance/*.py $(DOCKER_DIR)/roaddistance-lambda/assets/
 	cp -r $(APPLICATION_DIR)/roaddistance/proto $(DOCKER_DIR)/roaddistance-lambda/assets/
@@ -190,7 +191,7 @@ local-ccs-lambda-request: # Perform a sample valid request from CCS to the local
 
 local-ccs-lambda-request-invalid: # Perform a sample valid request from CCS to the local lambda instance, which must be already running using make docker-run-lambda
 	curl -v -POST "http://localhost:9000/2015-03-31/functions/function/invocations" \
-		-d @application/roaddistance/tests/unit/test_json/dos_road_distance_api_invalid_coord.json
+		-d @application/roaddistance/tests/unit/test_json/dos_road_distance_api_invalid_missing_element.json
 
 # --------------------------------------
 

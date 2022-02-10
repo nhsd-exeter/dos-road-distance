@@ -142,10 +142,10 @@ class RDLogger:
         )
         self.log_formatted(log_message, "provider_response")
 
-    def log_provider_error(self, statuscode: str, error: str, data: str = ""):
-        log_message = "statuscode=" + statuscode + "|error=" + error + "|data=" + data
+    def log_provider_error(self, status: int, error: str, data: str = ""):
+        log_message = "statuscode=" + str(status) + "|error=" + error + "|data=" + data
         self.log_formatted(log_message, "provider_response_error", "error")
 
-    def log_ccs_error(self, statuscode: str, error: str, data: str = ""):
-        log_message = "statuscode=" + statuscode + "|error=" + error + "|data=" + data
+    def log_ccs_error(self, status: int, error: str, data: str = ""):
+        log_message = "statuscode=" + str(status) + "|error=" + error + "|data=" + data
         self.log_formatted(log_message, "ccs_request_error", "error")
