@@ -24,6 +24,7 @@ EXCEPTION_DOS_ROADDISTANCE = "dos-road-distance exception: "
 
 # Request and response files
 JSON_DOS_ROAD_DISTANCE_HAPPY = "dos_road_distance_api_happy.json"
+JSON_DOS_ROAD_DISTANCE_INVALID_JSON = "dos_road_distance_api_invalid_json.json"
 JSON_DOS_ROAD_DISTANCE_RESPONSE_HAPPY = "dos_road_distance_api_response_happy.json"
 JSON_DOS_ROAD_DISTANCE_RESPONSE_MISSING_TRANSACTION_ID = "dos_road_distance_api_response_missing_transaction_id.json"
 JSON_DOS_ROAD_DISTANCE_RESPONSE_INVALID_DISTANCE = "dos_road_distance_api_response_invalid_distance.json"

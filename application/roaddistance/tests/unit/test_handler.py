@@ -20,6 +20,13 @@ class TestHandler(Common):
         assert (len(response["destinations"]) + len(response["unreachable"])) == len(request["destinations"])
         assert os.path.isfile(self.log_path)
 
+    def test_invalid_json_raises_exception(self):
+        json_file = super().fetch_file(config.PATH_TEST_JSON, config.JSON_DOS_ROAD_DISTANCE_INVALID_JSON)
+        event = {"body": json_file}
+        response = handler.process_road_distance_request(event, None)
+        assert response["status"] == 500
+        assert response["message"].find("JSONDecodeError") != -1
+
     def test_invalid_ccs_request_returns_400_response_with_message(self):
         self.purge_test_logs()
         request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID)
