@@ -40,7 +40,7 @@ class TravelTimeMock(Common):
     }
 
     def post(self, transaction_id="", service_count=0):
-        if service_count > 0:
+        if service_count > 0 and service_count < 3001:
             if service_count in self.files_by_count:
                 self.status_message = "MOCK Matched on count of " + str(service_count)
             else:
