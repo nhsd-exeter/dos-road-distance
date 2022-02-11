@@ -4,7 +4,7 @@ WORKDIR ${LAMBDA_TASK_ROOT}
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 COPY assets/ .
-COPY assets/.bashrc /root/
+COPY root/ /root/
 
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN pip3 install pytest

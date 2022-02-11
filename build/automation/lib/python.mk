@@ -5,6 +5,7 @@ PYTHON_VERSION = $(PYTHON_VERSION_MAJOR).$(PYTHON_VERSION_MINOR).$(PYTHON_VERSIO
 PYTHON_BASE_PACKAGES = \
 	awscli-local==0.15 \
 	awscli==1.20.53 \
+	bcrypt==3.2.0 \
 	black==21.9b0 \
 	boto3==1.18.53 \
 	bpython \
