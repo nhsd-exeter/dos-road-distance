@@ -21,4 +21,4 @@ class TestTravelTimeResponse(Common):
         tt_response = TravelTimeResponse()
         tt_response_decoded = tt_response.decode_response_proto(traveltime_response_data_bin)
         print(tt_response_decoded)
-        assert tt_response_decoded == {"travelTimes": [], "distances": [], "error": "SOURCE_NOT_IN_GEOMETRY"}
+        assert tt_response_decoded == {"error": "SOURCE_NOT_IN_GEOMETRY"}
