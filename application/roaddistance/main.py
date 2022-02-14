@@ -61,16 +61,14 @@ class RoadDistance(Common):
                 self.send_request(self.build_request())
                 if not self.status_code == 200:
                     body = self.process_provider_response_error(self.response)
-                elif "error" in self.response:
-                    body = self.process_provider_response_error(self.response["error"])
                 else:
                     body = self.process_provider_response_success()
-                    self.logger.log("CCS response body: " + str(body))
                     if len(self.request["destinations"]) != (len(self.destinations) + len(self.unreachable)):
                         raise RuntimeError("Mismatch of destinations in response, problem forming")
         except (Exception) as er:
             body = self.process_fatal_error(str(er))
 
+        self.logger.log("CCS response body: " + str(body))
         return body
 
     def process_validation_error(self):
@@ -153,7 +151,10 @@ class RoadDistance(Common):
             )
         self.status_code = r.status_code
         self.response = self.decode_response(r.content)
-        self.logger.log("TravelTime response raw: " + str(self.response))
+        if "error" in self.response:
+            self.status_code = 400
+            self.response = self.response["error"]
+        self.logger.log("TravelTime decoded response: " + str(self.response))
 
     def build_request(self):
         origin = self.fetch_coords(self.request["origin"])
