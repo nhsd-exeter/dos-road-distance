@@ -60,7 +60,9 @@ class RoadDistance(Common):
                 self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
                 self.send_request(self.build_request())
                 if not self.status_code == 200:
-                    body = self.process_provider_response_error()
+                    body = self.process_provider_response_error(self.response)
+                elif "error" in self.response:
+                    body = self.process_provider_response_error(self.response["error"])
                 else:
                     body = self.process_provider_response_success()
                     self.logger.log("CCS response body: " + str(body))
@@ -95,8 +97,8 @@ class RoadDistance(Common):
             "unreachable": self.unreachable,
         }
 
-    def process_provider_response_error(self) -> dict:
-        error_response = self.response.replace("\n", "")
+    def process_provider_response_error(self, error_response: str) -> dict:
+        error_response = error_response.replace("\n", "")
 
         self.logger.log_ccs_error(self.status_code, "Protobuf returned error in request: " + error_response)
         if str(self.status_code)[0] == "4":
