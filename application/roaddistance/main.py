@@ -187,7 +187,7 @@ class RoadDistance(Common):
             return True
         except (ValidationError, SchemaError) as ex:
             self.validation_error = str(ex).split("\n")[0]
-            self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + str(ex), "error")
+            self.logger.log(config.EXCEPTION_DOS_ROADDISTANCE + self.validation_error, "error")
             return False
 
     def fetch_json(self, file_name: str) -> dict:
