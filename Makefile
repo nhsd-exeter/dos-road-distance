@@ -178,6 +178,7 @@ docker-build-lambda: # Build the local lambda Docker image
 docker-build-auth: # Build the local lambda Docker image
 	rm -rf $(DOCKER_DIR)/authoriser-lambda/assets/*
 	cp $(APPLICATION_DIR)/authoriser/*.py $(DOCKER_DIR)/authoriser-lambda/assets/
+	cp $(APPLICATION_DIR)/authoriser/requirements.txt $(DOCKER_DIR)/authoriser-lambda/assets/
 	make docker-image NAME=authoriser-lambda
 	rm -rf $(DOCKER_DIR)/authoriser-lambda/assets/*
 
