@@ -774,7 +774,7 @@ docker-compose-stop: ### Stop Docker Compose - optional: YML=[docker-compose.yml
 docker-compose-log: ### Log Docker Compose output - optional: DO_NOT_FOLLOW=true,YML=[docker-compose.yml, defaults to $(DOCKER_COMPOSE_YML)]
 	yml=$$(make _docker-get-docker-compose-yml YML=$(YML))
 	docker-compose --file $$yml \
-		logs --tail 50 $$(echo $(DO_NOT_FOLLOW) | grep -E 'true|yes|y|on|1|TRUE|YES|Y|ON' > /dev/null 2>&1 && : || echo "--follow")
+		logs $$(echo $(DO_NOT_FOLLOW) | grep -E 'true|yes|y|on|1|TRUE|YES|Y|ON' > /dev/null 2>&1 && : || echo "--follow")
 
 docker-compose-exec: ### Run Docker Compose exec command - mandatory: CMD; optional: YML=[docker-compose.yml, defaults to $(DOCKER_COMPOSE_YML)]
 	yml=$$(make _docker-get-docker-compose-yml YML=$(YML))
