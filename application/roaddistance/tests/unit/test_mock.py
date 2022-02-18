@@ -1,4 +1,5 @@
 import re
+import pytest
 from common import Common
 from traveltime_mock import TravelTimeMock
 
@@ -9,8 +10,8 @@ class TestMock(Common):
     STATUS_MSG_COUNT = "Matched on count of "
     STATUS_MSG_TR_ID = "Matched on transaction ID of "
     STATUS_MSG_NONE = "No match, defaulting to "
-    STATUS_MSG_400_INVALID_REFERENCE = "Validation error: '<>' does not match"
-    STATUS_MSG_500_VALUE_OUT_OF_RANGE = "Value out of range: -4994928269"
+    STATUS_MSG_NO_SERVICES = "MOCK Matched on count of 0"
+    STATUS_MSG_VALUE_OUT_OF_RANGE = "MOCK Matched on value out of range"
 
     def test_mock_count_5(self):
         r = TravelTimeMock().post(service_count=5)
@@ -61,17 +62,12 @@ class TestMock(Common):
 
     def test_mock_zero_destinations(self):
         r = TravelTimeMock().post(service_count=0)
-        assert r.status_code == 400
-        assert re.search(self.STATUS_MSG_400_NO_SERVICES, r.status_message)
-
-    def test_mock_invalid_reference(self):
-        invalid_reference_transaction_id: str = "error400"
-        r = TravelTimeMock().post(transaction_id=invalid_reference_transaction_id)
-        assert r.status_code == 400
-        assert re.search(self.STATUS_MSG_400_INVALID_REFERENCE, r.status_message)
+        print(r.status_code)
+        print(r.status_message)
+        assert r.status_code == 200
+        assert self.STATUS_MSG_NO_SERVICES == r.status_message
 
     def test_mock_grid_reference_out_of_range(self):
-        invalid_grid_reference_transaction_id: str = "error500"
-        r = TravelTimeMock().post(transaction_id=invalid_grid_reference_transaction_id)
-        assert r.status_code == 500
-        assert re.search(self.STATUS_MSG_500_VALUE_OUT_OF_RANGE, r.status_message)
+        invalid_grid_reference_transaction_id: str = "error500_invalid_grid_reference"
+        with pytest.raises(ValueError):
+            TravelTimeMock().post(transaction_id=invalid_grid_reference_transaction_id)

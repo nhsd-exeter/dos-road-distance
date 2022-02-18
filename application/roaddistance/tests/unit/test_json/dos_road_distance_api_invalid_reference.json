@@ -1,5 +1,5 @@
 {
-  "transactionid": "error400",
+  "transactionid": "error400_invalid_reference",
   "origin": {
     "reference": "locationReference",
     "latitude": 50.72179229048227,
