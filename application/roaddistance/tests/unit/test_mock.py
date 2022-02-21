@@ -39,12 +39,14 @@ class TestMock(Common):
 
     def test_mock_count_0(self):
         r = TravelTimeMock().post(service_count=0)
-        assert r.status_code == 200
+        print(r.status_code)
         print(r.status_message)
-        assert re.search(self.STATUS_MSG_NONE + "5$", r.status_message)
+        assert r.status_code == 200
+        assert self.STATUS_MSG_NO_SERVICES == r.status_message
 
     def test_mock_transaction_id(self):
         r = TravelTimeMock().post(transaction_id=self.transaction_id)
+        print(self.transaction_id)
         print(r.status_code)
         assert r.status_code == 200
         print(r.status_message)
@@ -60,12 +62,6 @@ class TestMock(Common):
         assert r.status_code == 200
         assert re.search(self.STATUS_MSG_NONE + "5$", r.status_message)
 
-    def test_mock_zero_destinations(self):
-        r = TravelTimeMock().post(service_count=0)
-        print(r.status_code)
-        print(r.status_message)
-        assert r.status_code == 200
-        assert self.STATUS_MSG_NO_SERVICES == r.status_message
 
     def test_mock_grid_reference_out_of_range(self):
         invalid_grid_reference_transaction_id: str = "error500_invalid_grid_reference"

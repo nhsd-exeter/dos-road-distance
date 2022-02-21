@@ -42,7 +42,7 @@ class TravelTimeMock(Common):
         3000: {"min": 100, "max": 149},
     }
 
-    def post(self, transaction_id="", service_count=0):
+    def post(self, transaction_id="", service_count=-1):
         if service_count <= 0:
             self.status_message = "MOCK Matched on count of 0"
             self.content = super().fetch_mock_proto_bin(self.response_path + config.MOCK_REQUEST_ERROR400_NO_SERVICES)
