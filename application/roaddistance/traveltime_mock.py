@@ -35,6 +35,8 @@ class TravelTimeMock(Common):
         "error500_invalid_grid_reference": config.MOCK_REQUEST_ERROR500_INVALID_GRID_REFERENCE
     }
     server_delay = {
+        -1: {"min": 68, "max": 99},
+        0: {"min": 68, "max": 99},
         5: {"min": 68, "max": 99},
         50: {"min": 68, "max": 109},
         500: {"min": 80, "max": 119},
@@ -42,12 +44,11 @@ class TravelTimeMock(Common):
         3000: {"min": 100, "max": 149},
     }
 
-    def post(self, transaction_id="", service_count=-1):
-        if service_count <= 0:
+    def post(self, transaction_id: str = "", service_count: int = -1):
+        if service_count == 0:
             self.status_message = "MOCK Matched on count of 0"
             self.content = super().fetch_mock_proto_bin(self.response_path + config.MOCK_REQUEST_ERROR400_NO_SERVICES)
-            service_count = 5
-        elif service_count < 3001:
+        elif service_count > 0 and service_count < 3001:
             if service_count in self.files_by_count:
                 self.status_message = "MOCK Matched on count of " + str(service_count)
             else:
@@ -66,10 +67,13 @@ class TravelTimeMock(Common):
                 )
                 service_count = self.count_by_transaction_id[transaction_id]
             elif transaction_id == "error500_invalid_grid_reference":
-                self.status_message = "MOCK Matched on value out of range"
+                self.status_message = "MOCK Matched on invalid grid reference"
                 raise ValueError("Value out of range: -4994928269")
             elif transaction_id in self.error_by_transaction_id:
+                self.status_message = "MOCK Matched on error transaction ID of " + transaction_id
                 self.content = super().fetch_mock_proto_bin(self.response_path + self.error_by_transaction_id[transaction_id])
+            else:
+                self.status_message = "MOCK Failed on transaction ID of " + transaction_id
         else:
             self.status_message = "MOCK No match, defaulting to 5"
             self.content = super().fetch_mock_proto_bin(self.response_path + self.files_by_count[5])
