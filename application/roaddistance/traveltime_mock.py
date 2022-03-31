@@ -31,7 +31,12 @@ class TravelTimeMock(Common):
         "79d326c4-e29c-4c75-bedb-143c48dc717a": 1500,
         "c50904c9-18a4-49f0-811e-d63f7ea84900": 3000,
     }
+    error_by_transaction_id = {
+        "error500_invalid_grid_reference": config.MOCK_REQUEST_ERROR500_INVALID_GRID_REFERENCE
+    }
     server_delay = {
+        -1: {"min": 68, "max": 99},
+        0: {"min": 68, "max": 99},
         5: {"min": 68, "max": 99},
         50: {"min": 68, "max": 109},
         500: {"min": 80, "max": 119},
@@ -39,28 +44,52 @@ class TravelTimeMock(Common):
         3000: {"min": 100, "max": 149},
     }
 
-    def post(self, transaction_id="", service_count=0):
-        if service_count > 0 and service_count < 3001:
+    def post(self, transaction_id: str = "", service_count: int = -1):
+        if service_count == 0:
+            self.status_message = "MOCK Matched on count of 0"
+            self.content = super().fetch_mock_proto_bin(
+                self.response_path +
+                config.MOCK_REQUEST_ERROR400_NO_SERVICES
+            )
+        elif service_count > 0 and service_count < 3001:
             if service_count in self.files_by_count:
                 self.status_message = "MOCK Matched on count of " + str(service_count)
             else:
                 service_sizes = list(self.files_by_count.keys())
                 adjusted_count = service_sizes[bisect_left(service_sizes, service_count)]
                 self.status_message = (
-                    "MOCK From count of " + str(service_count) + " using adjusted count of " + str(adjusted_count)
+                    "MOCK From count of " + str(service_count) + " using adjusted count of " +
+                    str(adjusted_count)
                 )
                 service_count = adjusted_count
-            self.content = super().fetch_mock_proto_bin(self.response_path + self.files_by_count[service_count])
-        elif transaction_id != "" and transaction_id in self.count_by_transaction_id:
-            self.status_message = "MOCK Matched on transaction ID of " + transaction_id
             self.content = super().fetch_mock_proto_bin(
-                self.response_path + self.files_by_count[self.count_by_transaction_id[transaction_id]]
+                self.response_path + self.files_by_count[service_count]
             )
-            service_count = self.count_by_transaction_id[transaction_id]
+        elif transaction_id != "":
+            if transaction_id in self.count_by_transaction_id:
+                self.status_message = "MOCK Matched on transaction ID of " + transaction_id
+                self.content = super().fetch_mock_proto_bin(
+                    self.response_path +
+                    self.files_by_count[self.count_by_transaction_id[transaction_id]]
+                )
+                service_count = self.count_by_transaction_id[transaction_id]
+            elif transaction_id == "error500_invalid_grid_reference":
+                self.status_message = "MOCK Matched on invalid grid reference"
+                raise ValueError("Value out of range: -4994928269")
+            elif transaction_id in self.error_by_transaction_id:
+                self.status_message = "MOCK Matched on error transaction ID of " + transaction_id
+                self.content = super().fetch_mock_proto_bin(
+                    self.response_path + self.error_by_transaction_id[transaction_id]
+                )
+            else:
+                self.status_message = "MOCK Failed on transaction ID of " + transaction_id
         else:
             self.status_message = "MOCK No match, defaulting to 5"
             self.content = super().fetch_mock_proto_bin(self.response_path + self.files_by_count[5])
             service_count = 5
-        self.delay = randrange(self.server_delay[service_count]["min"], self.server_delay[service_count]["max"]) / 1000
+        self.delay = randrange(
+            self.server_delay[service_count]["min"],
+            self.server_delay[service_count]["max"]
+        ) / 1000
         sleep(self.delay)
         return self
