@@ -135,7 +135,7 @@ class RoadDistance(Common):
         mock_mode = os.environ.get("DRD_MOCK_MODE")
         if mock_mode == "True":
             self.logger.log("MOCK MODE ENABLED")
-            if self.transaction_id[0:5] == 'mock-':
+            if self.transaction_id[0:5] == "mock-":
                 r = TravelTimeMock().post(transaction_id=self.transaction_id[5:])
             else:
                 r = TravelTimeMock().post(
