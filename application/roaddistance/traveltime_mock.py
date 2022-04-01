@@ -25,11 +25,13 @@ class TravelTimeMock(Common):
         3000: config.MOCK_REQUEST_3000_BIN,
     }
     count_by_transaction_id = {
-        "43c31af7-1f53-470f-9edc-fed8f447dc8f": 5,
-        "8fcb792e-b914-434d-aa94-b2cb2de25f48": 50,
-        "3bb4c6dd-9cad-4140-83c1-86d207fccb32": 500,
-        "79d326c4-e29c-4c75-bedb-143c48dc717a": 1500,
-        "c50904c9-18a4-49f0-811e-d63f7ea84900": 3000,
+        "43c31af7-1f53-470f-9edc-fed8f447dc8f": config.MOCK_REQUEST_5_BIN,
+        "8fcb792e-b914-434d-aa94-b2cb2de25f48": config.MOCK_REQUEST_50_BIN,
+        "3bb4c6dd-9cad-4140-83c1-86d207fccb32": config.MOCK_REQUEST_500_BIN,
+        "79d326c4-e29c-4c75-bedb-143c48dc717a": config.MOCK_REQUEST_1500_BIN,
+        "c50904c9-18a4-49f0-811e-d63f7ea84900": config.MOCK_REQUEST_3000_BIN,
+        "valid-ccs-request": config.MOCK_REQUEST_5_BIN,
+        "a-service-without-grid-references": config.MOCK_REQUEST_5_BIN,
     }
     error_by_transaction_id = {
         "error500_invalid_grid_reference": config.MOCK_REQUEST_ERROR500_INVALID_GRID_REFERENCE
