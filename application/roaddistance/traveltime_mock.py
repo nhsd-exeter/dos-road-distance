@@ -25,15 +25,18 @@ class TravelTimeMock(Common):
         3000: config.MOCK_REQUEST_3000_BIN,
     }
     count_by_transaction_id = {
-        "43c31af7-1f53-470f-9edc-fed8f447dc8f": config.MOCK_REQUEST_5_BIN,
-        "8fcb792e-b914-434d-aa94-b2cb2de25f48": config.MOCK_REQUEST_50_BIN,
-        "3bb4c6dd-9cad-4140-83c1-86d207fccb32": config.MOCK_REQUEST_500_BIN,
-        "79d326c4-e29c-4c75-bedb-143c48dc717a": config.MOCK_REQUEST_1500_BIN,
-        "c50904c9-18a4-49f0-811e-d63f7ea84900": config.MOCK_REQUEST_3000_BIN,
-        "valid-ccs-request": config.MOCK_REQUEST_5_BIN,
-        "a-service-without-grid-references": config.MOCK_REQUEST_5_BIN,
+        "43c31af7-1f53-470f-9edc-fed8f447dc8f": [config.MOCK_REQUEST_5_BIN, 5],
+        "8fcb792e-b914-434d-aa94-b2cb2de25f48": [config.MOCK_REQUEST_50_BIN, 50],
+        "3bb4c6dd-9cad-4140-83c1-86d207fccb32": [config.MOCK_REQUEST_500_BIN, 500],
+        "79d326c4-e29c-4c75-bedb-143c48dc717a": [config.MOCK_REQUEST_1500_BIN, 1500],
+        "c50904c9-18a4-49f0-811e-d63f7ea84900": [config.MOCK_REQUEST_3000_BIN, 3000],
+        "valid-ccs-request": [config.MOCK_REQUEST_5_BIN, 5],
+        "a-service-without-grid-references": [config.MOCK_REQUEST_5_BIN, 5],
     }
-    error_by_transaction_id = {"error500_invalid_grid_reference": config.MOCK_REQUEST_ERROR500_INVALID_GRID_REFERENCE}
+    error_by_transaction_id = {
+        "error500_invalid_grid_reference": config.MOCK_REQUEST_ERROR500_INVALID_GRID_REFERENCE,
+        "error400_sample": config.MOCK_REQUEST_ERROR400_BAD_REQUEST,
+    }
     server_delay = {
         -1: {"min": 68, "max": 99},
         0: {"min": 68, "max": 99},
@@ -63,9 +66,9 @@ class TravelTimeMock(Common):
             if transaction_id in self.count_by_transaction_id:
                 self.status_message = "MOCK Matched on transaction ID of " + transaction_id
                 self.content = super().fetch_mock_proto_bin(
-                    self.response_path + self.files_by_count[self.count_by_transaction_id[transaction_id]]
+                    self.response_path + self.count_by_transaction_id[transaction_id][0]
                 )
-                service_count = self.count_by_transaction_id[transaction_id]
+                service_count = self.count_by_transaction_id[transaction_id][1]
             elif transaction_id == "error500_invalid_grid_reference":
                 self.status_message = "MOCK Matched on invalid grid reference"
                 raise ValueError("Value out of range: -4994928269")

@@ -62,7 +62,9 @@ MOCK_REQUEST_500_BIN = "proto_500_destinations.bin"
 MOCK_REQUEST_1500_BIN = "proto_1500_destinations.bin"
 MOCK_REQUEST_3000_BIN = "proto_3000_destinations.bin"
 MOCK_REQUEST_ERROR400_NO_SERVICES = "proto_error400_no_services.bin"
+MOCK_REQUEST_ERROR400_BAD_REQUEST = "proto_error400_no_services.bin"
 MOCK_REQUEST_ERROR500_INVALID_GRID_REFERENCE = "proto_error500_invalid_grid_reference.bin"
+
 
 # TravelTime request and response values
 TRAVEL_TIME_MINUTES = 7200
