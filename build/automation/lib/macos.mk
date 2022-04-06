@@ -393,7 +393,7 @@ _macos-config-visual-studio-code:
 	#
 	# PHP
 	code --force --install-extension bmewburn.vscode-intelephense-client # PHP support
-	code --force --install-extension felixfbecker.php-debug # PHP support
+	#code --force --install-extension felixfbecker.php-debug # PHP support
 	#
 	code --force --install-extension alefragnani.bookmarks
 	code --force --install-extension alefragnani.project-manager
@@ -402,7 +402,7 @@ _macos-config-visual-studio-code:
 	code --force --install-extension ban.spellright
 	code --force --install-extension christian-kohler.npm-intellisense
 	code --force --install-extension christian-kohler.path-intellisense
-	code --force --install-extension coenraads.bracket-pair-colorizer
+	#code --force --install-extension coenraads.bracket-pair-colorizer
 	code --force --install-extension davidanson.vscode-markdownlint
 	code --force --install-extension dbaeumer.vscode-eslint
 	code --force --install-extension donjayamanne.githistory
