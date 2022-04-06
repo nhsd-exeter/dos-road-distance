@@ -10,11 +10,15 @@ class TestMock(Common):
     STATUS_MSG_COUNT = "Matched on count of "
     STATUS_MSG_TR_ID = "Matched on transaction ID of "
     STATUS_MSG_FAILED_TR_ID = "MOCK Failed on transaction ID of "
-    STATUS_MSG_ERROR_TR_ID =  "MOCK Matched on error transaction ID of "
+    STATUS_MSG_ERROR_TR_ID = "MOCK Matched on error transaction ID of "
     STATUS_MSG_NONE = "No match, defaulting to "
     STATUS_MSG_NO_SERVICES = "MOCK Matched on count of 0"
     STATUS_MSG_VALUE_OUT_OF_RANGE = "MOCK Matched on value out of range"
 
+    def test_delay_per_transaction(self):
+        r = TravelTimeMock()
+        for transaction_id in r.count_by_transaction_id:
+            assert r.count_by_transaction_id[transaction_id][1] in r.server_delay
 
     def test_mock_count_5(self):
         response = TravelTimeMock().post(service_count=5)
