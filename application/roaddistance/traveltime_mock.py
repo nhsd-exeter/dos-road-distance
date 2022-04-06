@@ -2,7 +2,6 @@
 Provides mock responses in protobuf format using pre-existing files for requests and responses.
 The files are specified by transaction ID
 """
-
 from common import Common
 import config
 from time import sleep
@@ -14,9 +13,9 @@ class TravelTimeMock(Common):
     request_path = "requests/"
     response_path = "responses/"
     status_code = 200
-    content = b""
+    content = ""
     status_message = ""
-    delay: float
+    delay: float = 0
     files_by_count = {
         5: config.MOCK_REQUEST_5_BIN,
         50: config.MOCK_REQUEST_50_BIN,
@@ -24,6 +23,10 @@ class TravelTimeMock(Common):
         1500: config.MOCK_REQUEST_1500_BIN,
         3000: config.MOCK_REQUEST_3000_BIN,
     }
+    """
+    transaction_id: response_file => service_count
+    service_count must exist in self.server_delay
+    """
     count_by_transaction_id = {
         "43c31af7-1f53-470f-9edc-fed8f447dc8f": [config.MOCK_REQUEST_5_BIN, 5],
         "8fcb792e-b914-434d-aa94-b2cb2de25f48":
@@ -34,7 +37,7 @@ class TravelTimeMock(Common):
         [config.MOCK_REQUEST_1500_BIN, 1500],
         "c50904c9-18a4-49f0-811e-d63f7ea84900":
         [config.MOCK_REQUEST_3000_BIN, 3000],
-        "valid_ccs_request": [config.MOCK_REQUEST_VALID_CCS_REQUEST_BIN, 152],
+        "valid_ccs_request": [config.MOCK_REQUEST_VALID_CCS_REQUEST_BIN, 500],
         "a_service_without_grid_references":
         [config.MOCK_REQUEST_A_SERVICE_WITHOUT_GRID_REFERENCES_BIN, 5],
     }
@@ -88,9 +91,9 @@ class TravelTimeMock(Common):
                 adjusted_count = service_sizes[bisect_left(
                     service_sizes, service_count)]
                 self.status_message = ("MOCK From count of " +
-                                       str(service_count) +
-                                       " using adjusted count of " +
-                                       str(adjusted_count))
+                                    str(service_count) +
+                                    " using adjusted count of " +
+                                    str(adjusted_count))
                 service_count = adjusted_count
             self.content = super().fetch_mock_proto_bin(
                 self.response_path + self.files_by_count[service_count])
@@ -116,7 +119,9 @@ class TravelTimeMock(Common):
             self.content = super().fetch_mock_proto_bin(self.response_path +
                                                         self.files_by_count[5])
             service_count = 5
+
         self.delay = randrange(self.server_delay[service_count]["min"],
-                               self.server_delay[service_count]["max"]) / 1000
+                            self.server_delay[service_count]["max"]) / 1000
         sleep(self.delay)
+
         return self

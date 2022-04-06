@@ -32,8 +32,7 @@ class RoadDistance(Common):
 
     def __init__(self, request):
         self.request = request
-        self.transaction_id = str(self.request["transactionid"]
-                                  ) if "transactionid" in self.request else ""
+        self.transaction_id = str(self.request["transactionid"]) if "transactionid" in self.request else ""
         self.request_id = str(uuid.uuid4())
         log_name = os.environ.get("LOGGER", "Audit")
         self.logger = RDLogger(log_name, self.request_id, self.transaction_id)
@@ -58,8 +57,7 @@ class RoadDistance(Common):
             if not self.validate_against_schema(self.request, "local"):
                 body = self.process_validation_error()
             else:
-                self.logger.log_formatted(self.format_request_for_logging(),
-                                          "ccs_request")
+                self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
                 self.send_request(self.build_request())
                 if not self.status_code == 200:
                     body = self.process_provider_response_error(self.response)
@@ -78,8 +76,7 @@ class RoadDistance(Common):
 
     def process_validation_error(self):
         self.status_code = 400
-        self.logger.log_ccs_error(self.status_code, "Validation error",
-                                  self.format_request_for_logging())
+        self.logger.log_ccs_error(self.status_code, "Validation error", self.format_request_for_logging())
         return {
             "status": self.status_code,
             "message": "Validation error: " + self.validation_error,
@@ -134,8 +131,7 @@ class RoadDistance(Common):
                         self.request["destinations"][i]["reference"])
                 else:
                     unreachable = "no"
-                    self.destinations[self.request["destinations"][i]
-                                      ["reference"]] = distance
+                    self.destinations[self.request["destinations"][i]["reference"]] = distance
                 self.logger.log_provider_success(
                     str(self.request["destinations"][i]["reference"]),
                     unreachable, distance)
@@ -156,9 +152,7 @@ class RoadDistance(Common):
             else:
                 self.logger.log("Processing by service count of " +
                                 len(self.request["destinations"]))
-                r = TravelTimeMock().post(transaction_id=self.transaction_id,
-                                          service_count=len(
-                                              self.request["destinations"]))
+                r = TravelTimeMock().post(transaction_id=self.transaction_id, service_count=len(self.request["destinations"]))
             self.logger.log(r.status_message + "; delay added: " +
                             str(r.delay))
         else:
@@ -189,8 +183,7 @@ class RoadDistance(Common):
         message = TravelTimeResponse()
         response_decoded = message.decode_response_proto(content)
         if os.environ.get("DRD_LOG_RESPONSE_RAW") == "True":
-            self.logger.log_formatted(str(message.response),
-                                      "provider_response")
+            self.logger.log_formatted(str(message.response), "provider_response")
         return response_decoded
 
     def fetch_destinations(self, locations: list) -> list:
@@ -217,8 +210,7 @@ class RoadDistance(Common):
 
     def fetch_json(self, file_name: str) -> dict:
         try:
-            return json.loads(super().fetch_file(self.contracts_path,
-                                                 file_name))
+            return json.loads(super().fetch_file(self.contracts_path, file_name))
         except Exception as ex:
             self.logger.log(
                 config.EXCEPTION_FILE_CANNOT_BE_OPENED + self.contracts_path +

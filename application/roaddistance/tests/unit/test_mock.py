@@ -81,8 +81,6 @@ class TestMock(Common):
         assert response.status_code == 200
         assert re.search(self.STATUS_MSG_NONE + "5$", response.status_message)
 
-
-
     def test_mock_grid_reference_out_of_range(self):
         invalid_grid_reference_transaction_id: str = "error500_invalid_grid_reference"
         with pytest.raises(ValueError):
