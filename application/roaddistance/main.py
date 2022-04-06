@@ -139,7 +139,7 @@ class RoadDistance(Common):
                 self.logger.log("Processing by transaction id " + self.transaction_id[5:])
                 r = TravelTimeMock().post(transaction_id=self.transaction_id[5:])
             else:
-                self.logger.log("Processing by service count of " + len(self.request["destinations"]))
+                self.logger.log("Processing by service count of " + str(len(self.request["destinations"])))
                 r = TravelTimeMock().post(
                     transaction_id=self.transaction_id, service_count=len(self.request["destinations"])
                 )
