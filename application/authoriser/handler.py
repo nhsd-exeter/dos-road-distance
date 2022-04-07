@@ -13,7 +13,11 @@ def authorize_api_request(event, context) -> dict:
         "isAuthorized": False,
     }
     try:
-        if check_authorisation_token(event["headers"]["x-authorization"]):
+        try:
+            noauth = event["headers"]["x-noauth"]
+        except NameError:
+            noauth = 0
+        if check_authorisation_token(event["headers"]["x-authorization"], noauth):
             response = {"isAuthorized": True}
     except Exception as e:
         print("Authentication method failed with error: {}".format(e))
@@ -21,7 +25,9 @@ def authorize_api_request(event, context) -> dict:
     return response
 
 
-def check_authorisation_token(token_hash_sent: str) -> bool:
+def check_authorisation_token(token_hash_sent: str, noauth: int) -> bool:
+    if noauth == 1 and os.environ.get("DRD_ALLOW_NO_AUTH", 0) == 1:
+        return True
     secrets_response = client.get_secret_value(
         SecretId=os.environ["SECRET_STORE"],
     )
