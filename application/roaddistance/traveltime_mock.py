@@ -36,6 +36,7 @@ class TravelTimeMock(Common):
         "valid_ccs_search": [config.MOCK_REQUEST_VALID_CCS_REQUEST_BIN, 500],
         "a_service_without_grid_references": [config.MOCK_REQUEST_A_SERVICE_WITHOUT_GRID_REFERENCES_BIN, 500],
         "all_destinations_unreachable": [config.MOCK_REQUEST_ALL_DESTINATIONS_UNREACHABLE, 500],
+        "gp_position_unchanged": [config.MOCK_REQUEST_GP_POSITION_UNCHANGED, 500],
     }
     error_by_transaction_id = {
         "error500_invalid_grid_reference": config.MOCK_REQUEST_ERROR500_INVALID_GRID_REFERENCE,
