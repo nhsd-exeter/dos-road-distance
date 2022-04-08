@@ -45,7 +45,8 @@ class RoadDistance(Common):
 
     def format_request_for_logging(self) -> str:
         copy = dict(self.request)
-        exclusions = ["origin"]
+        #exclusions = ["origin"]
+        exclusions = []
         for exclusion in exclusions:
             copy.pop(exclusion, None)
 
