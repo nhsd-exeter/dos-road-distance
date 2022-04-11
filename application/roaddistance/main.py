@@ -59,7 +59,7 @@ class RoadDistance(Common):
             else:
                 self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
                 self.send_request(self.build_request())
-                if not self.status_code == 200:
+                if self.status_code != 200:
                     body = self.process_provider_response_error(self.response)
                 else:
                     body = self.process_provider_response_success()
