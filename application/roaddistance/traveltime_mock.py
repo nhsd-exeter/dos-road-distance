@@ -47,7 +47,7 @@ class TravelTimeMock(Common):
         0: {"min": 68, "max": 99},
         5: {"min": 68, "max": 99},
         50: {"min": 68, "max": 109},
-        500: {"min": 80, "max": 119},
+        500: {"min": 3000, "max": 4000},
         1500: {"min": 90, "max": 129},
         3000: {"min": 100, "max": 149},
     }
