@@ -13,7 +13,7 @@ class TravelTimeMock(Common):
     request_path = "requests/"
     response_path = "responses/"
     status_code = 200
-    content = ""
+    content = b""
     status_message = ""
     delay: float = 0
     files_by_count = {
@@ -23,9 +23,10 @@ class TravelTimeMock(Common):
         1500: config.MOCK_REQUEST_1500_BIN,
         3000: config.MOCK_REQUEST_3000_BIN,
     }
+
     """
-    transaction_id: response_file => service_count
-    service_count must exist in self.server_delay
+    count_by_transaction_id are verbose transaction ids linking to
+    bin response files and the service count for the server_delay array
     """
     count_by_transaction_id = {
         "43c31af7-1f53-470f-9edc-fed8f447dc8f": [config.MOCK_REQUEST_5_BIN, 5],
