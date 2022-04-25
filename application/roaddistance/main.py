@@ -59,7 +59,7 @@ class RoadDistance(Common):
             else:
                 self.logger.log_formatted(self.format_request_for_logging(), "ccs_request")
                 self.send_request(self.build_request())
-                if not self.status_code == 200:
+                if self.status_code != 200:
                     body = self.process_provider_response_error(self.response)
                 else:
                     body = self.process_provider_response_success()
@@ -135,9 +135,14 @@ class RoadDistance(Common):
         mock_mode = os.environ.get("DRD_MOCK_MODE")
         if mock_mode == "True":
             self.logger.log("MOCK MODE ENABLED")
-            r = TravelTimeMock().post(
-                transaction_id=self.transaction_id, service_count=len(self.request["destinations"])
-            )
+            if self.transaction_id[0:5] == "mock-":
+                self.logger.log("Processing by transaction id " + self.transaction_id[5:])
+                r = TravelTimeMock().post(transaction_id=self.transaction_id[5:])
+            else:
+                self.logger.log("Processing by service count of " + str(len(self.request["destinations"])))
+                r = TravelTimeMock().post(
+                    transaction_id=self.transaction_id, service_count=len(self.request["destinations"])
+                )
             self.logger.log(r.status_message + "; delay added: " + str(r.delay))
         else:
             r = requests.post(

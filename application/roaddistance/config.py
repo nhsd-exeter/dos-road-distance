@@ -61,7 +61,12 @@ MOCK_REQUEST_50_BIN = "proto_50_destinations.bin"
 MOCK_REQUEST_500_BIN = "proto_500_destinations.bin"
 MOCK_REQUEST_1500_BIN = "proto_1500_destinations.bin"
 MOCK_REQUEST_3000_BIN = "proto_3000_destinations.bin"
+MOCK_REQUEST_VALID_CCS_REQUEST_BIN = "proto_valid_ccs_search.bin"
+MOCK_REQUEST_A_SERVICE_WITHOUT_GRID_REFERENCES_BIN = "proto_a_service_without_grid_references.bin"
+MOCK_REQUEST_ALL_DESTINATIONS_UNREACHABLE = "proto_all_destinations_unreachable.bin"
+MOCK_REQUEST_GP_POSITION_UNCHANGED = "proto_gp_position_unchanged.bin"
 MOCK_REQUEST_ERROR400_NO_SERVICES = "proto_error400_no_services.bin"
+MOCK_REQUEST_ERROR400_BAD_REQUEST = "proto_error400_no_services.bin"
 MOCK_REQUEST_ERROR500_INVALID_GRID_REFERENCE = "proto_error500_invalid_grid_reference.bin"
 
 # TravelTime request and response values
