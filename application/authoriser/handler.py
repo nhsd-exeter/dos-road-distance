@@ -3,20 +3,22 @@ import json
 import os
 import bcrypt
 import time
+from authlogger import AuthLogger
 
 client = boto3.client("secretsmanager")
+logger: AuthLogger = AuthLogger()
 
 
 def authorize_api_request(event, context) -> dict:
     print("Event: {}".format(event))
+    logger.log("Event: {}".format(event))
     response = {
         "isAuthorized": False,
     }
+    noauth = True if "x-noauth" in event["headers"].keys() else False
+    if noauth:
+        logger.log("Noauth requested")
     try:
-        try:
-            noauth = True if event["headers"]["x-noauth"] else False
-        except NameError:
-            noauth = False
         if check_authorisation_token(event["headers"]["x-authorization"], noauth):
             response = {"isAuthorized": True}
     except Exception as e:
@@ -27,6 +29,7 @@ def authorize_api_request(event, context) -> dict:
 
 def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", False):
+        logger.log("Noauth actioned as allowed")
         return True
     secrets_response = client.get_secret_value(
         SecretId=os.environ["SECRET_STORE"],
