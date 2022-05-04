@@ -34,9 +34,8 @@ class TravelTimeMock(Common):
         "3bb4c6dd-9cad-4140-83c1-86d207fccb32": [config.MOCK_REQUEST_500_BIN, 500],
         "79d326c4-e29c-4c75-bedb-143c48dc717a": [config.MOCK_REQUEST_1500_BIN, 1500],
         "c50904c9-18a4-49f0-811e-d63f7ea84900": [config.MOCK_REQUEST_3000_BIN, 3000],
-        "valid_ccs_search": [config.MOCK_REQUEST_VALID_CCS_REQUEST_BIN, 500],
-        "a_service_without_grid_references": [config.MOCK_REQUEST_A_SERVICE_WITHOUT_GRID_REFERENCES_BIN, 500],
-        "all_destinations_unreachable": [config.MOCK_REQUEST_ALL_DESTINATIONS_UNREACHABLE, 500],
+        "valid_ccs_search": [config.MOCK_REQUEST_VALID_CCS_REQUEST_BIN, 3000],
+        "all_destinations_unreachable": [config.MOCK_REQUEST_ALL_DESTINATIONS_UNREACHABLE, 3000],
         "gp_position_unchanged": [config.MOCK_REQUEST_GP_POSITION_UNCHANGED, 500],
     }
     error_by_transaction_id = {
