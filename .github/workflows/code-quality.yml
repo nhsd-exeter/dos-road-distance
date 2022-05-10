@@ -1,7 +1,7 @@
 name: "Check code format and quality"
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -20,18 +20,13 @@ jobs:
       - name: Check Terraform files format
         run: |
           build/automation/etc/githooks/scripts/terraform-format-pre-commit.sh
-      - name: Create coverage report
-        run: |
-          make coverage
       - uses: sonarsource/sonarcloud-github-action@master
         # SEE: https://github.com/SonarSource/sonarcloud-github-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: ./application/roaddistance
+          projectBaseDir: ./application
           args: >
             -Dsonar.organization=nhsd-exeter
-            -Dsonar.projectKey=uec-dos-rd
-            -Dsonar.coverage.exclusions=tests/**
-            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.projectKey=uec-tools-mdo
