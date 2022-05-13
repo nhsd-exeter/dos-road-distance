@@ -13,9 +13,13 @@ then
   cp csv_failures.csv /project/test/performance/results/csv-failures-${ENVIRONMENT}-${BUILD_DATE}.csv
   cp csv_stats_history.csv /project/test/performance/results/csv-stats-history-${ENVIRONMENT}-${BUILD_DATE}.csv
 else
-  echo "Remote Performance Tests"
-  locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/perf
-  echo "Performance tests finished"
+  $(
+    echo "Remote Performance Tests"
+    echo locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/perf
+    echo locust --config locust.conf --host ${API_ENDPOINT}
+    locust --config locust.conf --host ${API_ENDPOINT}
+    echo "Performance tests finished"
+  ) | tee results/locust.host.log
   cd /opt/locust/results
   zip -r results.zip ./
   aws s3 cp results.zip s3://${SERVICE_PREFIX}-performance/${ENVIRONMENT}-${BUILD_DATE}.zip
