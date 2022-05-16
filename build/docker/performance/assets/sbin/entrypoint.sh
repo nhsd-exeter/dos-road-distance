@@ -14,8 +14,8 @@ then
   cp csv_stats_history.csv /project/test/performance/results/csv-stats-history-${ENVIRONMENT}-${BUILD_DATE}.csv
 else
   echo "Remote Performance Tests" | tee results/locust.host.log
-  echo locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/ | tee -a results/locust.host.log
-  locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/ | tee -a results/locust.host.log
+  echo locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/ | tee -a results/locust.cli.log
+  locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/ 2>&1 | tee -a results/locust.cli.log
   echo "Performance tests finished" | tee -a results/locust.host.log
   cd /opt/locust/results
   zip -r results.zip ./
