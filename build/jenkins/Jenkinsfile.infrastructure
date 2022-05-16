@@ -23,7 +23,7 @@ pipeline {
         beforeAgent true
         anyOf {
           expression { params.DeployTask == "Yes" }
-          branch 'master'
+          branch 'main'
         }
       }
       steps {
@@ -35,7 +35,7 @@ pipeline {
         beforeAgent true
         anyOf {
           expression { params.DeployTask == "Yes" }
-          branch 'master'
+          branch 'main'
         }
       }
       steps {
@@ -49,7 +49,7 @@ pipeline {
         beforeAgent true
         anyOf {
           expression { params.DeployTask == "Yes" }
-          branch 'master'
+          branch 'main'
         }
       }
       steps {
@@ -62,7 +62,7 @@ pipeline {
         beforeAgent true
         anyOf {
           expression { params.DeployTask == "Yes" }
-          branch 'master'
+          branch 'main'
         }
       }
       steps { sh "echo Running Tests..." }
@@ -72,7 +72,7 @@ pipeline {
         beforeAgent true
         anyOf {
           expression { params.DeployTask == "Yes" }
-          branch 'master'
+          branch 'main'
         }
       }
       steps {

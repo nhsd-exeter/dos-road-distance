@@ -97,7 +97,7 @@ resource "aws_lambda_function" "auth_lambda" {
   }
   environment {
     variables = {
-      "SECRET_STORE" = var.deployment_secrets
+      "SECRET_STORE"      = var.deployment_secrets
       "DRD_ALLOW_NO_AUTH" = "True"
     }
   }

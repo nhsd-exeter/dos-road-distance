@@ -12,4 +12,3 @@ AWS_LAMBDA_ECR = $(or $(AWS_ACCOUNT_ID), 000000000000).dkr.ecr.$(AWS_DEFAULT_REG
 # Performance variables
 
 API_ENDPOINT := http://localhost:9000/2015-03-31/functions/function/invocations
-API_RD_TOKEN := ""
