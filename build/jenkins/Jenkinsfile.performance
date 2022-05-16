@@ -67,7 +67,7 @@ pipeline {
       when {
         beforeInput true
         beforeAgent true
-        expression { params.SCENARIO == "scenario2.py" || params.SCENARIO == "scenario3.py" }
+        expression { params.SCENARIO == "scenario2.py" || params.SCENARIO == "scenario2b.py" ||params.SCENARIO == "scenario3.py" }
       }
       steps {
         script { sh "make performance-deploy SECONDS=3500" }
