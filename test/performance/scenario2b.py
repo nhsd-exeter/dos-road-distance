@@ -17,7 +17,7 @@ class LoadFile:
 current_file = LoadFile()
 
 
-class FiveDest(HttpUser):
+class TestUser(HttpUser):
     weight = 1
 
     def on_start(self):
