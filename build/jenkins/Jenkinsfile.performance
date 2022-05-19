@@ -2,7 +2,7 @@ pipeline {
   agent { label "jenkins-slave" }
   parameters {
     choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'regression'], description: 'Environment to test')
-    choice(name: 'SCENARIO', choices: ['scenario1.py', 'scenario2.py', 'scenario3.py', 'scenario4.py'], description: 'Performance scenario to run')
+    choice(name: 'SCENARIO', choices: ['scenario1.py', 'scenario1b.py', 'scenario2.py', 'scenario2b.py', 'scenario3.py', 'scenario4.py'], description: 'Performance scenario to run')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -44,7 +44,7 @@ pipeline {
       when {
         beforeInput true
         beforeAgent true
-        expression { params.SCENARIO == "scenario1.py" || params.SCENARIO == "scenario4.py" }
+        expression { params.SCENARIO == "scenario1.py" || params.SCENARIO == "scenario1b.py" || params.SCENARIO == "scenario4.py" }
       }
       input {
         message "Select Scenario Parameters"
@@ -67,7 +67,7 @@ pipeline {
       when {
         beforeInput true
         beforeAgent true
-        expression { params.SCENARIO == "scenario2.py" || params.SCENARIO == "scenario3.py" }
+        expression { params.SCENARIO == "scenario2.py" || params.SCENARIO == "scenario2b.py" ||params.SCENARIO == "scenario3.py" }
       }
       steps {
         script { sh "make performance-deploy SECONDS=3500" }
