@@ -10,7 +10,7 @@ from traveltime_response import TravelTimeResponse
 import config as config
 import requests
 from traveltime_mock import TravelTimeMock
-from datetime import datetime
+import time
 
 
 class RoadDistance(Common):
@@ -36,12 +36,7 @@ class RoadDistance(Common):
         self.request_id = str(uuid.uuid4())
         log_name = os.environ.get("LOGGER", "Audit")
         self.logger = RDLogger(log_name, self.request_id, self.transaction_id)
-
-        self.start_time = datetime.now().microsecond
-
-        self.logger.log(
-            "Started road distance request. start_time: " + str(self.start_time),
-        )
+        self.start_time = time.time()
 
     def format_request_for_logging(self) -> str:
         copy = dict(self.request)
@@ -69,6 +64,10 @@ class RoadDistance(Common):
             body = self.process_fatal_error(str(er))
 
         self.logger.log("CCS response body: " + str(body))
+
+        total_time = time.time() - self.start_time
+        self.logger.log("road_distance_lambda|state=complete|total_time|" + str(total_time))
+
         return body
 
     def process_validation_error(self):
@@ -81,11 +80,6 @@ class RoadDistance(Common):
         }
 
     def process_provider_response_success(self) -> dict:
-        end_time = datetime.now().microsecond
-        total_time = end_time - self.start_time
-        self.logger.log(
-            "Completed road distance request. end_time: " + str(end_time) + ", total_time: " + str(total_time)
-        )
         self.form_response_destinations()
         return {
             "status": self.status_code,
@@ -133,6 +127,9 @@ class RoadDistance(Common):
         endpoint = os.environ.get("DRD_ENDPOINT")
         basic_auth = os.environ.get("DRD_BASICAUTH")
         mock_mode = os.environ.get("DRD_MOCK_MODE")
+
+        tt_request_start = time.time()
+
         if mock_mode == "True":
             self.logger.log("MOCK MODE ENABLED")
             if self.transaction_id[0:5] == "mock-":
@@ -154,6 +151,10 @@ class RoadDistance(Common):
                     "Accept": "application/octet-stream",
                 },
             )
+
+        tt_request_time = time.time() - tt_request_start
+        self.logger.log("road_distance_lambda|state=provider_complete|total_time=" + str(tt_request_time))
+
         self.status_code = r.status_code
         self.response = self.decode_response(r.content)
         if "error" in self.response:
