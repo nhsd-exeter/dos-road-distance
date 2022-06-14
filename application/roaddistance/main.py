@@ -66,7 +66,7 @@ class RoadDistance(Common):
         self.logger.log("CCS response body: " + str(body))
 
         total_time = time.time() - self.start_time
-        self.logger.log("road_distance_lambda|state=complete|total_time|" + str(total_time))
+        self.logger.log("road_distance_lambda|state=complete|total_time=" + str(total_time))
 
         return body
 
