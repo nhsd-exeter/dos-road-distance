@@ -66,7 +66,7 @@ class RoadDistance(Common):
         self.logger.log("CCS response body: " + str(body))
 
         total_time = time.time() - self.start_time
-        self.logger.log("road_distance_lambda|state=complete|total_time=" + str(total_time))
+        self.logger.log_system_time("complete", str(total_time))
 
         return body
 
@@ -153,7 +153,7 @@ class RoadDistance(Common):
             )
 
         tt_request_time = time.time() - tt_request_start
-        self.logger.log("road_distance_lambda|state=provider_complete|total_time=" + str(tt_request_time))
+        self.logger.log_system_time("provider_complete", str(tt_request_time))
 
         self.status_code = r.status_code
         self.response = self.decode_response(r.content)

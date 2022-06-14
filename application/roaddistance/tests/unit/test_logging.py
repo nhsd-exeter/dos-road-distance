@@ -2,6 +2,7 @@ import re
 import uuid
 import pytest
 import config as config
+import time
 from common import Common
 from rdlogger import RDLogger
 
@@ -40,6 +41,7 @@ class TestLogging(Common):
     LOG4_PROVIDER_RESPONSE = r"\|{}\|success\|reference=([^\|]*)\|unreachable=(yes|no)\|distance=([\d.]+)?".format(
         STR_LOG_PROVIDERRESPONSE
     )
+    LOG_SYSTEM_TIME = r"\|road_distance_lambda\|status=([^\|]*)|total_time=[0-9]+[.][0-9]+"
 
     TEST_PAYLOAD = "This is a test payload/message"
 
@@ -71,6 +73,16 @@ class TestLogging(Common):
         rx = self.LOG1_DATETIME + self.LOG2_INFO_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_DETAILS_STATUS
         rdlogger.purge()
         rdlogger.log_formatted(self.TEST_PAYLOAD, "status")
+        result = re.search(rx, rdlogger.read_log_output())
+        print(rx)
+        print(result)
+        assert result is not None
+
+    def test_log_system_time(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
+        rx = self.LOG_SYSTEM_TIME
+        rdlogger.purge()
+        rdlogger.log_system_time("complete", str(time.time()))
         result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
