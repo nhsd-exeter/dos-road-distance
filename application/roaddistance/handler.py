@@ -3,7 +3,7 @@ import json
 from json import JSONDecodeError
 
 
-def process_road_distance_request(event, context):
+def process_road_distance_request(event):
     try:
         if "body" in event:
             event = json.loads(event["body"])

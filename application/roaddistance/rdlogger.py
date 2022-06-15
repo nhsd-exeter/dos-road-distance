@@ -91,12 +91,12 @@ class RDLogger:
         msg = "providerresponse|" + data
         return msg
 
-    def format_ccs_request_error(self, errorData: str):
-        msg = "|ccsrequest|failed|" + errorData
+    def format_ccs_request_error(self, error_data: str):
+        msg = "|ccsrequest|failed|" + error_data
         return msg
 
-    def format_provider_response_error(self, errorData: str):
-        msg = "providerresponse|failed|" + errorData
+    def format_provider_response_error(self, error_data: str):
+        msg = "providerresponse|failed|" + error_data
         return msg
 
     def read_log_output(self):

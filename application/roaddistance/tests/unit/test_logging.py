@@ -126,7 +126,7 @@ class TestLogging(Common):
         rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         rx = self.LOG1_DATETIME + self.LOG2_FAILURE_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_PROVIDER_FAILURE
         rdlogger.purge()
-        rdlogger.log_provider_error("422", self.TEST_PAYLOAD)
+        rdlogger.log_provider_error(422, self.TEST_PAYLOAD)
         result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
@@ -136,7 +136,7 @@ class TestLogging(Common):
         rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         rx = self.LOG1_DATETIME + self.LOG2_FAILURE_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_CCS_FAILURE
         rdlogger.purge()
-        rdlogger.log_ccs_error("422", self.TEST_PAYLOAD, "data example")
+        rdlogger.log_ccs_error(422, self.TEST_PAYLOAD, "data example")
         result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
@@ -215,7 +215,7 @@ class TestLogging(Common):
         json_content = self.__fetch_json(config.JSON_TRAVEL_TIME_ERROR_500)
         print(json_content)
         rdlogger.purge()
-        rdlogger.log_provider_error("500", self.TEST_PAYLOAD, json_content)
+        rdlogger.log_provider_error(500, self.TEST_PAYLOAD, json_content)
         compare = (
             "{}|failed|statuscode=500|error={}|data=".format(self.STR_LOG_PROVIDERRESPONSE, self.TEST_PAYLOAD)
             + json_content
