@@ -17,9 +17,7 @@ class AuthLogger:
             print(ex)
 
     def __create_log_format(self) -> str:
-        return (
-            "%(asctime)s.%(msecs)03d|%(levelname)s|lambda|||road_distance_authorizer|%(message)s"
-        )
+        return "%(asctime)s.%(msecs)03d|%(levelname)s|lambda|||road_distance_authorizer|%(message)s"
 
     def __create_stream_handler(self, formatter):
         sh = logging.StreamHandler()

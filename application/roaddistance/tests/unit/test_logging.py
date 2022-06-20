@@ -2,6 +2,7 @@ import re
 import uuid
 import pytest
 import config as config
+import time
 from common import Common
 from rdlogger import RDLogger
 
@@ -40,6 +41,7 @@ class TestLogging(Common):
     LOG4_PROVIDER_RESPONSE = r"\|{}\|success\|reference=([^\|]*)\|unreachable=(yes|no)\|distance=([\d.]+)?".format(
         STR_LOG_PROVIDERRESPONSE
     )
+    LOG_SYSTEM_TIME = r"\|road_distance_lambda\|status=([^\|]*)|(lambda_execution_time|provider_execution_time)=[0-9]+[.][0-9]+"
 
     TEST_PAYLOAD = "This is a test payload/message"
 
@@ -71,6 +73,16 @@ class TestLogging(Common):
         rx = self.LOG1_DATETIME + self.LOG2_INFO_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_DETAILS_STATUS
         rdlogger.purge()
         rdlogger.log_formatted(self.TEST_PAYLOAD, "status")
+        result = re.search(rx, rdlogger.read_log_output())
+        print(rx)
+        print(result)
+        assert result is not None
+
+    def test_log_system_time(self):
+        rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
+        rx = self.LOG_SYSTEM_TIME
+        rdlogger.purge()
+        rdlogger.log_system_time("complete", str(time.time()))
         result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
@@ -114,7 +126,7 @@ class TestLogging(Common):
         rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         rx = self.LOG1_DATETIME + self.LOG2_FAILURE_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_PROVIDER_FAILURE
         rdlogger.purge()
-        rdlogger.log_provider_error("422", self.TEST_PAYLOAD)
+        rdlogger.log_provider_error(422, self.TEST_PAYLOAD)
         result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
@@ -124,7 +136,7 @@ class TestLogging(Common):
         rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
         rx = self.LOG1_DATETIME + self.LOG2_FAILURE_PREFIX + self.LOG3_SECOND_PREFIX + self.LOG4_CCS_FAILURE
         rdlogger.purge()
-        rdlogger.log_ccs_error("422", self.TEST_PAYLOAD, "data example")
+        rdlogger.log_ccs_error(422, self.TEST_PAYLOAD, "data example")
         result = re.search(rx, rdlogger.read_log_output())
         print(rx)
         print(result)
@@ -203,7 +215,7 @@ class TestLogging(Common):
         json_content = self.__fetch_json(config.JSON_TRAVEL_TIME_ERROR_500)
         print(json_content)
         rdlogger.purge()
-        rdlogger.log_provider_error("500", self.TEST_PAYLOAD, json_content)
+        rdlogger.log_provider_error(500, self.TEST_PAYLOAD, json_content)
         compare = (
             "{}|failed|statuscode=500|error={}|data=".format(self.STR_LOG_PROVIDERRESPONSE, self.TEST_PAYLOAD)
             + json_content

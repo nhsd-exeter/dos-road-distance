@@ -75,6 +75,10 @@ class RDLogger:
         msg = "system|success|message=" + log_message
         return msg
 
+    def format_system_time(self, log_message):
+        msg = "road_distance_lambda|" + log_message
+        return msg
+
     def format_ccs_request(self, data: str):
         msg = "ccsrequest|" + data
         return msg
@@ -87,12 +91,12 @@ class RDLogger:
         msg = "providerresponse|" + data
         return msg
 
-    def format_ccs_request_error(self, errorData: str):
-        msg = "|ccsrequest|failed|" + errorData
+    def format_ccs_request_error(self, error_data: str):
+        msg = "|ccsrequest|failed|" + error_data
         return msg
 
-    def format_provider_response_error(self, errorData: str):
-        msg = "providerresponse|failed|" + errorData
+    def format_provider_response_error(self, error_data: str):
+        msg = "providerresponse|failed|" + error_data
         return msg
 
     def read_log_output(self):
@@ -141,6 +145,11 @@ class RDLogger:
             + miles
         )
         self.log_formatted(log_message, "provider_response")
+
+    def log_system_time(self, state: str, time: str):
+        total_label = "provider_execution_time" if state == "provider_complete" else "lambda_execution_time"
+        log_message = "state=" + state + "|" + total_label + "=" + time
+        self.log_formatted(log_message, "system_time")
 
     def log_provider_error(self, status: int, error: str, data: str = ""):
         log_message = "statuscode=" + str(status) + "|error=" + error + "|data=" + data
