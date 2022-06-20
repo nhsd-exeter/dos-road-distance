@@ -147,7 +147,7 @@ class RDLogger:
         self.log_formatted(log_message, "provider_response")
 
     def log_system_time(self, state: str, time: str):
-        total_label = "provider_execution_time" if state == "provider_complete"  else "lambda_execution_time"
+        total_label = "provider_execution_time" if state == "provider_complete" else "lambda_execution_time"
         log_message = "state=" + state + "|" + total_label + "=" + time
         self.log_formatted(log_message, "system_time")
 
