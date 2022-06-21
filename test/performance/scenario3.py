@@ -31,11 +31,11 @@ class FiveDest(HttpUser):
 
 class StepLoadShape(LoadTestShape):
     stages = [
-        {"duration": 600, "users": 150, "spawn_rate": 50, "request_file": "ccs_500_destinations.json"},
-        {"duration": 1200, "users": 120, "spawn_rate": 40, "request_file": "ccs_500_destinations.json"},
-        {"duration": 1800, "users": 90, "spawn_rate": 30, "request_file": "ccs_500_destinations.json"},
-        {"duration": 2400, "users": 60, "spawn_rate": 20, "request_file": "ccs_500_destinations.json"},
-        {"duration": 3000, "users": 30, "spawn_rate": 10, "request_file": "ccs_500_destinations.json"},
+        {"duration": 600, "users": 150, "spawn_rate": 50, "request_file": "ccs_50_destinations.json"},
+        {"duration": 1200, "users": 120, "spawn_rate": 40, "request_file": "ccs_50_destinations.json"},
+        {"duration": 1800, "users": 90, "spawn_rate": 30, "request_file": "ccs_50_destinations.json"},
+        {"duration": 2400, "users": 60, "spawn_rate": 20, "request_file": "ccs_50_destinations.json"},
+        {"duration": 3000, "users": 30, "spawn_rate": 10, "request_file": "ccs_50_destinations.json"},
     ]
 
     def tick(self):
