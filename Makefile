@@ -210,9 +210,13 @@ aws-lambda-get-latest-version: ### Fetches the latest function version for a lam
 		"
 
 aws-lambda-create-alias: ### Creates an alias for a lambda version - Mandatory NAME=[lambda function name], VERSION=[lambda version]
+	ALIAS_SUFFIX=""
+	if [ "$(TF_VAR_drd_mock)" == "True" ]; then
+		ALIAS_SUFFIX="-mock"
+	fi
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 		$(AWSCLI) lambda create-alias \
-			--name $(VERSION)-$(BUILD_COMMIT_HASH) \
+			--name $(VERSION)-$(BUILD_COMMIT_HASH)$$ALIAS_SUFFIX \
 			--function-name $(NAME) \
 			--function-version $(VERSION) \
 		"
