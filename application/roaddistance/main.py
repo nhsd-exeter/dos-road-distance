@@ -133,7 +133,7 @@ class RoadDistance(Common):
         if mock_mode == "True":
             self.logger.log("MOCK MODE ENABLED")
             if self.transaction_id[0:5] == "mock-":
-                self.logger.log("Processing by transaction id " + self.transaction_id[5:])
+                self.logger.log("Processing with transaction id " + self.transaction_id[5:])
                 r = TravelTimeMock().post(transaction_id=self.transaction_id[5:])
             else:
                 self.logger.log("Processing by service count of " + str(len(self.request["destinations"])))

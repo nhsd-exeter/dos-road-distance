@@ -84,7 +84,6 @@ class TestLogging(Common):
         rdlogger.purge()
         rdlogger.log_system_time("complete", str(time.time()))
         result = re.search(rx, rdlogger.read_log_output())
-        print(rx)
         print(result)
         assert result is not None
 
