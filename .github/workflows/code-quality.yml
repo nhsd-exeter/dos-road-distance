@@ -30,3 +30,4 @@ jobs:
           args: >
             -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=uec-tools-mdo
+            -Dsonar.coverage.exclusions=roaddistance/tests/****,roaddistance/utilities/****
