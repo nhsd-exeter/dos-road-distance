@@ -77,7 +77,7 @@ python-code-coverage: ### Test Python code with 'coverage' - mandatory: CMD=[tes
 	make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)) CMD=" \
 		python -m coverage run \
 			--source=$(or $(FILES), '.') \
-			--omit=*/tests/*,*/utilities/*,$(EXCLUDE) \
+			--omit=*/tests/*,$(EXCLUDE) \
 			$(or $(CMD), -m pytest) && \
 		python -m coverage xml \
 	"

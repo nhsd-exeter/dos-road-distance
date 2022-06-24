@@ -60,11 +60,24 @@ trust-certificate: ssl-trust-certificate-project ## Trust the SSL development ce
 
 # --------------------------------------
 
+build-tester: # Builds image used for testing - mandatory: PROFILE=[name]
+	make docker-image NAME=tester
+
+push-tester: # Pushes image used for testing - mandatory: PROFILE=[name]
+	make docker-push NAME=tester
+
 coverage:
-	make python-requirements
-	make python-code-coverage DIR=$(APPLICATION_DIR_REL)/roaddistance \
-		ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
-					--env DRD_MOCK_MODE=True"
+	echo "Sending image $$(make _docker-get-reg)/tester:latest"
+	make docker-run-tools IMAGE=$$(make _docker-get-reg)/tester:latest SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)) ARGS="$(ARGS)" CMD=" \
+		cd /project/application/roaddistance/ && \
+		python -m coverage run \
+			--omit=*/tests/*,hk/*/utilities/*,cron/*/utilities/*,*/utilities/* \
+			-m pytest"
+
+upgrade-pip:
+	make docker-run-tools \
+		CMD="/usr/local/bin/python -m pip install --upgrade pip" \
+		DIR=$(APPLICATION_DIR_REL)/roaddistance
 
 python-requirements:
 	make docker-run-tools \

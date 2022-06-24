@@ -41,7 +41,9 @@ class TestLogging(Common):
     LOG4_PROVIDER_RESPONSE = r"\|{}\|success\|reference=([^\|]*)\|unreachable=(yes|no)\|distance=([\d.]+)?".format(
         STR_LOG_PROVIDERRESPONSE
     )
-    LOG_SYSTEM_TIME = r"\|road_distance_lambda\|status=([^\|]*)|(lambda_execution_time|provider_execution_time)=[0-9]+[.][0-9]+"
+    LOG_SYSTEM_TIME = (
+        r"\|road_distance_lambda\|status=([^\|]*)|(lambda_execution_time|provider_execution_time)=[0-9]+[.][0-9]+"
+    )
 
     TEST_PAYLOAD = "This is a test payload/message"
 
