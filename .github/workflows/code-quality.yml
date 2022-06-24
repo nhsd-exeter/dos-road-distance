@@ -29,5 +29,5 @@ jobs:
           projectBaseDir: ./application
           args: >
             -Dsonar.organization=nhsd-exeter
-            -Dsonar.projectKey=uec-tools-mdo
+            -Dsonar.projectKey=uec-dos-rd
             -Dsonar.coverage.exclusions=roaddistance/tests/****,roaddistance/utilities/****
