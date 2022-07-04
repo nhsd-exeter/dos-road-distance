@@ -7,8 +7,6 @@ from utilities import secrets, logger, message, common
 secret_store = os.environ.get("SECRET_STORE")
 profile = os.environ.get("PROFILE")
 
-
-# TODO move inside class later
 def connect_to_database(env, event, start):
     db = DB()
     logger.log_for_audit("Setting DB connection details")
@@ -19,7 +17,6 @@ def connect_to_database(env, event, start):
     return db.db_connect(event, start)
 
 
-# TODO move inside class later
 def does_record_exist(db, row_dict, table_name):
     """
     Checks to see if record already exists in db table with the id
@@ -40,7 +37,6 @@ def does_record_exist(db, row_dict, table_name):
     return record_exists
 
 
-# TODO move inside class later
 def execute_db_query(db_connection, query, data, line, values, summary_count_dict):
     cursor = db_connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
@@ -71,44 +67,34 @@ class DB:
     def db_set_connection_details(self, env, event, start):
         secret_list = secrets.SECRETS().get_secret_value(secret_store, event, start)
         formatted_secrets = json.loads(secret_list, strict=False)
-        connection_details_set = True
         db_host_key = "DB_HOST"
         db_user_key = "DB_USER"
         db_password_key = "DB_USER_PASSWORD"
         if env == "performance":
             db_host_key = "DB_PERFORMANCE_HOST"
             db_password_key = "DB_PERFORMANCE_PASSWORD"
-        if env == "regression":
+        elif env == "regression":
             db_host_key = "DB_REGRESSION_HOST"
 
-        if formatted_secrets is not None:
-            if db_host_key in formatted_secrets:
-                self.db_host = formatted_secrets[db_host_key]
-                logger.log_for_diagnostics("Host: {}".format(self.db_host))
-            else:
-                connection_details_set = False
-                logger.log_for_diagnostics("No DB_HOST secret var set")
-            if db_user_key in formatted_secrets:
-                self.db_user = formatted_secrets[db_user_key]
-                logger.log_for_diagnostics("User: {}".format(self.db_user))
-            else:
-                connection_details_set = False
-                logger.log_for_diagnostics("No DB_USER secret var set")
-            if db_password_key in formatted_secrets:
-                self.db_password = formatted_secrets[db_password_key]
-                logger.log_for_diagnostics("DB_PASSWORD secret set")
-            else:
-                connection_details_set = False
-                logger.log_for_diagnostics("No DB_PASSWORD secret set")
+        if formatted_secrets is None:
+            logger.log_for_diagnostics("Secrets not set")
+        elif db_host_key not in formatted_secrets:
+            logger.log_for_diagnostics("No DB_HOST secret var set")
+        elif db_user_key not in formatted_secrets:
+            logger.log_for_diagnostics("No DB_USER secret var set")
+        elif db_password_key not in formatted_secrets:
+            logger.log_for_diagnostics("No DB_PASSWORD secret set")
+        else:
+            logger.log_for_diagnostics("Host: {}".format(self.db_host))
+            logger.log_for_diagnostics("User: {}".format(self.db_user))
+            logger.log_for_diagnostics("DB_PASSWORD secret set")
             if profile != "prod" and env != "performance":
                 self.db_name = "pathwaysdos_{}".format(env)
             else:
                 self.db_name = "pathwaysdos"
             logger.log_for_diagnostics("DB Name: {}".format(self.db_name))
-        else:
-            connection_details_set = False
-            logger.log_for_diagnostics("Secrets not set")
-        return connection_details_set
+            return True
+        return False
 
     def db_connect(self, event, start):
         try:

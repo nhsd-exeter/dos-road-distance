@@ -7,6 +7,8 @@ slack_webhook_url = os.environ.get("SLACK_WEBHOOK_URL")
 profile = os.environ.get("PROFILE")
 task = os.environ.get("TASK")
 headers = {"Content-type": "application/json"}
+DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+HK_NAME = '{} HK Lambda'.format(task.capitalize())
 
 # Email Function (Include template CR for prod)
 # Slack Function
@@ -17,7 +19,7 @@ def send_success_slack_message(event, start):
     file = event["filename"]
     bucket = event["bucket"]
     finish, duration = calculate_execution_time(start)
-    start = start.strftime("%Y-%m-%d %H:%M:%S")
+    start = start.strftime(DATE_TIME_FORMAT)
     success_payload = {
         "attachments": [
             {
@@ -25,7 +27,7 @@ def send_success_slack_message(event, start):
                 "blocks": [
                     {
                         "type": "header",
-                        "text": {"type": "plain_text", "text": "{} HK Lambda".format(task.capitalize())},
+                        "text": {"type": "plain_text", "text": HK_NAME},
                     },
                     {
                         "type": "section",
@@ -58,7 +60,7 @@ def send_failure_slack_message(event, start):
     file = event["filename"]
     bucket = event["bucket"]
     finish, duration = calculate_execution_time(start)
-    start = start.strftime("%Y-%m-%d %H:%M:%S")
+    start = start.strftime(DATE_TIME_FORMAT)
     failure_payload = {
         "attachments": [
             {
@@ -66,7 +68,7 @@ def send_failure_slack_message(event, start):
                 "blocks": [
                     {
                         "type": "header",
-                        "text": {"type": "plain_text", "text": "{} HK Lambda".format(task.capitalize())},
+                        "text": {"type": "plain_text", "text": HK_NAME},
                     },
                     {
                         "type": "section",
@@ -98,7 +100,7 @@ def send_start_message(event, start):
     env = event["env"]
     file = event["filename"]
     bucket = event["bucket"]
-    start = start.strftime("%Y-%m-%d %H:%M:%S")
+    start = start.strftime(DATE_TIME_FORMAT)
     start_payload = {
         "attachments": [
             {
@@ -106,7 +108,7 @@ def send_start_message(event, start):
                 "blocks": [
                     {
                         "type": "header",
-                        "text": {"type": "plain_text", "text": "{} HK Lambda".format(task.capitalize())},
+                        "text": {"type": "plain_text", "text": HK_NAME},
                     },
                     {
                         "type": "section",
@@ -134,6 +136,6 @@ Start Time: *{start}*""".format(
 
 def calculate_execution_time(start):
     now = datetime.utcnow()
-    finish = now.strftime("%Y-%m-%d %H:%M:%S")
+    finish = now.strftime(DATE_TIME_FORMAT)
     duration = str(now - start).split(".")[0]
     return finish, duration
