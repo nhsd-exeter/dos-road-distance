@@ -1,5 +1,6 @@
 .DS_Store
 .idea
+.vscode
 .java-version
 .mypy_cache
 .nvmrc
