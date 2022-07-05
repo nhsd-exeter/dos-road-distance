@@ -34,5 +34,5 @@ jobs:
             -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=uec-dos-rd
             -Dsonar.coverage.exclusions=roaddistance/tests/****,roaddistance/utilities/****
-            -Dsonar.python.coverage.reportPaths=./coverage.xml
+            -Dsonar.python.coverage.reportPaths=roaddistance/coverage.xml
             -Dsonar.python.version=3.10
