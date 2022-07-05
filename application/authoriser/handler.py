@@ -12,9 +12,6 @@ logger: AuthLogger = AuthLogger()
 def authorize_api_request(event, context) -> dict:
     print("Event: {}".format(event))
     logger.log("Event: {}".format(event))
-    response = {
-        "isAuthorized": False,
-    }
     noauth = True if "x-noauth" in event["headers"].keys() else False
     if noauth:
         logger.log("Noauth requested")
@@ -23,6 +20,14 @@ def authorize_api_request(event, context) -> dict:
             response = {"isAuthorized": True}
     except Exception as e:
         print("Authentication method failed with error: {}".format(e))
+        response = {
+            "isAuthorized": False,
+            "lambdaFunctionArn:": context.invoked_function_arn,
+            "cloudWatchStreamName:": context.context.log_stream_name,
+            "cloudWatchLogGroupName:": context.context.log_group_name,
+            "lambdaRequestId:": context.context.aws_request_id,
+            "lambdaMemoryLimit:": context.context.memory_limit_in_mb
+        }
     print("Response: {}".format(response))
     return response
 

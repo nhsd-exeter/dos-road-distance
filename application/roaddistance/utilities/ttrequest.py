@@ -36,10 +36,10 @@ def build_request_proto(origin: dict, destinations: list) -> bytes:
     print("REQUEST:")
     print(request)
     try:
-        fh = open("/tmp/proto_request.dump", "w")
+        fh = open("./tmp/proto_request.dump", "w")
         fh.write(str(request))
         fh.close()
-        fh = open("/tmp/proto_request.bin", "wb")
+        fh = open("./tmp/proto_request.bin", "wb")
         fh.write(request.SerializeToString())
         fh.close()
     except Exception as ex:
@@ -68,10 +68,10 @@ def decode_response(response):
     message.ParseFromString(response)
     print(message)
     try:
-        fh = open("/tmp/proto_response.bin", "wb")
+        fh = open("./tmp/proto_response.bin", "wb")
         fh.write(response)
         fh.close()
-        fh = open("/tmp/proto_response.dump", "w")
+        fh = open("./tmp/proto_response.dump", "w")
         fh.write(str(message))
         fh.close()
     except Exception as ex:
