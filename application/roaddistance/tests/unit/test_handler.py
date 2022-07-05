@@ -11,14 +11,14 @@ class TestHandler(Common):
     context = {
         "function_name": "",
         "function_version": "",
-        "invoked_function_arn": "",
-        "memory_limit_in_mb": "",
-        "aws_request_id": "",
-        "log_group_name": "",
-        "log_stream_name":"",
+        "invoked_function_arn": "Test ARN",
+        "memory_limit_in_mb": "Test Memory",
+        "aws_request_id": "Test ID",
+        "log_group_name": "Test Group",
+        "log_stream_name": "Test Stream",
         "identity": "",
         "cognito_identity_id": "",
-        "cognito_identity_pool_id":"",
+        "cognito_identity_pool_id": "",
         "client_context": "",
         "client.installation_id": "",
         "client.app_title": "",
@@ -26,9 +26,8 @@ class TestHandler(Common):
         "client.app_version_code": "",
         "client.app_package_name": "",
         "custom": "",
-        "env": ""
+        "env": "",
     }
-
 
     def test_valid_ccs_request(self):
         self.purge_test_logs()
@@ -64,8 +63,14 @@ class TestHandler(Common):
         os.environ["LOGGER"] = "DoesNotExist"
         request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID)
         response = handler.process_road_distance_request(request, self.context)
+        print(response)
         assert response["status"] == 502
         assert not os.path.isfile(self.log_path)
+        assert response["log_stream_name"] == "Test Stream"
+        assert response["log_group_name"] == "Test Group"
+        assert response["invoked_function_arn"] == "Test ARN"
+        assert response["aws_request_id"] == "Test ID"
+        assert response["memory_limit_in_mb"] == "Test Memory"
         del os.environ["LOGGER"]
 
     def purge_test_logs(self):
