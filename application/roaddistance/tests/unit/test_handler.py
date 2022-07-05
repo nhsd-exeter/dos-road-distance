@@ -8,6 +8,8 @@ class TestHandler(Common):
 
     log_path: str = "tests/unit/test_log/rd.log"
     os.environ["LOGGER"] = "Test"
+
+    # this simulates context supplied to the Lambda entrypoint
     context = {
         "invoked_function_arn": "Test ARN",
         "memory_limit_in_mb": "Test Memory",
