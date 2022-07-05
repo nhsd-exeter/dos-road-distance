@@ -9,24 +9,11 @@ class TestHandler(Common):
     log_path: str = "tests/unit/test_log/rd.log"
     os.environ["LOGGER"] = "Test"
     context = {
-        "function_name": "",
-        "function_version": "",
         "invoked_function_arn": "Test ARN",
         "memory_limit_in_mb": "Test Memory",
         "aws_request_id": "Test ID",
         "log_group_name": "Test Group",
         "log_stream_name": "Test Stream",
-        "identity": "",
-        "cognito_identity_id": "",
-        "cognito_identity_pool_id": "",
-        "client_context": "",
-        "client.installation_id": "",
-        "client.app_title": "",
-        "client.app_version_name": "",
-        "client.app_version_code": "",
-        "client.app_package_name": "",
-        "custom": "",
-        "env": "",
     }
 
     def test_valid_ccs_request(self):
