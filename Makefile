@@ -71,7 +71,7 @@ coverage:
 	make docker-run-tools IMAGE=$$(make _docker-get-reg)/tester:latest SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)) ARGS="$(ARGS)" CMD=" \
 		cd /project/application/roaddistance/ && \
 		python -m coverage run \
-			--omit=*/tests/*,hk/*/utilities/*,cron/*/utilities/*,*/utilities/* \
+			--omit=tests/*,utilities/* \
 			-m pytest"
 
 upgrade-pip:
