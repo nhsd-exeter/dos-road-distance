@@ -22,11 +22,11 @@ def authorize_api_request(event, context) -> dict:
         print("Authentication method failed with error: {}".format(e))
         response = {
             "isAuthorized": False,
-            "lambdaFunctionArn:": context.invoked_function_arn,
-            "cloudWatchStreamName:": context.context.log_stream_name,
-            "cloudWatchLogGroupName:": context.context.log_group_name,
-            "lambdaRequestId:": context.context.aws_request_id,
-            "lambdaMemoryLimit:": context.context.memory_limit_in_mb
+            "cloudWatchStreamName:": context.context.log_stream_name or '',
+            "cloudWatchLogGroupName:": context.context.log_group_name or '',
+            "lambdaFunctionArn:": context.invoked_function_arn or '',
+            "lambdaRequestId:": context.context.aws_request_id or '',
+            "lambdaMemoryLimit:": context.context.memory_limit_in_mb or ''
         }
     print("Response: {}".format(response))
     return response
