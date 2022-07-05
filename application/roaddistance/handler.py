@@ -17,11 +17,11 @@ def process_road_distance_request(event, context):
         body = {
             "status": status_code,
             "message": repr(e),
-            "cloudWatchStreamName:": context.log_stream_name or "",
-            "cloudWatchLogGroupName:": context.log_group_name or "",
-            "lambdaFunctionArn:": context.invoked_function_arn or "",
-            "lambdaRequestId:": context.aws_request_id or "",
-            "lambdaMemoryLimit:": context.memory_limit_in_mb or "",
+            "cloudWatchStreamName:": context.log_stream_name,
+            "cloudWatchLogGroupName:": context.log_group_name,
+            "lambdaFunctionArn:": context.invoked_function_arn,
+            "lambdaRequestId:": context.aws_request_id,
+            "lambdaMemoryLimit:": context.memory_limit_in_mb
         }
 
     return body
