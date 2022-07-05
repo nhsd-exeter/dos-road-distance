@@ -12,9 +12,6 @@ logger: AuthLogger = AuthLogger()
 def authorize_api_request(event, context) -> dict:
     print("Event: {}".format(event))
     logger.log("Event: {}".format(event))
-    response = {
-        "isAuthorized": False,
-    }
     noauth = True if "x-noauth" in event["headers"].keys() else False
     if noauth:
         logger.log("Noauth requested")
@@ -23,6 +20,14 @@ def authorize_api_request(event, context) -> dict:
             response = {"isAuthorized": True}
     except Exception as e:
         print("Authentication method failed with error: {}".format(e))
+        response = {
+            "isAuthorized": False,
+            "log_stream_name": context.get("log_stream_name", ""),
+            "log_group_name": context.get("log_group_name", ""),
+            "invoked_function_arn": context.get("invoked_function_arn", ""),
+            "aws_request_id": context.get("aws_request_id", ""),
+            "memory_limit_in_mb": context.get("memory_limit_in_mb", ""),
+        }
     print("Response: {}".format(response))
     return response
 

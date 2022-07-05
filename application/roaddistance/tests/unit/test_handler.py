@@ -8,11 +8,18 @@ class TestHandler(Common):
 
     log_path: str = "tests/unit/test_log/rd.log"
     os.environ["LOGGER"] = "Test"
+    context = {
+        "invoked_function_arn": "Test ARN",
+        "memory_limit_in_mb": "Test Memory",
+        "aws_request_id": "Test ID",
+        "log_group_name": "Test Group",
+        "log_stream_name": "Test Stream",
+    }
 
     def test_valid_ccs_request(self):
         self.purge_test_logs()
         request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
-        response = handler.process_road_distance_request(request, None)
+        response = handler.process_road_distance_request(request, self.context)
         assert response["status"] == 200
         assert "transactionid" in response
         assert "destinations" in response
@@ -23,14 +30,14 @@ class TestHandler(Common):
     def test_invalid_json_raises_exception(self):
         json_file = super().fetch_file(config.PATH_TEST_JSON, config.JSON_DOS_ROAD_DISTANCE_INVALID_JSON)
         event = {"body": json_file}
-        response = handler.process_road_distance_request(event, None)
+        response = handler.process_road_distance_request(event, self.context)
         assert response["status"] == 500
         assert response["message"].find("JSONDecodeError") != -1
 
     def test_invalid_ccs_request_returns_400_response_with_message(self):
         self.purge_test_logs()
         request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID)
-        response = handler.process_road_distance_request(request, None)
+        response = handler.process_road_distance_request(request, self.context)
         assert response["status"] == 400
         assert "transactionid" in response
         assert "message" in response
@@ -42,9 +49,15 @@ class TestHandler(Common):
         self.purge_test_logs()
         os.environ["LOGGER"] = "DoesNotExist"
         request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_INVALID)
-        response = handler.process_road_distance_request(request, None)
+        response = handler.process_road_distance_request(request, self.context)
+        print(response)
         assert response["status"] == 502
         assert not os.path.isfile(self.log_path)
+        assert response["log_stream_name"] == "Test Stream"
+        assert response["log_group_name"] == "Test Group"
+        assert response["invoked_function_arn"] == "Test ARN"
+        assert response["aws_request_id"] == "Test ID"
+        assert response["memory_limit_in_mb"] == "Test Memory"
         del os.environ["LOGGER"]
 
     def purge_test_logs(self):

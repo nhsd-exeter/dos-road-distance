@@ -14,6 +14,14 @@ def process_road_distance_request(event, context):
         body = {"status": status_code, "message": repr(e)}
     except Exception as e:
         status_code = 502
-        body = {"status": status_code, "message": repr(e)}
+        body = {
+            "status": status_code,
+            "message": repr(e),
+            "log_stream_name": context.get("log_stream_name", ""),
+            "log_group_name": context.get("log_group_name", ""),
+            "invoked_function_arn": context.get("invoked_function_arn", ""),
+            "aws_request_id": context.get("aws_request_id", ""),
+            "memory_limit_in_mb": context.get("memory_limit_in_mb", ""),
+        }
 
     return body
