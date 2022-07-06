@@ -72,6 +72,7 @@ coverage:
 		cd /project/application/roaddistance/ && \
 		python -m coverage run \
 			--omit=tests/*,utilities/* \
+			--source=/project/application/roaddistance/ \
 			-m pytest && \
 			python -m coverage xml"
 
