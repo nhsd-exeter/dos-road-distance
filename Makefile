@@ -69,7 +69,6 @@ push-tester: # Pushes image used for testing - mandatory: PROFILE=[name]
 coverage:
 	echo "Sending image $$(make _docker-get-reg)/tester:latest"
 	make docker-run-tools IMAGE=$$(make _docker-get-reg)/tester:latest SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)) ARGS="$(ARGS)" CMD=" \
-		cd /project/application/roaddistance/ && \
 		python -m coverage run \
 			--omit=tests/*,utilities/* \
 			--source=/project/application/roaddistance/ \
