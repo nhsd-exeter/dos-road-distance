@@ -29,10 +29,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: ./application
+          projectBaseDir: ./application/roaddistance
           args: >
             -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=uec-dos-rd
-            -Dsonar.coverage.exclusions=roaddistance/tests/****,roaddistance/utilities/****
-            -Dsonar.python.coverage.reportPaths=roaddistance/coverage.xml
-            -Dsonar.python.version=3.10
+            -Dsonar.coverage.exclusions=tests/****,utilities/****
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.python.version=3.10.2
