@@ -72,7 +72,9 @@ coverage:
 		cd /project/application/roaddistance/ && \
 		python -m coverage run \
 			--omit=tests/*,utilities/* \
-			-m pytest"
+			-m pytest && \
+			python -m coverage xml"
+
 
 upgrade-pip:
 	make docker-run-tools \
