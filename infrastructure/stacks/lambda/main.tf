@@ -2,6 +2,7 @@ resource "aws_lambda_function" "road_distance_lambda" {
   function_name = "${var.service_prefix}-rd-lambda"
   role          = aws_iam_role.road_distance_lambda_role.arn
   architectures = ["arm64"]
+  memory_size   = 1024
   publish       = true
   package_type  = "Image"
   timeout       = "30"
