@@ -9,6 +9,8 @@ DOCKER_NETWORK = $(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)/$(BUILD_ID)
 DOCKER_REGISTRY = $(AWS_ECR)/$(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)
 DOCKER_LIBRARY_REGISTRY = nhsd
 
+DOCKER_PLATFORM =
+DOCKER_ARCH =
 DOCKER_ALPINE_VERSION = 3.15.0
 DOCKER_COMPOSER_VERSION = 2.0.13
 DOCKER_CONFIG_LINT_VERSION = v1.6.0
@@ -96,7 +98,14 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	export IMAGE=$$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example)
 	export VERSION=$$(make docker-image-get-version)
 	make -s file-replace-variables FILE=$$dir/Dockerfile.effective
-	docker build --rm \
+	docker buildx ls
+	docker run --rm --privileged tonistiigi/binfmt --install all
+#	docker run --rm --privileged multiarch/qemu-user-static:register --reset
+	docker buildx rm roaddistance-builder 2>/dev/null ||:
+	docker buildx create --name roaddistance-builder --use
+	docker buildx inspect --bootstrap
+#	make docker-login
+	docker buildx build --platform linux/amd64 -t 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:amd64 --load --rm \
 		--build-arg IMAGE=$$IMAGE \
 		--build-arg VERSION=$$VERSION \
 		--build-arg BUILD_ID=$(BUILD_ID) \
@@ -118,8 +127,50 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
 		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest \
 		$$dir
-	docker rmi --force $$(docker images | grep "<none>" | awk '{ print $$3 }') 2> /dev/null ||:
-	make docker-image-keep-latest-only NAME=$(NAME)
+	echo 'Completed amd64 build'
+#	docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:amd64
+
+	docker buildx build --platform linux/arm64 -t 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64 --load --rm \
+		--build-arg IMAGE=$$IMAGE \
+		--build-arg VERSION=$$VERSION \
+		--build-arg BUILD_ID=$(BUILD_ID) \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg BUILD_REPO=$(BUILD_REPO) \
+		--build-arg BUILD_BRANCH=$(BUILD_BRANCH) \
+		--build-arg BUILD_COMMIT_HASH=$(BUILD_COMMIT_HASH) \
+		--build-arg BUILD_COMMIT_DATE=$(BUILD_COMMIT_DATE) \
+		--label name=$$IMAGE \
+		--label version=$$VERSION \
+		--label build-id=$(BUILD_ID) \
+		--label build-date=$(BUILD_DATE) \
+		--label build-repo=$(BUILD_REPO) \
+		--label build-branch=$(BUILD_BRANCH) \
+		--label build-commit-hash=$(BUILD_COMMIT_HASH) \
+		--label build-commit-date=$(BUILD_COMMIT_DATE) \
+		$(BUILD_OPTS) $$cache_from \
+		--file $$dir/Dockerfile.effective \
+		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
+		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest \
+		$$dir
+	echo 'Completed arm64 build'
+#	docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64
+
+#	docker manifest create 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:latest \
+#		730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:amd64 \
+#		730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64
+#	docker manifest push docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:latest
+
+#	docker buildx inspect --bootstrap
+#	docker buildx build --push -t uec-dos/rd/roaddistance-lambda .
+#	docker buildx rm roaddistance-builder
+
+
+
+#	docker tag \
+		$$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
+		$$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest
+#	docker rmi --force $$(docker images | grep "<none>" | awk '{ print $$3 }') 2> /dev/null ||:
+#	make docker-image-keep-latest-only NAME=$(NAME)
 	docker image inspect $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest --format='{{.Size}}'
 
 docker-test: ### Test image - mandatory: NAME; optional: ARGS,CMD,GOSS_OPTS,EXAMPLE=true
@@ -211,26 +262,26 @@ docker-create-dockerfile: ### Create effective Dockerfile - mandatory: NAME; op
 		s#DOCKER_REGISTRY#$(DOCKER_REGISTRY)#g; \
 		s#AWS_ECR#$(AWS_ECR)#g; \
 		s#AWS_ACCOUNT_ID_MGMT#$(AWS_ACCOUNT_ID_MGMT)#g; \
-		s#FROM $(DOCKER_LIBRARY_REGISTRY)/elasticsearch:latest#FROM $(DOCKER_LIBRARY_REGISTRY)/elasticsearch:$(DOCKER_LIBRARY_ELASTICSEARCH_VERSION)#g; \
-		s#FROM $(DOCKER_LIBRARY_REGISTRY)/nginx:latest#FROM $(DOCKER_LIBRARY_REGISTRY)/nginx:$(DOCKER_LIBRARY_NGINX_VERSION)#g; \
-		s#FROM $(DOCKER_LIBRARY_REGISTRY)/node:latest#FROM $(DOCKER_LIBRARY_REGISTRY)/node:$(DOCKER_LIBRARY_NODE_VERSION)#g; \
-		s#FROM $(DOCKER_LIBRARY_REGISTRY)/pipeline:latest#FROM $(DOCKER_LIBRARY_REGISTRY)/pipeline:$(DOCKER_LIBRARY_PIPELINE_VERSION)#g; \
-		s#FROM $(DOCKER_LIBRARY_REGISTRY)/postgres:latest#FROM $(DOCKER_LIBRARY_REGISTRY)/postgres:$(DOCKER_LIBRARY_POSTGRES_VERSION)#g; \
-		s#FROM $(DOCKER_LIBRARY_REGISTRY)/python-app:latest#FROM $(DOCKER_LIBRARY_REGISTRY)/python-app:$(DOCKER_LIBRARY_PYTHON_APP_VERSION)#g; \
-		s#FROM $(DOCKER_LIBRARY_REGISTRY)/python:latest#FROM $(DOCKER_LIBRARY_REGISTRY)/python:$(DOCKER_LIBRARY_PYTHON_VERSION)#g; \
-		s#FROM $(DOCKER_LIBRARY_REGISTRY)/tools:latest#FROM $(DOCKER_LIBRARY_REGISTRY)/tools:$(DOCKER_LIBRARY_TOOLS_VERSION)#g; \
-		s#FROM alpine:latest#FROM alpine:$(DOCKER_ALPINE_VERSION)#g; \
-		s#FROM bitnami/elasticsearch:latest#FROM bitnami/elasticsearch:$(DOCKER_ELASTICSEARCH_VERSION)#g; \
-		s#FROM docker:latest#FROM docker:$(DOCKER_DIND_VERSION)#g; \
-		s#FROM gradle:latest#FROM gradle:$(DOCKER_GRADLE_VERSION)#g; \
-		s#FROM maven:latest#FROM maven:$(DOCKER_MAVEN_VERSION)#g; \
-		s#FROM nginx:latest#FROM nginx:$(DOCKER_NGINX_VERSION)#g; \
-		s#FROM node:latest#FROM node:$(DOCKER_NODE_VERSION)#g; \
-		s#FROM openjdk:latest#FROM openjdk:$(DOCKER_OPENJDK_VERSION)#g; \
-		s#FROM postgres:latest#FROM postgres:$(DOCKER_POSTGRES_VERSION)#g; \
-		s#FROM postman/newman:latest#FROM postman/newman:$(DOCKER_POSTMAN_NEWMAN_VERSION)#g; \
-		s#FROM python:latest#FROM python:$(DOCKER_PYTHON_VERSION)#g; \
-		s#FROM rodolpheche/wiremock:latest#FROM rodolpheche/wiremock:$(DOCKER_WIREMOCK_VERSION)#g; \
+		s#FROM $(DOCKER_LIBRARY_REGISTRY)/elasticsearch:latest#FROM $(DOCKER_PLATFORM) $(DOCKER_LIBRARY_REGISTRY)/elasticsearch$(DOCKER_ARCH):$(DOCKER_LIBRARY_ELASTICSEARCH_VERSION)#g; \
+		s#FROM $(DOCKER_LIBRARY_REGISTRY)/nginx:latest#FROM $(DOCKER_PLATFORM) $(DOCKER_LIBRARY_REGISTRY)/nginx$(DOCKER_ARCH):$(DOCKER_LIBRARY_NGINX_VERSION)#g; \
+		s#FROM $(DOCKER_LIBRARY_REGISTRY)/node:latest#FROM $(DOCKER_PLATFORM) $(DOCKER_LIBRARY_REGISTRY)/node$(DOCKER_ARCH):$(DOCKER_LIBRARY_NODE_VERSION)#g; \
+		s#FROM $(DOCKER_LIBRARY_REGISTRY)/pipeline:latest#FROM $(DOCKER_PLATFORM) $(DOCKER_LIBRARY_REGISTRY)/pipeline$(DOCKER_ARCH):$(DOCKER_LIBRARY_PIPELINE_VERSION)#g; \
+		s#FROM $(DOCKER_LIBRARY_REGISTRY)/postgres:latest#FROM $(DOCKER_PLATFORM) $(DOCKER_LIBRARY_REGISTRY)/postgres$(DOCKER_ARCH):$(DOCKER_LIBRARY_POSTGRES_VERSION)#g; \
+		s#FROM $(DOCKER_LIBRARY_REGISTRY)/python-app:latest#FROM $(DOCKER_PLATFORM) $(DOCKER_LIBRARY_REGISTRY)/python-app$(DOCKER_ARCH):$(DOCKER_LIBRARY_PYTHON_APP_VERSION)#g; \
+		s#FROM $(DOCKER_LIBRARY_REGISTRY)/python:latest#FROM $(DOCKER_PLATFORM) $(DOCKER_LIBRARY_REGISTRY)/python$(DOCKER_ARCH):$(DOCKER_LIBRARY_PYTHON_VERSION)#g; \
+		s#FROM $(DOCKER_LIBRARY_REGISTRY)/tools:latest#FROM $(DOCKER_PLATFORM) $(DOCKER_LIBRARY_REGISTRY)/tools$(DOCKER_ARCH):$(DOCKER_LIBRARY_TOOLS_VERSION)#g; \
+		s#FROM alpine:latest#FROM $(DOCKER_PLATFORM) alpine$(DOCKER_ARCH):$(DOCKER_ALPINE_VERSION)#g; \
+		s#FROM bitnami/elasticsearch:latest#FROM $(DOCKER_PLATFORM) bitnami/elasticsearch$(DOCKER_ARCH):$(DOCKER_ELASTICSEARCH_VERSION)#g; \
+		s#FROM docker:latest#FROM $(DOCKER_PLATFORM) docker$(DOCKER_ARCH):$(DOCKER_DIND_VERSION)#g; \
+		s#FROM gradle:latest#FROM $(DOCKER_PLATFORM) gradle$(DOCKER_ARCH):$(DOCKER_GRADLE_VERSION)#g; \
+		s#FROM maven:latest#FROM $(DOCKER_PLATFORM) maven$(DOCKER_ARCH):$(DOCKER_MAVEN_VERSION)#g; \
+		s#FROM nginx:latest#FROM $(DOCKER_PLATFORM) nginx$(DOCKER_ARCH):$(DOCKER_NGINX_VERSION)#g; \
+		s#FROM node:latest#FROM $(DOCKER_PLATFORM) node$(DOCKER_ARCH):$(DOCKER_NODE_VERSION)#g; \
+		s#FROM openjdk:latest#FROM $(DOCKER_PLATFORM) openjdk$(DOCKER_ARCH):$(DOCKER_OPENJDK_VERSION)#g; \
+		s#FROM postgres:latest#FROM $(DOCKER_PLATFORM) postgres$(DOCKER_ARCH):$(DOCKER_POSTGRES_VERSION)#g; \
+		s#FROM postman/newman:latest#FROM $(DOCKER_PLATFORM) postman/newman$(DOCKER_ARCH):$(DOCKER_POSTMAN_NEWMAN_VERSION)#g; \
+		s#FROM python:latest#FROM $(DOCKER_PLATFORM) python$(DOCKER_ARCH):$(DOCKER_PYTHON_VERSION)#g; \
+		s#FROM rodolpheche/wiremock:latest#FROM $(DOCKER_PLATFORM) rodolpheche/wiremock$(DOCKER_ARCH):$(DOCKER_WIREMOCK_VERSION)#g; \
 	" Dockerfile.effective
 	cd $$dir
 
