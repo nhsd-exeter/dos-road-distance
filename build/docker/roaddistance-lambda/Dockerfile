@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64 public.ecr.aws/lambda/python:3.9-arm64
+FROM public.ecr.aws/lambda/python:3.9-amd64
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
