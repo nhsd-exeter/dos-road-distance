@@ -99,6 +99,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	export VERSION=$$(make docker-image-get-version)
 	make -s file-replace-variables FILE=$$dir/Dockerfile.effective
 	docker build --rm \
+		--platform linux/arm64/v8 \
 		--build-arg IMAGE=$$IMAGE \
 		--build-arg VERSION=$$VERSION \
 		--build-arg BUILD_ID=$(BUILD_ID) \
