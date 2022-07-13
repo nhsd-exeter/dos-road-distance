@@ -8,7 +8,7 @@ COPY root/ /root/
 
 #RUN yum -y update
 
-RUN pip3 install --platform linux_arm64_v8 -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
+RUN pip3 install --platform linux_arm64 -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN pip3 install pytest
 
 EXPOSE 8080
