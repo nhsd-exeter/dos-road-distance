@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.9-arm64
+FROM public.ecr.aws/lambda/python:3.9
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
@@ -6,9 +6,7 @@ ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 COPY assets/ .
 COPY root/ /root/
 
-#RUN yum -y update
-
-RUN pip3 install --platform linux_arm64 -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
+RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN pip3 install pytest
 
 EXPOSE 8080
