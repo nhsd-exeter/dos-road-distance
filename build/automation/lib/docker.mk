@@ -119,6 +119,29 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 		--file $$dir/Dockerfile.effective \
 		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
 		$$dir
+
+	docker build --platform linux/arm/v8 --rm \
+		--build-arg IMAGE=$$IMAGE \
+		--build-arg VERSION=$$VERSION \
+		--build-arg BUILD_ID=$(BUILD_ID) \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg BUILD_REPO=$(BUILD_REPO) \
+		--build-arg BUILD_BRANCH=$(BUILD_BRANCH) \
+		--build-arg BUILD_COMMIT_HASH=$(BUILD_COMMIT_HASH) \
+		--build-arg BUILD_COMMIT_DATE=$(BUILD_COMMIT_DATE) \
+		--label name=$$IMAGE \
+		--label version=$$VERSION \
+		--label build-id=$(BUILD_ID) \
+		--label build-date=$(BUILD_DATE) \
+		--label build-repo=$(BUILD_REPO) \
+		--label build-branch=$(BUILD_BRANCH) \
+		--label build-commit-hash=$(BUILD_COMMIT_HASH) \
+		--label build-commit-date=$(BUILD_COMMIT_DATE) \
+		$(BUILD_OPTS) $$cache_from \
+		--file $$dir/Dockerfile.effective \
+		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
+		$$dir
+
 	# Tag
 	docker tag \
 		$$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
