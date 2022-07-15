@@ -98,7 +98,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	export IMAGE=$$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example)
 	export VERSION=$$(make docker-image-get-version)
 	make -s file-replace-variables FILE=$$dir/Dockerfile.effective
-	docker build --rm \
+	docker buildx build --rm \
 		--build-arg IMAGE=$$IMAGE \
 		--build-arg VERSION=$$VERSION \
 		--build-arg BUILD_ID=$(BUILD_ID) \
@@ -120,7 +120,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
 		$$dir
 
-	docker build --platform linux/arm/v8 --rm \
+	docker buildx build --platform linux/arm/v8 --rm \
 		--build-arg IMAGE=$$IMAGE \
 		--build-arg VERSION=$$VERSION \
 		--build-arg BUILD_ID=$(BUILD_ID) \
