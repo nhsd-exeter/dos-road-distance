@@ -99,6 +99,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	export VERSION=$$(make docker-image-get-version)
 	make -s file-replace-variables FILE=$$dir/Dockerfile.effective
 	docker buildx ls
+	docker buildx rm roaddistance-builder
 	docker buildx create --name roaddistance-builder --use
 	docker buildx inspect --bootstrap
 	docker buildx build --platform linux/amd64,linux/arm64 --push --rm \
