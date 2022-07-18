@@ -98,7 +98,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	export IMAGE=$$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example)
 	export VERSION=$$(make docker-image-get-version)
 	make -s file-replace-variables FILE=$$dir/Dockerfile.effective
-	docker buildx create --platform linux/amd64,linux/arm64,linux/arm/v7 --use roaddistance-lambda
+	docker buildx create --platform linux/amd64,linux/arm64,linux/arm/v7 --use 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda
 	docker buildx build --rm \
 		--build-arg IMAGE=$$IMAGE \
 		--build-arg VERSION=$$VERSION \
