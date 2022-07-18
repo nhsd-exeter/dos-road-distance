@@ -98,7 +98,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	export IMAGE=$$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example)
 	export VERSION=$$(make docker-image-get-version)
 	make -s file-replace-variables FILE=$$dir/Dockerfile.effective
-	docker run -it --rm --privileged tonistiigi/binfmt --install all
+#	docker run -it --rm --privileged tonistiigi/binfmt --install all
 	docker buildx ls
 	docker buildx rm roaddistance-builder
 	docker buildx create --name roaddistance-builder --use
