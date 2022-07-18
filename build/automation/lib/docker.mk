@@ -131,6 +131,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	docker rmi --force $$(docker images | grep "<none>" | awk '{ print $$3 }') 2> /dev/null ||:
 	make docker-image-keep-latest-only NAME=$(NAME)
 	docker image inspect $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest --format='{{.Size}}'
+	docker run -it --rm --privileged tonistiigi/binfmt --install all
 
 docker-test: ### Test image - mandatory: NAME; optional: ARGS,CMD,GOSS_OPTS,EXAMPLE=true
 	dir=$$(make _docker-get-dir)

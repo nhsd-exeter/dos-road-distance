@@ -6,7 +6,7 @@ ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 COPY assets/ .
 COPY root/ /root/
 
-RUN docker run -it --rm --privileged tonistiigi/binfmt --install all
+RUN pip install --upgrade pip
 RUN /var/lang/bin/python3.9 -m pip install --upgrade pip
 RUN /var/lang/bin/pip install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN /var/lang/bin/pip install pytest
