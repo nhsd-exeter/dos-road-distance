@@ -120,7 +120,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
 		$$dir
 
-	docker buildx build --platform linux/arm/v8 --rm \
+	docker buildx build --platform linux/arm64 --rm \
 		--build-arg IMAGE=$$IMAGE \
 		--build-arg VERSION=$$VERSION \
 		--build-arg BUILD_ID=$(BUILD_ID) \
