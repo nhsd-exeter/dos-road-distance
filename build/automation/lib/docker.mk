@@ -100,6 +100,8 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	make -s file-replace-variables FILE=$$dir/Dockerfile.effective
 	docker buildx ls
 	docker buildx rm roaddistance-builder
+	docker buildx rm roaddistance-lambda
+	docker run --rm --privileged tonistiigi/binfmt --install all
 	docker buildx create --name roaddistance-builder --use
 	docker buildx inspect --bootstrap
 	docker buildx build --platform linux/amd64,linux/arm64 --push --rm \
@@ -123,6 +125,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 		--file $$dir/Dockerfile.effective \
 		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
 		$$dir
+	docker buildx rm roaddistance-builder
 
 	# Tag
 	docker tag \
@@ -131,7 +134,6 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	docker rmi --force $$(docker images | grep "<none>" | awk '{ print $$3 }') 2> /dev/null ||:
 	make docker-image-keep-latest-only NAME=$(NAME)
 	docker image inspect $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest --format='{{.Size}}'
-	docker run -it --rm --privileged tonistiigi/binfmt --install all
 
 docker-test: ### Test image - mandatory: NAME; optional: ARGS,CMD,GOSS_OPTS,EXAMPLE=true
 	dir=$$(make _docker-get-dir)
