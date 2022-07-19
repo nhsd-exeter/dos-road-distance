@@ -1,7 +1,7 @@
 pipeline {
   agent { label "jenkins-slave" }
   parameters {
-    choice(name: 'Mock', choices: ['True', 'False'], defaultValue: 'True',, description: 'Mock Enabled/Disabled?')
+    choice(name: 'Mock', choices: ['True', 'False'], defaultValue: 'True', description: 'Mock Enabled/Disabled?')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
