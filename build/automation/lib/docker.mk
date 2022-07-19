@@ -99,12 +99,13 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	export VERSION=$$(make docker-image-get-version)
 	make -s file-replace-variables FILE=$$dir/Dockerfile.effective
 	docker buildx ls
-#	docker run --rm --privileged tonistiigi/binfmt --install all
-	docker run --rm --privileged multiarch/qemu-user-static:register --reset
-	docker buildx rm roaddistance-builder 2>/dev/null
+	docker run --rm --privileged tonistiigi/binfmt --install all
+#	docker run --rm --privileged multiarch/qemu-user-static:register --reset
+	docker buildx rm roaddistance-builder 2>/dev/null ||:
 	docker buildx create --name roaddistance-builder --use
 	docker buildx inspect --bootstrap
-	docker buildx build --platform linux/amd64,linux/arm64 --push --rm \
+#	make docker-login
+	docker buildx build --platform linux/amd64 -t 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:amd64 --load --rm \
 		--build-arg IMAGE=$$IMAGE \
 		--build-arg VERSION=$$VERSION \
 		--build-arg BUILD_ID=$(BUILD_ID) \
@@ -124,15 +125,52 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 		$(BUILD_OPTS) $$cache_from \
 		--file $$dir/Dockerfile.effective \
 		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
+		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest \
 		$$dir
-	docker buildx rm roaddistance-builder
+	echo 'Completed amd64 build'
+	docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:amd64
 
-	# Tag
-	docker tag \
+	docker buildx build --platform linux/arm64 -t 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64 --load --rm \
+		--build-arg IMAGE=$$IMAGE \
+		--build-arg VERSION=$$VERSION \
+		--build-arg BUILD_ID=$(BUILD_ID) \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg BUILD_REPO=$(BUILD_REPO) \
+		--build-arg BUILD_BRANCH=$(BUILD_BRANCH) \
+		--build-arg BUILD_COMMIT_HASH=$(BUILD_COMMIT_HASH) \
+		--build-arg BUILD_COMMIT_DATE=$(BUILD_COMMIT_DATE) \
+		--label name=$$IMAGE \
+		--label version=$$VERSION \
+		--label build-id=$(BUILD_ID) \
+		--label build-date=$(BUILD_DATE) \
+		--label build-repo=$(BUILD_REPO) \
+		--label build-branch=$(BUILD_BRANCH) \
+		--label build-commit-hash=$(BUILD_COMMIT_HASH) \
+		--label build-commit-date=$(BUILD_COMMIT_DATE) \
+		$(BUILD_OPTS) $$cache_from \
+		--file $$dir/Dockerfile.effective \
+		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
+		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest \
+		$$dir
+	echo 'Completed arm64 build'
+	docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64
+
+	docker manifest create 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:latest \
+		730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:amd64 \
+		730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64
+	docker manifest push docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:latest
+
+#	docker buildx inspect --bootstrap
+#	docker buildx build --push -t uec-dos/rd/roaddistance-lambda .
+#	docker buildx rm roaddistance-builder
+
+
+
+#	docker tag \
 		$$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):$$(make docker-image-get-version) \
 		$$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest
-	docker rmi --force $$(docker images | grep "<none>" | awk '{ print $$3 }') 2> /dev/null ||:
-	make docker-image-keep-latest-only NAME=$(NAME)
+#	docker rmi --force $$(docker images | grep "<none>" | awk '{ print $$3 }') 2> /dev/null ||:
+#	make docker-image-keep-latest-only NAME=$(NAME)
 	docker image inspect $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest --format='{{.Size}}'
 
 docker-test: ### Test image - mandatory: NAME; optional: ARGS,CMD,GOSS_OPTS,EXAMPLE=true
