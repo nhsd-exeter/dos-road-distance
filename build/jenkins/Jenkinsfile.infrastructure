@@ -1,7 +1,12 @@
 pipeline {
   agent { label "jenkins-slave" }
   parameters {
-    choice(name: 'Mock', choices: ['True', 'False'], defaultValue: 'True', description: 'Mock Enabled/Disabled?')
+    booleanParam(
+        description: 'Mock Enabled/Disabled?',
+        name: 'Mock',
+        defaultValue: true
+    )
+//    choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -13,7 +18,7 @@ pipeline {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
     PROFILE = "nonprod"
     ENVIRONMENT = "nonprod"
-    TF_VAR_drd_mock = "${params.Mock}"
+    TF_VAR_drd_mock = ${params.Mock}?'True':'False'
   }
   triggers { pollSCM("* * * * *") }
   stages {
