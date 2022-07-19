@@ -128,7 +128,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest \
 		$$dir
 	echo 'Completed amd64 build'
-	docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:amd64
+#	docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:amd64
 
 	docker buildx build --platform linux/arm64 -t 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64 --load --rm \
 		--build-arg IMAGE=$$IMAGE \
@@ -153,12 +153,12 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 		--tag $$reg/$(NAME)$(shell [ -n "$(EXAMPLE)" ] && echo -example):latest \
 		$$dir
 	echo 'Completed arm64 build'
-	docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64
+#	docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64
 
-	docker manifest create 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:latest \
-		730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:amd64 \
-		730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64
-	docker manifest push docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:latest
+#	docker manifest create 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:latest \
+#		730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:amd64 \
+#		730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:arm64
+#	docker manifest push docker push 730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/roaddistance-lambda:latest
 
 #	docker buildx inspect --bootstrap
 #	docker buildx build --push -t uec-dos/rd/roaddistance-lambda .
