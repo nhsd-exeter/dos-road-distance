@@ -99,7 +99,7 @@ docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: V
 	export VERSION=$$(make docker-image-get-version)
 	make -s file-replace-variables FILE=$$dir/Dockerfile.effective
 	docker buildx ls
-#	docker buildx rm roaddistance-builder 2>/dev/null
+	docker buildx rm roaddistance-builder 2>/dev/null
 	docker run --rm --privileged tonistiigi/binfmt --install all
 #	docker run --rm --privileged multiarch/qemu-user-static:register --reset
 	docker buildx create --name roaddistance-builder --use
