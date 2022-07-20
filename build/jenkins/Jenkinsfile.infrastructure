@@ -1,8 +1,12 @@
 pipeline {
   agent { label "jenkins-slave" }
   parameters {
-    choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploy from a task branch?')
-    choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
+    booleanParam(
+        description: 'Mock Enabled/Disabled?',
+        name: 'Mock',
+        defaultValue: true
+    )
+//    choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -14,30 +18,16 @@ pipeline {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
     PROFILE = "nonprod"
     ENVIRONMENT = "nonprod"
-    TF_VAR_drd_mock = "${params.Mock}"
+    TF_VAR_drd_mock = "True"
   }
   triggers { pollSCM("* * * * *") }
   stages {
     stage("Show Configuration") {
-      when {
-        beforeAgent true
-        anyOf {
-          expression { params.DeployTask == "Yes" }
-          branch 'main'
-        }
-      }
       steps {
         script { sh "make show-configuration" }
       }
     }
     stage("Build App") {
-      when {
-        beforeAgent true
-        anyOf {
-          expression { params.DeployTask == "Yes" }
-          branch 'main'
-        }
-      }
       steps {
         script { sh "make build" }
         script { sh "make unit-test" }
@@ -45,36 +35,15 @@ pipeline {
       }
     }
     stage("Deploy") {
-      when {
-        beforeAgent true
-        anyOf {
-          expression { params.DeployTask == "Yes" }
-          branch 'main'
-        }
-      }
       steps {
         script { sh "make provision | tee /tmp/terraform_changes.txt" }
         script { sh "make lambda-alias" }
       }
     }
     stage("Test") {
-      when {
-        beforeAgent true
-        anyOf {
-          expression { params.DeployTask == "Yes" }
-          branch 'main'
-        }
-      }
       steps { sh "echo Running Tests..." }
     }
     stage("Deployment Summary") {
-      when {
-        beforeAgent true
-        anyOf {
-          expression { params.DeployTask == "Yes" }
-          branch 'main'
-        }
-      }
       steps {
         script {
           sh "make deployment-summary"
