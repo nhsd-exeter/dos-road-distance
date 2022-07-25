@@ -284,6 +284,7 @@ performance-deploy: # mandatory - PROFILE=[name], SECONDS=[time of performance]
 performance-delete: # mandatory - PROFILE=[name]
 	eval "$$(make aws-assume-role-export-variables)"
 	make k8s-undeploy AWS_ECR=$(AWS_LAMBDA_ECR)
+	make aws-ecr-untag NAME=performance TAG=$$(make docker-image-get-version NAME=performance) INCLUDE_LATEST=true
 
 performance-start: # mandatory - PROFILE=[name]
 	if [ $(PROFILE) != local ]; then

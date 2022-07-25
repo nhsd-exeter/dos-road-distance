@@ -1,11 +1,11 @@
-FROM python:3.8
+FROM python:3.10
 
-COPY assets/sbin /sbin
-RUN chmod -R 777 /sbin
+COPY assets/sbin/ /sbin/
+RUN chmod u+x /sbin/*.sh
 
 WORKDIR /opt
 RUN mkdir -p locust
-RUN apt-get update && apt-get install -y zip
+RUN apt-get update -y && apt-get install -y zip
 
 WORKDIR /opt/locust
 RUN mkdir -p results

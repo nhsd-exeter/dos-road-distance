@@ -67,7 +67,7 @@ docker-create-from-template: ### Create Docker image from template - mandatory: 
 docker-config: ### Configure Docker networking
 	docker network create $(DOCKER_NETWORK) 2> /dev/null ||:
 
-docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: VERSION,FROM_CACHE=true,BUILD_OPTS=[build options],EXAMPLE=true
+docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: VERSION,FROM_CACHE=false,BUILD_OPTS=[build options],EXAMPLE=false
 	reg=$$(make _docker-get-reg)
 	# Try to execute `make build` from the image directory
 	if [ -d $(DOCKER_LIB_IMAGE_DIR)/$(NAME) ] && [ -z "$(__DOCKER_BUILD)" ]; then
@@ -284,6 +284,9 @@ docker-image-keep-latest-only: ### Remove other images than latest - mandatory: 
 		docker images --filter=reference="$$reg/$(NAME):*" --quiet | \
 			grep -v $$(docker images --filter=reference="$$reg/$(NAME):latest" --quiet) \
 	) 2> /dev/null ||:
+
+docker-image-untag-remote: ### Untag (and remove if none) images in the ECR
+
 
 docker-image-start: ### Start container - mandatory: NAME; optional: CMD,DIR,ARGS=[Docker args],VARS_FILE=[Makefile vars file],EXAMPLE=true
 	reg=$$(make _docker-get-reg)

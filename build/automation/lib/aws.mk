@@ -324,6 +324,13 @@ aws-ecr-get-image-digest: ### Get ECR image digest by matching tag pattern - man
 			--repository-name $(shell echo $(REPO) | sed "s;$(AWS_ECR)/;;g") \
 	" | make -s docker-run-tools CMD="jq -rf $$file" | head -n 1
 
+aws-ecr-untag: ### Untag (and remove if none) images in the ECR - mandatory: NAME=[repository name],TAG=[string to match tag of an image] optional:INCLUDE_LATEST=[true,false]
+	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
+		$(AWSCLI) ecr batch-delete-image \
+			--repository-name $(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)/$(NAME) \
+			--image-ids $$(if [ "$(INCLUDE_LATEST)" = "true" ]; then echo imageTag=latest; fi) imageTag=$(TAG) \
+	"
+
 aws-ses-verify-email-identity: ### Verify SES email address - mandatory: NAME
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 		$(AWSCLI) ses verify-email-identity \
