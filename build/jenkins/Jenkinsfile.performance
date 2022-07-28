@@ -80,13 +80,7 @@ pipeline {
     }
   }
   post {
-    //unsuccessful {
-    //  script {
-    //    try { sh "make performance-delete" }
-    //    catch (Exception e) { echo 'Job not deleted' }
-    //  }
-    //}
     always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Performance)' BUILD_STATUS=${currentBuild.currentResult}" }
-    cleanup { sh "make clean" }
+    cleanup { sh "make clean && make performance-delete" }
   }
 }
