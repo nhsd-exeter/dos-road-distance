@@ -20,14 +20,7 @@ def authorize_api_request(event, context) -> dict:
             response = {"isAuthorized": True}
     except Exception as e:
         print("Authentication method failed with error: {}".format(e))
-        response = {
-            "isAuthorized": False,
-            "log_stream_name": context.log_stream_name,
-            "log_group_name": context.log_group_name,
-            "invoked_function_arn": context.invoked_function_arn,
-            "aws_request_id": context.aws_request_id,
-            "memory_limit_in_mb": context.memory_limit_in_mb
-        }
+        response = {"isAuthorized": False}
     print("Response: {}".format(response))
     return response
 
