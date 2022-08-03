@@ -10,7 +10,6 @@ logger: AuthLogger = AuthLogger()
 
 def authorize_api_request(event, context) -> dict:
     response: dict = {"isAuthorized": False}
-    print("Event: {}".format(event))
     logger.log("Event: {}".format(event))
     noauth = True if "x-noauth" in event["headers"].keys() else False
     if noauth:
@@ -20,7 +19,7 @@ def authorize_api_request(event, context) -> dict:
         if check_authorisation_token(event["headers"]["x-authorization"], noauth):
             response = {"isAuthorized": True}
     except Exception as e:
-        print("Authentication method failed with error [{}]: {}, Arguments: {}".format(type(e).__name__, e, e.args))
+        logger.log("Authentication method failed with error [{}]: {}, Arguments: {}".format(type(e).__name__, e, e.args))
     return response
 
 
