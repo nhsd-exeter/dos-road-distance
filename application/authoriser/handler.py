@@ -7,13 +7,12 @@ from authlogger import AuthLogger
 
 client = boto3.client("secretsmanager")
 logger: AuthLogger = AuthLogger()
-
+response: dict = {"isAuthorized": False}
 
 def authorize_api_request(event, context) -> dict:
     print("Event: {}".format(event))
     logger.log("Event: {}".format(event))
     noauth = True if "x-noauth" in event["headers"].keys() else False
-    response = {"isAuthorized": False}
     if noauth:
         logger.log("Noauth requested")
         response = {"isAuthorized": True}
