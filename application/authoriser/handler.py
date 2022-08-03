@@ -13,17 +13,16 @@ def authorize_api_request(event, context) -> dict:
     print("Event: {}".format(event))
     logger.log("Event: {}".format(event))
     noauth = True if "x-noauth" in event["headers"].keys() else False
+    response = {"isAuthorized": False}
     if noauth:
         logger.log("Noauth requested")
+        response = {"isAuthorized": True}
     try:
         if check_authorisation_token(event["headers"]["x-authorization"], noauth):
             response = {"isAuthorized": True}
     except Exception as e:
         print("Authentication method failed with error: {}".format(e))
-        response = {"isAuthorized": False}
-    print("Response: {}".format(response))
     return response
-
 
 def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", False):
