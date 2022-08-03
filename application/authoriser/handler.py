@@ -19,9 +19,11 @@ def authorize_api_request(event, context) -> dict:
     try:
         if check_authorisation_token(event["headers"]["x-authorization"], noauth):
             response = {"isAuthorized": True}
-    except Exception as e:
+        else:
+            logger.log("Authentication failed")
+    except Exception as ex:
         logger.log(
-            "Authentication method failed with error [{}]: {}, Arguments: {}".format(type(e).__name__, e, e.args)
+            "Authentication method failed with error [{}]: {}, Arguments: {}".format(type(ex).__name__, ex, ex.args)
         )
     return response
 
