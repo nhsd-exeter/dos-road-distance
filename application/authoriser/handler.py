@@ -7,6 +7,7 @@ from authlogger import AuthLogger
 
 logger: AuthLogger = AuthLogger()
 
+
 def authorize_api_request(event, context) -> dict:
     response: dict = {"isAuthorized": False}
     print("Event: {}".format(event))
