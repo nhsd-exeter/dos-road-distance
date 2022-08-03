@@ -10,6 +10,7 @@ logger: AuthLogger = AuthLogger()
 response: dict = {"isAuthorized": False}
 
 def authorize_api_request(event, context) -> dict:
+    global response
     print("Event: {}".format(event))
     logger.log("Event: {}".format(event))
     noauth = True if "x-noauth" in event["headers"].keys() else False
