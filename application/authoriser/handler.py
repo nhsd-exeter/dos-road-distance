@@ -3,6 +3,7 @@ import json
 import os
 import bcrypt
 import time
+import re
 from authlogger import AuthLogger
 
 logger: AuthLogger = AuthLogger()
@@ -19,7 +20,9 @@ def authorize_api_request(event, context) -> dict:
         if check_authorisation_token(event["headers"]["x-authorization"], noauth):
             response = {"isAuthorized": True}
     except Exception as e:
-        logger.log("Authentication method failed with error [{}]: {}, Arguments: {}".format(type(e).__name__, e, e.args))
+        logger.log(
+            "Authentication method failed with error [{}]: {}, Arguments: {}".format(type(e).__name__, e, e.args)
+        )
     return response
 
 
@@ -34,4 +37,4 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     secrets = json.loads(secrets_response["SecretString"])
     time_factor = str(int(time.time() / 1800))
     token = str(secrets["ROAD_DISTANCE_API_TOKEN"]) + time_factor
-    return bcrypt.checkpw(token.encode("utf-8"), token_hash_sent.encode("utf-8"))
+    return bcrypt.checkpw(token.encode("utf-8"), re.sub(r'^\$2y', '$2a', token_hash_sent).encode("utf-8"))
