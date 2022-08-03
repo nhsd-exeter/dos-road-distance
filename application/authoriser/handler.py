@@ -5,12 +5,10 @@ import bcrypt
 import time
 from authlogger import AuthLogger
 
-client = boto3.client("secretsmanager")
 logger: AuthLogger = AuthLogger()
-response: dict = {"isAuthorized": False}
 
 def authorize_api_request(event, context) -> dict:
-    global response
+    response: dict = {"isAuthorized": False}
     print("Event: {}".format(event))
     logger.log("Event: {}".format(event))
     noauth = True if "x-noauth" in event["headers"].keys() else False
@@ -26,6 +24,7 @@ def authorize_api_request(event, context) -> dict:
 
 
 def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
+    client = boto3.client("secretsmanager")
     if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", False):
         logger.log("Noauth actioned as allowed")
         return True
