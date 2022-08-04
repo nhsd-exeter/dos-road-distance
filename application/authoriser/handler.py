@@ -34,7 +34,7 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
         logger.log("Noauth actioned as allowed")
         return True
     if(not re.match(r'\$2[aby]', token_hash_sent)):
-        logger.log("Sent token has not been salted")
+        logger.log("Invalid token hash sent")
         return False
     secrets_response = client.get_secret_value(
         SecretId=os.environ["SECRET_STORE"],
