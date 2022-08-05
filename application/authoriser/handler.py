@@ -33,7 +33,7 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", False):
         logger.log("Noauth actioned as allowed")
         return True
-    if(not re.match(r'\$2[aby]', token_hash_sent)):
+    if not re.match(r"\$2[aby]", token_hash_sent):
         logger.log("Invalid token hash sent")
         return False
     secrets_response = client.get_secret_value(
