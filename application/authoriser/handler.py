@@ -19,10 +19,9 @@ def authorize_api_request(event, context) -> dict:
         else:
             logger.log_error("Authentication failed", "Invalid token hash sent")
     except Exception as ex:
-        logger.log_exception_error(str(type(ex).__name__),
-            "Authentication method failed with error",
-            str(ex.args),
-            str(ex))
+        logger.log_exception_error(
+            str(type(ex).__name__), "Authentication method failed with error", str(ex.args), str(ex)
+        )
     return response
 
 
@@ -34,7 +33,7 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     if not re.match(r"\$2[aby]", token_hash_sent):
         return False
     secrets_response = client.get_secret_value(
-        SecretId=os.environ["SECRET_STORE_XXX"],
+        SecretId=os.environ["SECRET_STORE"],
     )
     secrets = json.loads(secrets_response["SecretString"])
     time_factor = str(int(time.time() / 1800))
