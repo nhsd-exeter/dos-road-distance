@@ -13,16 +13,16 @@ def authorize_api_request(event, context) -> dict:
     response: dict = {"isAuthorized": False}
     logger.log_info("Event: {}".format(event))
     noauth = True if "x-noauth" in event["headers"].keys() else False
-    if noauth:
-        logger.log_info("Noauth requested")
-        response = {"isAuthorized": True}
     try:
         if check_authorisation_token(event["headers"]["x-authorization"], noauth):
             response = {"isAuthorized": True}
         else:
             logger.log_error("Authentication failed", "Invalid token hash sent")
     except Exception as ex:
-        logger.log_exception_error(type(ex).__name__, "Authentication method failed with error", ex.args, ex)
+        logger.log_exception_error(str(type(ex).__name__),
+            "Authentication method failed with error",
+            str(ex.args),
+            str(ex))
     return response
 
 
