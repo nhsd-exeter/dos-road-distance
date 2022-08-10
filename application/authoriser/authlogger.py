@@ -37,6 +37,6 @@ class AuthLogger:
         log_message = "|auth_error|failed|error=" + error + "|data=" + data
         self.log(log_message, "error")
 
-    def log_exception_error(self, type: str, error: str, args: str, data: str = ""):
+    def log_exception_error(self, type: str, error: str, args: str, data: str):
         log_message = "|auth_exception|failed|type=" + str(type) + "|error=" + error + "|args=" + args + "|data=" + data
         self.log(log_message, "error")
