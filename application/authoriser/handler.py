@@ -11,19 +11,16 @@ logger: AuthLogger = AuthLogger()
 
 def authorize_api_request(event, context) -> dict:
     response: dict = {"isAuthorized": False}
-    logger.log("Event: {}".format(event))
+    logger.log_info("Event: {}".format(event))
     noauth = True if "x-noauth" in event["headers"].keys() else False
-    if noauth:
-        logger.log("Noauth requested")
-        response = {"isAuthorized": True}
     try:
         if check_authorisation_token(event["headers"]["x-authorization"], noauth):
             response = {"isAuthorized": True}
         else:
-            logger.log("Authentication failed")
+            logger.log_error("Authentication failed", "Invalid token hash sent")
     except Exception as ex:
-        logger.log(
-            "Authentication method failed with error [{}]: {}, Arguments: {}".format(type(ex).__name__, ex, ex.args)
+        logger.log_exception_error(
+            str(type(ex).__name__), "Authentication method failed with error", str(ex.args), str(ex)
         )
     return response
 
@@ -31,7 +28,7 @@ def authorize_api_request(event, context) -> dict:
 def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     client = boto3.client("secretsmanager")
     if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", False):
-        logger.log("Noauth actioned as allowed")
+        logger.log_info("Noauth actioned as allowed")
         return True
     if not re.match(r"\$2[aby]", token_hash_sent):
         logger.log("Invalid token hash sent")
