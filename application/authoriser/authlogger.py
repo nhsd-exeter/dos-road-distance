@@ -29,3 +29,14 @@ class AuthLogger:
             self.logger.info(log_message)
         elif levelname == "error":
             self.logger.error(log_message)
+
+    def log_info(self, log_message: str):
+        self.log(log_message, "info")
+
+    def log_error(self, error: str, data: str = ""):
+        log_message = "|auth_error|failed|error=" + error + "|data=" + data
+        self.log(log_message, "error")
+
+    def log_exception_error(self, type: str, error: str, args: str, data: str):
+        log_message = "|auth_exception|failed|type=" + str(type) + "|error=" + error + "|args=" + args + "|data=" + data
+        self.log(log_message, "error")
