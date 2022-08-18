@@ -23,15 +23,6 @@ resource "aws_iam_role" "iam_host_role" {
 EOF
 }
 
-resource "aws_lambda_function" "auth_lambda" {
-  environment {
-    variables = {
-      "DRD_ALLOW_NO_AUTH" = "True"
-    }
-  }
-
-}
-
 resource "aws_iam_role_policy" "iam_role_policy" {
   name   = "${var.service_prefix}-performance-role-policy"
   role   = aws_iam_role.iam_host_role.id
