@@ -27,6 +27,10 @@ def authorize_api_request(event, context) -> dict:
 
 def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     client = boto3.client("secretsmanager")
+
+    logger.log_info("NOAUTH VALUE: " + str(noauth))
+    logger.log_info("DRD_ALLOW_NOAUTH VALUE: " + str(os.environ.get("DRD_ALLOW_NO_AUTH")))
+
     if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", "False") == "True":
         logger.log_info("Noauth actioned as allowed")
         return True
