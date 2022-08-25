@@ -27,7 +27,7 @@ def authorize_api_request(event, context) -> dict:
 
 def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     client = boto3.client("secretsmanager")
-    if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", False):
+    if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", "False") == "True":
         logger.log_info("Noauth actioned as allowed")
         return True
     if not re.match(r"^\$2[by]\$(0[4-9]|1[012])\$[.\/0-9A-Za-z]{21}[.Oeu][.\/0-9A-Za-z]{31}$", token_hash_sent):

@@ -711,6 +711,7 @@ docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: S
 			--env DRD_ENDPOINT="http://localhost:9000/2015-03-31/functions/function/invocations" \
       --env DRD_BASICAUTH="" \
       --env DRD_MOCK_MODE="True" \
+			--env DRD_ALLOW_NO_AUTH="True" \
 			--volume $(PROJECT_DIR):/project \
 			--volume $(HOME)/.aws:/tmp/.aws \
 			--volume $(HOME)/bin:/tmp/bin \

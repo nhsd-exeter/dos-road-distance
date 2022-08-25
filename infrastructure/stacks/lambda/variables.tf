@@ -66,6 +66,10 @@ variable "drd_mock" {
   description = "Mock mode enabled/disabled"
 }
 
+variable "drd_allow_no_auth" {
+  description = "No auth enabled/disabled"
+}
+
 variable "deployment_secrets" {
   description = "Deployment Secret Store"
 }
