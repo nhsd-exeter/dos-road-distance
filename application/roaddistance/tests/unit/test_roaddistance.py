@@ -49,17 +49,6 @@ class TestRoadDistance(Common):
         self.__setup(json_content)
         response = self.road_distance.process_request()
         assert response["status"] == 200
-        compare = (
-            "|"
-            + self.road_distance.request_id
-            + "|"
-            + json_content["transactionid"]
-            + "|road_distance|ccsrequest|"
-            + str(json_content)
-        )
-        result = self.road_distance.logger.read_log_output().find(compare)
-        print("result: " + str(result))
-        assert result is not -1
 
     @pytest.mark.skipif(mock_mode == "True", reason="requires DRD_MOCK_MODE to be not True")
     def test_protobuf_error_responses_handled(self):
