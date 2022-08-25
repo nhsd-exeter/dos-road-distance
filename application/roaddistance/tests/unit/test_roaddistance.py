@@ -46,21 +46,9 @@ class TestRoadDistance(Common):
 
     def test_valid_request(self):
         json_content: dict = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
-        json_content_suppressed: dict = self.__fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY_SUPPRESSED)
         self.__setup(json_content)
         response = self.road_distance.process_request()
         assert response["status"] == 200
-        compare = (
-            "|"
-            + self.road_distance.request_id
-            + "|"
-            + json_content["transactionid"]
-            + "|road_distance|ccsrequest|"
-            + str(json_content_suppressed)
-        )
-        result = self.road_distance.logger.read_log_output().find(compare)
-        print("result: " + str(result))
-        assert result is not -1
 
     @pytest.mark.skipif(mock_mode == "True", reason="requires DRD_MOCK_MODE to be not True")
     def test_protobuf_error_responses_handled(self):
