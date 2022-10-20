@@ -11,6 +11,8 @@
     rdlogger.log_provider_success("1000001", "no", 1000)
     rdlogger.log_provider_success("1000001", "yes")
     rdlogger.log_provider_error("422", "there was an error", <data>)
+
+    See README for more information including log output formats
 """
 import logging
 import os
