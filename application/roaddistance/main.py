@@ -121,8 +121,10 @@ class RoadDistance(Common):
 
     def send_request(self, request: bytes):
         endpoint = os.environ.get("DRD_ENDPOINT")
-        basic_auth = os.environ.get("DRD_BASICAUTH")
         mock_mode = os.environ.get("DRD_MOCK_MODE")
+
+        drd_app_id = os.environ.get("DRD_APP_ID")
+        drd_api_key = os.environ.get("DRD_API_KEY")
 
         tt_request_start = time.time()
 
@@ -141,8 +143,8 @@ class RoadDistance(Common):
             r = requests.post(
                 url=endpoint,
                 data=request,
+                auth={drd_app_id, drd_api_key},
                 headers={
-                    "Authorization": basic_auth,
                     "Content-type": "application/octet-stream",
                     "Accept": "application/octet-stream",
                 },
