@@ -57,6 +57,13 @@ variable "aws_lambda_ecr" {
 variable "drd_basicauth" {
   description = "Auth token for DRD"
 }
+variable "drd_app_id" {
+  description = "Application id for DRD Travel Time"
+}
+
+variable "drd_api_key" {
+  description = "API key for DRD Travel Time"
+}
 
 variable "drd_endpoint" {
   description = "Endpoint for DRD"
