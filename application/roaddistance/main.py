@@ -125,6 +125,9 @@ class RoadDistance(Common):
         drd_app_id = os.environ.get("DRD_APP_ID")
         drd_api_key = os.environ.get("DRD_API_KEY")
 
+        self.logger.log("DRD_APP_ID: " + drd_app_id)
+        self.logger.log("DRD_API_KEY: " + drd_api_key)
+
         tt_request_start = time.time()
 
         if mock_mode == "True":
