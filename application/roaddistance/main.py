@@ -139,6 +139,12 @@ class RoadDistance(Common):
                 )
             self.logger.log(r.status_message + "; delay added: " + str(r.delay))
         else:
+            if drd_app_id is None or len(drd_app_id) < 1:
+                self.logger.log("DRD_APP_ID was not set")
+
+            if drd_api_key is None or len(drd_api_key) < 1:
+                self.logger.log("DRD_API_KEY was not set")
+
             r = requests.post(
                 url=endpoint,
                 data=request,
