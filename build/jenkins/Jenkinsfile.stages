@@ -1,7 +1,7 @@
 pipeline {
   agent { label "jenkins-slave" }
   parameters {
-    choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'regression'], description: 'Environment of the Stage to deploy')
+    choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'performance2', 'regression'], description: 'Environment of the Stage to deploy')
     string(name: 'LAMBDA_VERSION', defaultValue: '1', description:  'Version or alias of the RD Lambda for stage to point at')
   }
   options {
