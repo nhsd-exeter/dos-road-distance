@@ -36,7 +36,7 @@ class TravelTimeMock(Common):
         "c50904c9-18a4-49f0-811e-d63f7ea84900": [config.MOCK_REQUEST_3000_BIN, 3000],
         "valid_ccs_search": [config.MOCK_REQUEST_VALID_CCS_REQUEST_BIN, 3000],
         "all_destinations_unreachable": [config.MOCK_REQUEST_ALL_DESTINATIONS_UNREACHABLE, 3000],
-        "gp_position_unchanged": [config.MOCK_REQUEST_GP_POSITION_UNCHANGED, 500],
+        "gp_position_unchanged": [config.MOCK_REQUEST_500_BIN, 500],
     }
     error_by_transaction_id = {
         "error500_invalid_grid_reference": config.MOCK_REQUEST_ERROR500_INVALID_GRID_REFERENCE,
