@@ -8,4 +8,8 @@ requests==2.31.0
 requests==2.28.0
 >>>>>>> ae110b1 (DS-804 Update pyyaml version)
 coverage==6.4.1
+<<<<<<< HEAD
 numpy==1.25.2
+=======
+boto3==1.21.9
+>>>>>>> 56998fb (DS-804 Add boto3 to tester)
