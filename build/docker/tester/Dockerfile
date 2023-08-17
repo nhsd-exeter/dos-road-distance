@@ -12,4 +12,4 @@ RUN set -eux && \
 
 COPY assets/requirements.txt /
 
-RUN python -m pip install -r /requirements.txt
+RUN python -m pip install -r /requirements.txt --upgrade --extra-index-url
