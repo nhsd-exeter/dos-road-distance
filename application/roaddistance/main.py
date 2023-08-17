@@ -1,6 +1,7 @@
 import os
 import json
 import uuid
+import boto3
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError, SchemaError
 from rdlogger import RDLogger
@@ -120,20 +121,20 @@ class RoadDistance(Common):
             return None
 
     def send_request(self, request: bytes):
-    if(os.environ.get("DRD_USEENV") == "true"):
-        endpoint = os.environ.get("DRD_ENDPOINT")
-        mock_mode = os.environ.get("DRD_MOCK_MODE")
-        drd_app_id = os.environ.get("DRD_APP_ID")
-        drd_api_key = os.environ.get("DRD_API_KEY")
-    else :
-        client = boto3.client("secretsmanager")
-        secrets_response = client.get_secret_value(
-            SecretId=os.environ["SECRET_STORE"],
-        )
-        secrets = json.loads(secrets_response["SecretString"])
-        endpoint = str(secrets["DRD_ENDPOINT"])
-        drd_app_id = str(secrets["DRD_APP_ID"])
-        drd_api_key = str(secrets["DRD_API_KEY"])
+        if os.environ.get("DRD_USEENV") == "true":
+            endpoint = os.environ.get("DRD_ENDPOINT")
+            mock_mode = os.environ.get("DRD_MOCK_MODE")
+            drd_app_id = os.environ.get("DRD_APP_ID")
+            drd_api_key = os.environ.get("DRD_API_KEY")
+        else:
+            client = boto3.client("secretsmanager")
+            secrets_response = client.get_secret_value(
+                SecretId=os.environ["SECRET_STORE"],
+            )
+            secrets = json.loads(secrets_response["SecretString"])
+            endpoint = str(secrets["DRD_ENDPOINT"])
+            drd_app_id = str(secrets["DRD_APP_ID"])
+            drd_api_key = str(secrets["DRD_API_KEY"])
 
         tt_request_start = time.time()
 
