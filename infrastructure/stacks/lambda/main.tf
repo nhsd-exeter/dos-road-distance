@@ -12,9 +12,7 @@ resource "aws_lambda_function" "road_distance_lambda" {
   }
   environment {
     variables = {
-      "DRD_APP_ID"    = var.drd_app_id
-      "DRD_API_KEY"   = var.drd_api_key
-      "DRD_ENDPOINT"  = var.drd_endpoint
+      "SECRET_STORE"  = var.deployment_secrets
       "DRD_MOCK_MODE" = var.drd_mock
     }
   }
