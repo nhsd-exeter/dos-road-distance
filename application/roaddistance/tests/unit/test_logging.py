@@ -153,11 +153,11 @@ class TestLogging(Common):
         compare = "{}|".format(self.STR_LOG_CCSREQUEST) + json_content
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
         compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
 
     def test_content_raw_provider_request(self):
         rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
@@ -168,11 +168,11 @@ class TestLogging(Common):
         compare = "{}|".format(self.STR_LOG_PROVIDERREQUEST) + json_content
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
         compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
 
     def test_content_raw_provider_response(self):
         rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
@@ -183,11 +183,11 @@ class TestLogging(Common):
         compare = "{}|".format(self.STR_LOG_PROVIDERRESPONSE) + json_content
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
         compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
 
     def test_content_provider_response_success_per_destination(self):
         rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
@@ -198,7 +198,7 @@ class TestLogging(Common):
         )
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
         rdlogger.purge()
         rdlogger.log_provider_success("1000001", "no", 1000)
         compare = "{}|success|reference=1000001|unreachable=no|distance=1000|km=1.0|miles=0.6".format(
@@ -206,11 +206,11 @@ class TestLogging(Common):
         )
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
         compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
 
     def test_content_provider_failure(self):
         rdlogger = RDLogger("Test", self.request_id, self.transaction_id)
@@ -224,11 +224,11 @@ class TestLogging(Common):
         )
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
         compare = "{}|".format(self.STR_LOG_LAMBDA) + self.request_id + "|" + self.transaction_id + "|"
         result = rdlogger.read_log_output().find(compare)
         print(result)
-        assert result is not -1
+        assert result != -1
 
     def test_invalid_log_name_raises_value_error(self):
         with pytest.raises(ValueError):
