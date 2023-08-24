@@ -1,7 +1,7 @@
 import os
-import config as config
+import config
 from common import Common
-import handler as handler
+import handler
 
 
 class TestHandler(Common):
@@ -17,6 +17,9 @@ class TestHandler(Common):
         "log_group_name": "Test Group",
         "log_stream_name": "Test Stream",
     }
+
+    def __index__(self):
+        return 1
 
     def test_valid_ccs_request(self):
         self.purge_test_logs()

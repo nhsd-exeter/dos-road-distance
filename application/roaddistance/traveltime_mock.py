@@ -2,11 +2,11 @@
 Provides mock responses in protobuf format using pre-existing files for requests and responses.
 The files are specified by transaction ID
 """
-from common import Common
-import config
 from time import sleep
-from random import randrange
 from bisect import bisect_left
+from common import Common
+import numpy as np
+import config
 
 
 class TravelTimeMock(Common):
@@ -89,7 +89,9 @@ class TravelTimeMock(Common):
             self.content = super().fetch_mock_proto_bin(self.response_path + self.files_by_count[5])
             service_count = 5
 
-        self.delay = randrange(self.server_delay[service_count]["min"], self.server_delay[service_count]["max"]) / 1000
+        self.delay = (
+            np.random.randint(self.server_delay[service_count]["min"], self.server_delay[service_count]["max"]) / 1000
+        )
         sleep(self.delay)
 
         return self

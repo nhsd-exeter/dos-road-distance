@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import boto3
+from os import path
+import numpy as np
 import datetime
 import getpass
-import random
 from configparser import ConfigParser
-from os import path
+import boto3
 
 SESSION_DURATION = 3600
 
@@ -24,7 +24,7 @@ def role_arn_to_session(aws_profile):
     config.read([path.join(path.expanduser("~"), ".aws/config")])
     role_arn = config.get("profile {aws_profile}".format(aws_profile=aws_profile), "role_arn")
     mfa_serial = config.get("profile {aws_profile}".format(aws_profile=aws_profile), "mfa_serial")
-    mfa_user = mfa_serial.split("/")[1] + "_" + str(random.randrange(1000, 9999))
+    mfa_user = mfa_serial.split("/")[1] + "_" + str(np.random.randint(1000, 9999))
     client = boto3.client("sts")
     response = client.assume_role(
         RoleArn=role_arn,

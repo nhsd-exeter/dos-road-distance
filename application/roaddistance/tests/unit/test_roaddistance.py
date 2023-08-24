@@ -24,7 +24,7 @@ class TestRoadDistance(Common):
         assert result["status"] == 500
         compare = "Unable to open file openapi_schemas/json/some_unknown_contract"
         log = self.road_distance.logger.read_log_output().find(compare)
-        assert log is not -1
+        assert log != -1
 
     def test_fetch_coords_successful(self):
         self.__setup()
@@ -66,7 +66,7 @@ class TestRoadDistance(Common):
         )
         print(compare)
         result = self.road_distance.logger.read_log_output().find(compare)
-        assert result is not -1
+        assert result != -1
 
     def test_process_ccs_response_success(self):
         self.road_distance.status_code = 200
