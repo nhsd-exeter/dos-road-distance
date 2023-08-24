@@ -25,3 +25,4 @@ urllib3==1.26.7
 Werkzeug==2.3.3
 zope.event==4.5.0
 zope.interface==5.4.0
+numpy==1.25.2
