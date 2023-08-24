@@ -8,6 +8,7 @@ from common import Common
 import numpy as np
 import config
 
+
 class TravelTimeMock(Common):
     request_path = "requests/"
     response_path = "responses/"
@@ -88,7 +89,9 @@ class TravelTimeMock(Common):
             self.content = super().fetch_mock_proto_bin(self.response_path + self.files_by_count[5])
             service_count = 5
 
-        self.delay = np.random.randint(self.server_delay[service_count]["min"], self.server_delay[service_count]["max"]) / 1000
+        self.delay = (
+            np.random.randint(self.server_delay[service_count]["min"], self.server_delay[service_count]["max"]) / 1000
+        )
         sleep(self.delay)
 
         return self
