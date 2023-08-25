@@ -12,8 +12,8 @@ resource "aws_lambda_function" "road_distance_lambda" {
   }
   environment {
     variables = {
-      "SECRET_STORE"  = var.deployment_secrets
-      "DRD_MOCK_MODE" = var.drd_mock
+      "SECRET_STORE"  = "${var.deployment_secrets}"
+      "DRD_MOCK_MODE" = "${var.drd_mock}"
     }
   }
   depends_on = [
@@ -98,8 +98,8 @@ resource "aws_lambda_function" "auth_lambda" {
   }
   environment {
     variables = {
-      "SECRET_STORE"      = var.deployment_secrets
-      "DRD_ALLOW_NO_AUTH" = var.drd_allow_no_auth
+      "SECRET_STORE"      = "${var.deployment_secrets}"
+      "DRD_ALLOW_NO_AUTH" = "${var.drd_allow_no_auth}"
     }
   }
   depends_on = [
