@@ -145,10 +145,10 @@ class RoadDistance(Common):
             drd_app_id = str(secrets["DRD_APP_ID"])
             drd_api_key = str(secrets["DRD_API_KEY"])
 
-            if drd_app_id is None or len(drd_app_id) < 1:
+            if drd_app_id == "":
                 self.logger.log("DRD_APP_ID was not set")
 
-            if drd_api_key is None or len(drd_api_key) < 1:
+            if drd_api_key == "":
                 self.logger.log("DRD_API_KEY was not set")
 
             r = requests.post(
