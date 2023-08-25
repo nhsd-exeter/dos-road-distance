@@ -66,6 +66,18 @@ resource "aws_iam_role_policy" "road_distance_lambda_role_policy" {
     {
       "Effect": "Allow",
       "Action": [
+        "secretsmanager:Describe*",
+        "secretsmanager:Get*",
+        "secretsmanager:List*"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:${var.project_group_short}*",
+        "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:core-dos*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "xray:PutTraceSegments",
         "xray:PutTelemetryRecords",
         "xray:GetSamplingRules",
