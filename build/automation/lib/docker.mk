@@ -737,6 +737,7 @@ docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: S
 			--env PYTHONPATH=/tmp/.packages \
 			--env XDG_CACHE_HOME=/tmp/.cache \
 			--env DRD_ENDPOINT="http://localhost:9000/2015-03-31/functions/function/invocations" \
+			--env DRD_USEENV="True" \
       --env DRD_BASICAUTH="" \
       --env DRD_MOCK_MODE="True" \
 			--volume $(PROJECT_DIR):/project \
