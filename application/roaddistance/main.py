@@ -121,23 +121,7 @@ class RoadDistance(Common):
             return None
 
     def send_request(self, request: bytes):
-        if os.environ.get("DRD_USEENV") == "True":
-            self.logger.log("LOCAL ENV MODE ENABLED")
-            endpoint = os.environ.get("DRD_ENDPOINT")
-            drd_app_id = os.environ.get("DRD_APP_ID")
-            drd_api_key = os.environ.get("DRD_API_KEY")
-        else:
-            self.logger.log("S3 ENV MODE ENABLED")
-            client = boto3.client("secretsmanager")
-            secrets_response = client.get_secret_value(
-                SecretId=os.environ["SECRET_STORE"],
-            )
-            secrets = json.loads(secrets_response["SecretString"])
-            endpoint = str(secrets["DRD_ENDPOINT"])
-            drd_app_id = str(secrets["DRD_APP_ID"])
-            drd_api_key = str(secrets["DRD_API_KEY"])
         mock_mode = os.environ.get("DRD_MOCK_MODE")
-
         tt_request_start = time.time()
 
         if mock_mode == "True":
@@ -152,6 +136,15 @@ class RoadDistance(Common):
                 )
             self.logger.log(r.status_message + "; delay added: " + str(r.delay))
         else:
+            client = boto3.client("secretsmanager")
+            secrets_response = client.get_secret_value(
+                SecretId=os.environ["SECRET_STORE"],
+            )
+            secrets = json.loads(secrets_response["SecretString"])
+            endpoint = str(secrets["DRD_ENDPOINT"])
+            drd_app_id = str(secrets["DRD_APP_ID"])
+            drd_api_key = str(secrets["DRD_API_KEY"])
+
             if drd_app_id is None or len(drd_app_id) < 1:
                 self.logger.log("DRD_APP_ID was not set")
 

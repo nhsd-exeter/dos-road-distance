@@ -9,7 +9,6 @@ services:
       DRD_ENDPOINT: "http://localhost:9000/2015-03-31/functions/function/invocations"
       DRD_BASICAUTH: ""
       DRD_MOCK_MODE: "True"
-      DRD_USEENV: "True"
     ports:
       - 9000:8080
     volumes:
