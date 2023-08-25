@@ -66,5 +66,5 @@ class TestHandler(Common):
         if os.path.isfile(self.log_path):
             os.remove(self.log_path)
 
-    def fetch_json(self, file_name: str) -> str:
+    def fetch_json(self, file_name: str) -> dict:
         return super().fetch_test_json(file_name)
