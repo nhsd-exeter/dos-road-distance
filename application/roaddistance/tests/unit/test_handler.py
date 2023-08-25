@@ -18,9 +18,6 @@ class TestHandler(Common):
         "log_stream_name": "Test Stream",
     }
 
-    def __index__(self):
-        return 1
-
     def test_valid_ccs_request(self):
         self.purge_test_logs()
         request = self.fetch_json(config.JSON_DOS_ROAD_DISTANCE_HAPPY)
