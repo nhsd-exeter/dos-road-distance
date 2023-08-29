@@ -91,13 +91,11 @@ local-unit-test: # Run unit tests, add NAME="xxx" or NAME="xxx or yyy" to run sp
 		echo "Running local unit test without test file"
 		make docker-run-tools DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
 			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
-				--env DRD_MOCK_MODE=True" \
 			CMD="pip install -r requirements.txt; python -m pytest"
 	else
 		echo "Running local unit test with test file $(TEST_FILE)"
 		make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/roaddistance) \
 			ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/roaddistance \
-				--env DRD_MOCK_MODE=True" \
 			CMD="pip install -r requirements.txt; python -m pytest -rA -q tests/unit/$(TEST_FILE) -k '$(NAME)'"
 	fi
 

@@ -5,3 +5,4 @@ pyyaml==6.0.1
 requests==2.31.0
 coverage==6.4.1
 numpy==1.25.2
+boto3==1.21.9

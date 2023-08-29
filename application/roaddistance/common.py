@@ -16,18 +16,18 @@ class Common:
             print("Exception: Unable to open file " + file_name + ". {0}".format(ex))
             raise ex
 
-    def fetch_test_json(self, file_name: str):
+    def fetch_test_json(self, file_name: str) -> dict:
         json_file = self.fetch_file(config.PATH_TEST_JSON, file_name)
         return json.loads(json_file)
 
-    def fetch_test_proto(self, file_name: str):
+    def fetch_test_proto(self, file_name: str) -> dict:
         return self.fetch_file(config.PATH_TEST_PROTO, file_name)
 
-    def fetch_test_proto_bin(self, file_name: str):
+    def fetch_test_proto_bin(self, file_name: str) -> dict:
         return self.fetch_file(config.PATH_TEST_PROTO, file_name, True)
 
-    def fetch_mock_proto(self, file_name: str):
+    def fetch_mock_proto(self, file_name: str) -> dict:
         return self.fetch_file(config.PATH_MOCK_PROTO, file_name)
 
-    def fetch_mock_proto_bin(self, file_name: str):
+    def fetch_mock_proto_bin(self, file_name: str) -> dict:
         return self.fetch_file(config.PATH_MOCK_PROTO, file_name, True)

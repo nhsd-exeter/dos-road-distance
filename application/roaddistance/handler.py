@@ -9,14 +9,14 @@ def process_road_distance_request(event, context):
             event = json.loads(event["body"])
         road_distance = RoadDistance(event)
         body = road_distance.process_request()
-    except JSONDecodeError as e:
+    except JSONDecodeError as ex:
         status_code = 500
-        body = {"status": status_code, "message": repr(e)}
-    except Exception as e:
+        body = {"status": status_code, "message": repr(ex)}
+    except Exception as ex:
         status_code = 502
         body = {
             "status": status_code,
-            "message": repr(e),
+            "message": repr(ex),
             "log_stream_name": context.get("log_stream_name", ""),
             "log_group_name": context.get("log_group_name", ""),
             "invoked_function_arn": context.get("invoked_function_arn", ""),

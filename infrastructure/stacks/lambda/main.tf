@@ -12,10 +12,8 @@ resource "aws_lambda_function" "road_distance_lambda" {
   }
   environment {
     variables = {
-      "DRD_APP_ID"    = var.drd_app_id
-      "DRD_API_KEY"   = var.drd_api_key
-      "DRD_ENDPOINT"  = var.drd_endpoint
-      "DRD_MOCK_MODE" = var.drd_mock
+      "SECRET_STORE"  = "${var.deployment_secrets}"
+      "DRD_MOCK_MODE" = "${var.drd_mock}"
     }
   }
   depends_on = [
@@ -68,6 +66,18 @@ resource "aws_iam_role_policy" "road_distance_lambda_role_policy" {
     {
       "Effect": "Allow",
       "Action": [
+        "secretsmanager:Describe*",
+        "secretsmanager:Get*",
+        "secretsmanager:List*"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:${var.project_group_short}*",
+        "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:core-dos*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
         "xray:PutTraceSegments",
         "xray:PutTelemetryRecords",
         "xray:GetSamplingRules",
@@ -100,8 +110,8 @@ resource "aws_lambda_function" "auth_lambda" {
   }
   environment {
     variables = {
-      "SECRET_STORE"      = var.deployment_secrets
-      "DRD_ALLOW_NO_AUTH" = var.drd_allow_no_auth
+      "SECRET_STORE"      = "${var.deployment_secrets}"
+      "DRD_ALLOW_NO_AUTH" = "${var.drd_allow_no_auth}"
     }
   }
   depends_on = [

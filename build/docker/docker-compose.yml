@@ -6,8 +6,6 @@ services:
     container_name: roaddistance-lambda
     hostname: roaddistance-lambda
     environment:
-      DRD_ENDPOINT: "http://localhost:9000/2015-03-31/functions/function/invocations"
-      DRD_BASICAUTH: ""
       DRD_MOCK_MODE: "True"
     ports:
       - 9000:8080
