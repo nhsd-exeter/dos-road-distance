@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  lambda:
+  roaddistance-lambda:
     image: $AWS_LAMBDA_ECR/$PROJECT_GROUP_SHORT/$PROJECT_NAME_SHORT/roaddistance-lambda:latest
     container_name: roaddistance-lambda
     hostname: roaddistance-lambda
@@ -13,6 +13,16 @@ services:
       - $APPLICATION_DIR/roaddistance/tests:/var/task/tests
       - $APPLICATION_DIR/roaddistance:/var/task/application
       - $APPLICATION_DIR/roaddistance/mock:/var/task/mock
+
+  authoriser-lambda:
+    image: $AWS_LAMBDA_ECR/$PROJECT_GROUP_SHORT/$PROJECT_NAME_SHORT/authoriser-lambda:latest
+    container_name: authoriser-lambda
+    hostname: authoriser-lambda
+    environment:
+      DRD_MOCK_MODE: "True"
+    volumes:
+      - $APPLICATION_DIR/roaddistance/tests:/var/task/tests
+      - $APPLICATION_DIR/authoriser-lambda:/var/task/application
 
 networks:
   default:
