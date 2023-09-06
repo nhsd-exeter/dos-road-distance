@@ -18,8 +18,6 @@ services:
     image: $AWS_LAMBDA_ECR/$PROJECT_GROUP_SHORT/$PROJECT_NAME_SHORT/authoriser-lambda:latest
     container_name: authoriser-lambda
     hostname: authoriser-lambda
-    environment:
-      DRD_MOCK_MODE: "True"
     volumes:
       - $APPLICATION_DIR/roaddistance/tests:/var/task/tests
       - $APPLICATION_DIR/authoriser-lambda:/var/task/application
