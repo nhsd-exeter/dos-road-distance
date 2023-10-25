@@ -1,7 +1,8 @@
 import os
 import handler
 
-class TestAuthHandler():
+
+class TestAuthHandler:
 
     log_path: str = "tests/unit/test_log/auth.log"
     os.environ["LOGGER"] = "Test"

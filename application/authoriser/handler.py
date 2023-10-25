@@ -33,7 +33,7 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     if not re.match(r"^\$2[by]\$(0[4-9]|1[012])\$[.\/0-9A-Za-z]{21}[.Oeu][.\/0-9A-Za-z]{31}$", token_hash_sent):
         return False
     secrets_response = client.get_secret_value(
-        SecretId=os.environ["SECRET_STORE"],
+        SecretId=os.environ["DATA_STORE"],
     )
     secrets = json.loads(secrets_response["SecretString"])
     time_factor = str(int(time.time() / 1800))
