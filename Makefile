@@ -106,7 +106,6 @@ local-auth-unit-test: # Run autoriser unit tests, add NAME="xxx" or NAME="xxx or
 		echo "Running local unit test with test file $(TEST_FILE)"
 		CMD="pip install -r requirements.txt; python -m pytest -rA -q tests/unit/$(TEST_FILE) -k '$(NAME)'"
 	fi
-#	IMAGE=730319765130.dkr.ecr.eu-west-2.amazonaws.com/uec-dos/rd/authoriser-lambda
 	make docker-run-tools SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)/authoriser) \
 		ARGS="--env PYTHONPATH=/tmp/.packages:$(APPLICATION_DIR_REL)/authoriser" \
 		CMD="$$CMD"

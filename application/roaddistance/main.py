@@ -138,7 +138,7 @@ class RoadDistance(Common):
         else:
             client = boto3.client("secretsmanager")
             secrets_response = client.get_secret_value(
-                SecretId=os.environ["DATA_STORE"],
+                SecretId=os.environ["SECRET_STORE"],
             )
             secrets = json.loads(secrets_response["SecretString"])
             endpoint = str(secrets["DRD_ENDPOINT"])
