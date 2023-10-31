@@ -1,3 +1,4 @@
+#!/usr/bin/env groovy
 @Library("texas-pipeline@master")
 
 pipeline {
