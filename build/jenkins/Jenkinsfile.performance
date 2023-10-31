@@ -1,3 +1,5 @@
+@Library("texas-pipeline@master")
+
 pipeline {
   agent { label "jenkins-slave" }
   parameters {
