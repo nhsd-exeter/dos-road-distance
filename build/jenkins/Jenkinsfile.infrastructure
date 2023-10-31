@@ -1,5 +1,5 @@
 pipeline {
-  agent { label "jenkins-slave" }
+  agent any
   parameters {
     choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploy from a task branch?')
     choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
