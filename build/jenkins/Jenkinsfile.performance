@@ -1,8 +1,5 @@
-#!/usr/bin/env groovy
-@Library("texas-pipeline@master")
-
 pipeline {
-  agent { label "jenkins-slave" }
+  agent any
   parameters {
     choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'regression'], description: 'Environment to test')
     choice(name: 'SCENARIO', choices: ['scenario1.py', 'scenario1b.py', 'scenario2.py', 'scenario2b.py', 'scenario3.py', 'scenario4.py'], description: 'Performance scenario to run')
