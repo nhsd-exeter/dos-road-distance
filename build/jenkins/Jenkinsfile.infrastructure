@@ -22,7 +22,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          expression { params.DeployTask == "Yes" }
+          expression { params.DeployTask == "No" }
           branch 'main'
         }
       }
@@ -34,7 +34,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          expression { params.DeployTask == "Yes" }
+          expression { params.DeployTask == "No" }
           branch 'main'
         }
       }
@@ -48,7 +48,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          expression { params.DeployTask == "Yes" }
+          expression { params.DeployTask == "No" }
           branch 'main'
         }
       }
@@ -61,7 +61,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          expression { params.DeployTask == "Yes" }
+          expression { params.DeployTask == "No" }
           branch 'main'
         }
       }
@@ -71,7 +71,7 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          expression { params.DeployTask == "Yes" }
+          expression { params.DeployTask == "No" }
           branch 'main'
         }
       }
