@@ -22,8 +22,8 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          expression { params.DeployTask == "No" }
-          branch 'main'
+          expression { params.DeployTask == "Yes" }
+          branch 'task/DS-1580-RD-Mig'
         }
       }
       steps {
@@ -34,8 +34,8 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          expression { params.DeployTask == "No" }
-          branch 'main'
+          expression { params.DeployTask == "Yes" }
+          branch 'task/DS-1580-RD-Mig'
         }
       }
       steps {
@@ -48,8 +48,8 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          expression { params.DeployTask == "No" }
-          branch 'main'
+          expression { params.DeployTask == "Yes" }
+          branch 'matask/DS-1580-RD-Mig'
         }
       }
       steps {
@@ -61,8 +61,8 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          expression { params.DeployTask == "No" }
-          branch 'main'
+          expression { params.DeployTask == "Yes" }
+          branch 'task/DS-1580-RD-Mig'
         }
       }
       steps { sh "echo Running Tests..." }
@@ -71,8 +71,8 @@ pipeline {
       when {
         beforeAgent true
         anyOf {
-          expression { params.DeployTask == "No" }
-          branch 'main'
+          expression { params.DeployTask == "Yes" }
+          branch 'task/DS-1580-RD-Mig'
         }
       }
       steps {
