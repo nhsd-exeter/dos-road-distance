@@ -16,15 +16,15 @@ pipeline {
     ENVIRONMENT = "nonprod"
     TF_VAR_drd_mock = "${params.Mock}"
   }
-  triggers { pollSCM("* * * * *") }
 
   def deployCondition = {
-      beforeAgent true
       anyOf {
+        beforeAgent true
         expression { params.DeployTask == 'Yes' }
         branch 'main'
       }
     }
+
   stages {
     stage("Show Configuration") {
       when(deployCondition)
