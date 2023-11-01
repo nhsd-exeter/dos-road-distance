@@ -1,7 +1,7 @@
 pipeline {
   agent any
   parameters {
-    choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploy from a task branch?')
+    choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploying from Task Branch?')
     choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
   }
   options {
@@ -17,23 +17,27 @@ pipeline {
     TF_VAR_drd_mock = "${params.Mock}"
   }
 
-  def deployCondition = {
-      anyOf {
-        beforeAgent true
-        expression { params.DeployTask == 'Yes' }
-        branch 'main'
-      }
-    }
-
   stages {
     stage("Show Configuration") {
-      when(deployCondition)
+      when {
+        beforeAgent true
+        anyOf {
+          expression { params.DeployTask == "Yes" }
+          branch 'main'
+        }
+      }
       steps {
         script { sh "make show-configuration" }
       }
     }
     stage("Build App") {
-      when(deployCondition)
+      when {
+        beforeAgent true
+        anyOf {
+          expression { params.DeployTask == "Yes" }
+          branch 'main'
+        }
+      }
       steps {
         script { sh "make build" }
         script { sh "make unit-test" }
@@ -41,18 +45,36 @@ pipeline {
       }
     }
     stage("Deploy") {
-      when(deployCondition)
+      when {
+        beforeAgent true
+        anyOf {
+          expression { params.DeployTask == "Yes" }
+          branch 'main'
+        }
+      }
       steps {
         script { sh "make provision | tee /tmp/terraform_changes.txt" }
         script { sh "make lambda-alias" }
       }
     }
     stage("Test") {
-      when(deployCondition)
+      when {
+        beforeAgent true
+        anyOf {
+          expression { params.DeployTask == "Yes" }
+          branch 'main'
+        }
+      }
       steps { sh "echo Running Tests..." }
     }
     stage("Deployment Summary") {
-      when(deployCondition)
+      when {
+        beforeAgent true
+        anyOf {
+          expression { params.DeployTask == "Yes" }
+          branch 'main'
+        }
+      }
       steps {
         script {
           sh "make deployment-summary"
