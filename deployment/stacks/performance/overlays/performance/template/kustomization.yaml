@@ -3,6 +3,7 @@ bases:
 
 patchesStrategicMerge:
   - performance-job-patch.yaml
+  - roles.yaml
 
 configMapGenerator:
   - name: locust-config
