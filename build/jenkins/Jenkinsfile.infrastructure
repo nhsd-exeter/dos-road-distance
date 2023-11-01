@@ -49,7 +49,7 @@ pipeline {
         beforeAgent true
         anyOf {
           expression { params.DeployTask == "Yes" }
-          branch 'matask/DS-1580-RD-Mig'
+          branch 'task/DS-1580-RD-Mig'
         }
       }
       steps {
