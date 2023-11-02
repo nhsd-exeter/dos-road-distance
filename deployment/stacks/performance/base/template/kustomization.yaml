@@ -3,7 +3,6 @@ resources:
   - network-policy/default-deny-ingress.yaml
   - performance-job.yaml
   - performance-sa.yaml
-  - roles.yaml
 
 configMapGenerator:
   - name: performance-config
