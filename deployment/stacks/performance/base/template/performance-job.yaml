@@ -11,9 +11,9 @@ spec:
       labels:
         name: ${SERVICE_PREFIX_TO_REPLACE}-performance
     spec:
-      serviceAccountName: ${SERVICE_PREFIX_TO_REPLACE}-performance-sa
+      serviceAccountName: uec-sa
       securityContext: {}
-      serviceAccount: ${SERVICE_PREFIX_TO_REPLACE}-performance-sa
+      serviceAccount: uec-sa
       containers:
         - name: performance
           image: ${DOCKER_REGISTRY_TO_REPLACE}/performance:${BUILD_TAG_TO_REPLACE}
