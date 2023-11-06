@@ -1,5 +1,5 @@
 pipeline {
-  agent { label "jenkins-slave" }
+  agent any
   parameters {
     string(name: 'LAMBDA_VERSION', defaultValue: '1', description:  'Version or alias of the RD Lambda for stage to point at')
   }
