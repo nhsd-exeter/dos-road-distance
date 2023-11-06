@@ -41,7 +41,6 @@ pipeline {
       steps {
         script { sh "make build" }
         script { sh "make unit-test" }
-        script { sh "timeout 60 bash -c 'while ! docker info &>/dev/null; do sleep 1; done' || exit 1" }
         script { sh "make push" }
       }
     }
