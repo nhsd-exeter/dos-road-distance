@@ -690,6 +690,7 @@ docker-run-postgres: ### Run postgres container - mandatory: CMD; optional: DIR,
 
 docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: SH=true,DIR,ARGS=[Docker args],LIB_VOLUME_MOUNT=true,VARS_FILE=[Makefile vars file],IMAGE=[image name],CONTAINER=[container name]
 	make docker-config > /dev/null 2>&1
+	timeout 60 bash -c 'while ! docker info &>/dev/null; do sleep 1; done' || exit 1 ### tmp workaround for intermittent missing token file
 	mkdir -p $(TMP_DIR)/.python/pip/{cache,packages}
 	aws_access_dir=$$(echo "--volume /var/run/secrets/eks.amazonaws.com/serviceaccount/token:/var/run/secrets/eks.amazonaws.com/serviceaccount/token")
 	lib_volume_mount=$$(([ $(BUILD_ID) -eq 0 ] || [ "$(LIB_VOLUME_MOUNT)" == true ]) && echo "--volume $(TMP_DIR)/.python/pip/cache:/tmp/.cache/pip --volume $(TMP_DIR)/.python/pip/packages:/tmp/.packages" ||:)
