@@ -1,0 +1,26 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dos-role
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "configmaps", "events", "persistentvolumeclaims", "pods", "secrets", "serviceaccounts", "services",  "pods/log", "pods/exec" ]
+    verbs: [ "create", "delete", "get", "list", "patch", "update", "watch", "scale" ]
+  - apiGroups: [ "batch" ]
+    resources: [ "jobs", "cronjobs" ]
+    verbs: [ "create", "delete", "get", "list", "patch", "update", "watch", "scale" ]
+  - apiGroups: [ "apps" ]
+    resources: [ "deployments", "replicasets", "statefulsets" ]
+    verbs: [ "create", "delete", "get", "list", "patch", "update", "watch", "scale" ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: dos-role-binding
+subjects:
+  - kind: Group
+    name: texas:dos-service-developer
+roleRef:
+  kind: Role
+  name: dos-role
+  apiGroup: rbac.authorization.k8s.io
