@@ -1,7 +1,7 @@
 pipeline {
-  agent { label "jenkins-slave" }
+  agent any
   parameters {
-    choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploy from a task branch?')
+    choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploying from Task Branch?')
     choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
   }
   options {
@@ -16,7 +16,7 @@ pipeline {
     ENVIRONMENT = "nonprod"
     TF_VAR_drd_mock = "${params.Mock}"
   }
-  triggers { pollSCM("* * * * *") }
+
   stages {
     stage("Show Configuration") {
       when {

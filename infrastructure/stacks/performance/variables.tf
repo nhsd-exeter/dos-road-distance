@@ -22,13 +22,6 @@ variable "profile" {
   description = "The tag used to identify profile e.g. dev, test, live, ..."
 }
 
-variable "terraform_platform_state_store" {
-  description = "The Texas terraform state store bucket"
-}
-
-variable "eks_terraform_state_key" {
-  description = "Location in s3 bucket of eks terraform state"
-}
 
 variable "texas_s3_logs_bucket" {
   description = "Texas logs bucket"
