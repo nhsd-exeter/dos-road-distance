@@ -716,6 +716,7 @@ docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: S
 			--volume $(HOME)/etc:/tmp/etc \
 			--volume $(HOME)/usr:/tmp/usr \
 			$$lib_volume_mount \
+			$$aws_access_dir \
 			--network $(DOCKER_NETWORK) \
 			--workdir /project/$(shell echo $(abspath $(DIR)) | sed "s;$(PROJECT_DIR);;g") \
 			$(ARGS) \
@@ -740,6 +741,7 @@ docker-run-tools: ### Run tools (Python) container - mandatory: CMD; optional: S
 			--volume $(HOME)/etc:/tmp/etc \
 			--volume $(HOME)/usr:/tmp/usr \
 			$$lib_volume_mount \
+			$$aws_access_dir \
 			--network $(DOCKER_NETWORK) \
 			--workdir /project/$(shell echo $(abspath $(DIR)) | sed "s;$(PROJECT_DIR);;g") \
 			$(ARGS) \
