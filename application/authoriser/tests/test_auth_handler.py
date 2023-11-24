@@ -17,7 +17,9 @@ class TestAuthHandler:
     )
     secrets = json.loads(secrets_response["SecretString"])
     time_factor = str(int(time.time() / 1800))
-    token: str = bcrypt.hashpw((secrets["ROAD_DISTANCE_API_TOKEN"] + time_factor).encode("utf-8"), bcrypt.gensalt())
+    token = bcrypt.hashpw((secrets["ROAD_DISTANCE_API_TOKEN"] + time_factor).encode("utf-8"), bcrypt.gensalt()).decode(
+        "UTF-8"
+    )
 
     # this simulates context supplied to the Lambda entrypoint
 
@@ -31,10 +33,10 @@ class TestAuthHandler:
 
     def test_check_authorisation_token_allow_no_auth(self) -> None:
         os.environ["DRD_ALLOW_NO_AUTH"] = "True"
-        authorised_state = handler.check_authorisation_token(self.token, True)
+        authorised_state = handler.check_authorisation_token("brokenToken", True)
         assert authorised_state
 
     def test_check_authorisation_token_disallow_no_auth(self) -> None:
-        os.environ["DRD_ALLOW_NO_AUTH"] = "True"
-        authorised_state = handler.check_authorisation_token(self.token, False)
-        assert authorised_state
+        os.environ["DRD_ALLOW_NO_AUTH"] = "False"
+        authorised_state = handler.check_authorisation_token("brokenToken", True)
+        assert authorised_state is False

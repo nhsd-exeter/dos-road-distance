@@ -30,13 +30,12 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", "False") == "True":
         logger.log_info("Noauth actioned as allowed")
         return True
-    if type(token_hash_sent) is str:
-        if not re.match(r"^\$2[by]\$(0[4-9]|1[012])\$[.\/0-9A-Za-z]{21}[.Oeu][.\/0-9A-Za-z]{31}$", token_hash_sent):
-            return False
+    if not re.match(r"^\$2[by]\$(0[4-9]|1[012])\$[.\/0-9A-Za-z]{21}[.Oeu][.\/0-9A-Za-z]{31}$", token_hash_sent):
+        return False
     secrets_response = client.get_secret_value(
         SecretId=os.environ["SECRET_STORE"],
     )
     secrets = json.loads(secrets_response["SecretString"])
     time_factor = str(int(time.time() / 1800))
     token = str(secrets["ROAD_DISTANCE_API_TOKEN"]) + time_factor
-    return bcrypt.checkpw(token.encode("utf-8"), token_hash_sent)
+    return bcrypt.checkpw(token.encode("utf-8"), re.sub(r"^\$2y", "$2b", token_hash_sent).encode("utf-8"))
