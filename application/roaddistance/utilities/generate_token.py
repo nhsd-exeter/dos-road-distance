@@ -7,7 +7,7 @@ token_hash_sent = "$2y$04$jCIG/rZIgVS164GSm1wBY.JdOGoMzUA.0sEB79BMXoL0dplTtEcS2"
 
 
 def check_authorisation_token(token_hash_sent: str) -> bool:
-    time_factor = str(int(time.time() / 1800))
+    time_factor = str(int(time.time() / 900))
     print("Time window: " + time_factor)
     token = secret + time_factor
     salt = bcrypt.gensalt()
