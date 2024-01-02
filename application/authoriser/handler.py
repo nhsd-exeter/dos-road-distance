@@ -8,7 +8,6 @@ from authlogger import AuthLogger
 
 logger: AuthLogger = AuthLogger()
 
-
 def authorize_api_request(event, context) -> dict:
     response: dict = {"isAuthorized": False}
     logger.log_info("Event: {}".format(event))
@@ -24,7 +23,6 @@ def authorize_api_request(event, context) -> dict:
         )
     return response
 
-
 def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     client = boto3.client("secretsmanager")
     if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", "False") == "True":
@@ -36,6 +34,8 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
         SecretId=os.environ["SECRET_STORE"],
     )
     secrets = json.loads(secrets_response["SecretString"])
-    time_factor = str(int(time.time() / 1800))
-    token = str(secrets["ROAD_DISTANCE_API_TOKEN"]) + time_factor
-    return bcrypt.checkpw(token.encode("utf-8"), re.sub(r"^\$2y", "$2b", token_hash_sent).encode("utf-8"))
+    token_x = (str(secrets["ROAD_DISTANCE_API_TOKEN"]) + str(int((time.time() - 900) / 900))).encode("utf-8")
+    token_y = (str(secrets["ROAD_DISTANCE_API_TOKEN"]) + str(int(time.time() / 900))).encode("utf-8")
+    token_hash_sent_encoded = re.sub(r"^\$2y", "$2b", token_hash_sent).encode("utf-8")
+    return bcrypt.checkpw(token_y, token_hash_sent_encoded) or bcrypt.checkpw(token_x, token_hash_sent_encoded)
+
