@@ -195,3 +195,203 @@ resource "aws_cloudwatch_log_group" "auth_lambda_log_group" {
   name              = "/aws/lambda/${var.service_prefix}-auth-lambda"
   retention_in_days = "0"
 }
+
+# DR copy
+
+resource "aws_lambda_function" "road_distance_dr_lambda" {
+  function_name = "${var.service_prefix}-rd-dr-lambda"
+  role          = aws_iam_role.road_distance_dr_lambda_role.arn
+  architectures = ["x86_64"]
+  memory_size   = 1024
+  publish       = true
+  package_type  = "Image"
+  timeout       = "30"
+  image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/roaddistance-dr-lambda:${var.image_version}"
+  tracing_config {
+    mode = "Active"
+  }
+  environment {
+    variables = {
+      "SECRET_STORE"  = "${var.deployment_secrets}"
+      "DRD_MOCK_MODE" = "${var.drd_mock}"
+    }
+  }
+  depends_on = [
+    aws_iam_role.road_distance_dr_lambda_role,
+    aws_iam_role_policy.road_distance_dr_lambda_role_policy,
+    aws_cloudwatch_log_group.road_distance_dr_lambda_log_group
+  ]
+}
+
+resource "aws_lambda_function_event_invoke_config" "road_distance_dr_lambda_invoke_config" {
+  function_name          = aws_lambda_function.road_distance_dr_lambda.function_name
+  maximum_retry_attempts = 0
+}
+
+resource "aws_iam_role" "road_distance_dr_lambda_role" {
+  name               = "${var.service_prefix}-rd-dr-role"
+  path               = "/"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "road_distance_dr_lambda_role_policy" {
+  name   = "${var.service_prefix}-rd-role-policy"
+  role   = aws_iam_role.road_distance_dr_lambda_role.name
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:Describe*",
+        "secretsmanager:Get*",
+        "secretsmanager:List*"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:${var.project_group_short}*",
+        "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:core-dos*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords",
+        "xray:GetSamplingRules",
+        "xray:GetSamplingTargets",
+        "xray:GetSamplingStatisticSummaries"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_cloudwatch_log_group" "road_distance_dr_lambda_log_group" {
+  name              = "/aws/lambda/${var.service_prefix}-rd-dr-lambda"
+  retention_in_days = "0"
+}
+
+resource "aws_lambda_function" "auth_dr_lambda" {
+  function_name = "${var.service_prefix}-auth-dr-lambda"
+  role          = aws_iam_role.auth_dr_lambda_role.arn
+  publish       = true
+  package_type  = "Image"
+  timeout       = "30"
+  image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/authoriser-lambda:${var.image_version}"
+  tracing_config {
+    mode = "Active"
+  }
+  environment {
+    variables = {
+      "SECRET_STORE"      = "${var.deployment_secrets}"
+      "DRD_ALLOW_NO_AUTH" = "${var.drd_allow_no_auth}"
+    }
+  }
+  depends_on = [
+    aws_iam_role.auth_dr_lambda_role,
+    aws_iam_role_policy.auth_dr_lambda_role_policy,
+    aws_cloudwatch_log_group.auth_dr_lambda_log_group
+  ]
+}
+
+resource "aws_lambda_function_event_invoke_config" "auth_dr_lambda_invoke_config" {
+  function_name          = aws_lambda_function.auth_lambda.function_name
+  maximum_retry_attempts = 0
+}
+
+resource "aws_iam_role" "auth_dr_lambda_role" {
+  name               = "${var.service_prefix}-auth-role"
+  path               = "/"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "auth_dr_lambda_role_policy" {
+  name   = "${var.service_prefix}-auth-dr-role-policy"
+  role   = aws_iam_role.auth_dr_lambda_role.name
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:Describe*",
+        "secretsmanager:Get*",
+        "secretsmanager:List*"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:${var.project_group_short}*",
+        "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:core-dos*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords",
+        "xray:GetSamplingRules",
+        "xray:GetSamplingTargets",
+        "xray:GetSamplingStatisticSummaries"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_cloudwatch_log_group" "auth_dr_lambda_log_group" {
+  name              = "/aws/lambda/${var.service_prefix}-auth-dr-lambda"
+  retention_in_days = "0"
+}
