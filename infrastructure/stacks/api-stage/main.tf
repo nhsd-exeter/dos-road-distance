@@ -1,4 +1,4 @@
-resource "aws_apigatewayv2_stage" "road_distance_dr_api_stage" {
+resource "aws_apigatewayv2_stage" "road_distance_api_stage" {
   api_id      = data.terraform_remote_state.api_gateway.outputs.api_id
   name        = var.environment
   auto_deploy = true
