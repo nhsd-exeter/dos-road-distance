@@ -327,7 +327,7 @@ resource "aws_lambda_function_event_invoke_config" "auth_dr_lambda_invoke_config
 }
 
 resource "aws_iam_role" "auth_dr_lambda_role" {
-  name               = "${var.service_prefix}-auth-role"
+  name               = "${var.service_prefix}auth-dr-role"
   path               = "/"
   assume_role_policy = <<EOF
 {
