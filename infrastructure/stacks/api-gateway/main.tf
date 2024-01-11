@@ -110,7 +110,7 @@ resource "aws_apigatewayv2_authorizer" "road_distance_dr_api_auth" {
 
 resource "aws_lambda_permission" "auth_invoke_dr_lambda_permission" {
   action        = "lambda:InvokeFunction"
-  function_name = "${var.service_prefix}-dr-auth-lambda"
+  function_name = "${var.service_prefix}-auth-dr-lambda"
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.road_distance_dr_apigateway.execution_arn}/*"
 }
