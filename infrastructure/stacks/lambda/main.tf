@@ -206,7 +206,7 @@ resource "aws_lambda_function" "road_distance_dr_lambda" {
   publish       = true
   package_type  = "Image"
   timeout       = "30"
-  image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/roaddistance-dr-lambda:${var.image_version}"
+  image_uri     = "${var.aws_lambda_ecr}/${var.project_group_short}/${var.project_name_short}/roaddistance-lambda:${var.image_version}"
   tracing_config {
     mode = "Active"
   }
@@ -322,7 +322,7 @@ resource "aws_lambda_function" "auth_dr_lambda" {
 }
 
 resource "aws_lambda_function_event_invoke_config" "auth_dr_lambda_invoke_config" {
-  function_name          = aws_lambda_function.auth_lambda.function_name
+  function_name          = aws_lambda_function.auth_dr_lambda.function_name
   maximum_retry_attempts = 0
 }
 
