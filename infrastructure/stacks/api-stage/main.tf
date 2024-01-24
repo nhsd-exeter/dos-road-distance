@@ -42,7 +42,7 @@ resource "aws_lambda_permission" "road_distance_dr_invoke_lambda_permission" {
   action        = "lambda:InvokeFunction"
   function_name = "${var.service_prefix}-rd-dr-lambda:${var.lambda_version}"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${data.terraform_remote_state.api_gateway.outputs.api_execution_dr_arn}/*/*/"
+  source_arn    = "${data.terraform_remote_state.api_gateway.outputs.api_execution_arn}/*/*/"
 }
 
 resource "aws_cloudwatch_log_group" "road_distance_dr_lambda_log_group" {
