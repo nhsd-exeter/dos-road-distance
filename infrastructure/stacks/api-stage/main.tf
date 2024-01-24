@@ -26,7 +26,7 @@ resource "aws_cloudwatch_log_group" "road_distance_lambda_log_group" {
 # DR copy
 
 resource "aws_apigatewayv2_stage" "road_distance_dr_api_stage" {
-  api_id      = data.terraform_remote_state.api_gateway.outputs.api_id
+  api_id      = data.terraform_remote_state.api_gateway.outputs.api_dr_id
   name        = var.environment
   auto_deploy = true
   access_log_settings {
@@ -42,7 +42,7 @@ resource "aws_lambda_permission" "road_distance_dr_invoke_lambda_permission" {
   action        = "lambda:InvokeFunction"
   function_name = "${var.service_prefix}-rd-dr-lambda:${var.lambda_version}"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${data.terraform_remote_state.api_gateway.outputs.api_execution_arn}/*/*/"
+  source_arn    = "${data.terraform_remote_state.api_gateway.outputs.api_dr_execution_arn}/*/*/"
 }
 
 resource "aws_cloudwatch_log_group" "road_distance_dr_lambda_log_group" {
