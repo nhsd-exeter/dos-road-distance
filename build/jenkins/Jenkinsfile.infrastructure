@@ -12,8 +12,8 @@ pipeline {
   }
   environment {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
-    PROFILE = "nonprod"
-    ENVIRONMENT = "nonprod"
+    PROFILE = "performance"
+    ENVIRONMENT = "performance"
     TF_VAR_drd_mock = "${params.Mock}"
   }
 
