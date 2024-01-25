@@ -593,9 +593,9 @@ docker-run-terraform: ### Run terraform container - mandatory: CMD; optional: DI
 		--volume $(PROJECT_DIR):/project \
 		--network $(DOCKER_NETWORK) \
 		--workdir /project/$(shell echo $(abspath $(DIR)) | sed "s;$(PROJECT_DIR);;g") \
+		$$aws_access_dir \
 		$(ARGS) \
 		$$image \
-		$$aws_access_dir \
 			$(CMD)
 
 docker-run-terraform-tfsec: ### Run terraform tfsec container - optional: DIR,ARGS=[Docker args],VARS_FILE=[Makefile vars file],IMAGE=[image name],CONTAINER=[container name]; SEE: https://github.com/tfsec/tfsec
