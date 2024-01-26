@@ -6,3 +6,13 @@ data "terraform_remote_state" "lambda" {
     region = var.aws_region
   }
 }
+
+data "aws_iam_policy_document" "apigateway_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["apigateway.amazonaws.com"]
+    }
+  }
+}
