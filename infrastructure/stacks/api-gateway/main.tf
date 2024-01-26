@@ -49,11 +49,12 @@ resource "aws_apigatewayv2_authorizer" "road_distance_api_auth" {
 }
 
 resource "aws_iam_role" "road_distance_apigateway_invocation_role" {
+  name               =  "${var.service_prefix}-apigateway-invocation-role"
   assume_role_policy = data.aws_iam_policy_document.apigateway_role_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "road_distance_apigateway_invocation_policy" {
-  role = aws_iam_role.road_distance_apigateway_invocation_role.name
+  role       = aws_iam_role.road_distance_apigateway_invocation_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
 }
 resource "aws_lambda_permission" "auth_invoke_lambda_permission" {
