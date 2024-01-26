@@ -33,6 +33,7 @@ resource "aws_lambda_permission" "road_distance_invoke_lambda_permission" {
   function_name = "${var.service_prefix}-rd-lambda"
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.road_distance_apigateway.execution_arn}/*/*/"
+  statement_id  = "AllowAPIGatewayInvoke"
 }
 
 resource "aws_apigatewayv2_authorizer" "road_distance_api_auth" {
