@@ -7,6 +7,7 @@ data "terraform_remote_state" "lambda" {
   }
 }
 
+# DS-2030 DR Phase II
 # data "aws_iam_policy_document" "apigateway_role_policy" {
 #   statement {
 #     actions = ["sts:AssumeRole"]
