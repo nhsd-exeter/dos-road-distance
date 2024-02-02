@@ -1,7 +1,7 @@
 pipeline {
   agent any
   parameters {
-    choice(name: 'ENVIRONMENT', choices: ['nonprod', 'performance'], description: 'Environment: nonprod - Test Envs or performance')
+    choice(name: 'ENVIRONMENT', choices: ['nonprod'], description: 'Environment:')
     choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploying from Task Branch?')
     choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
   }

@@ -19,6 +19,6 @@ resource "aws_lambda_permission" "road_distance_invoke_lambda_permission" {
 }
 
 resource "aws_cloudwatch_log_group" "road_distance_lambda_log_group" {
-  name              = "/aws/vendedlogs/api-gateway/${var.service_prefix}-rd-api/${var.environment}"
+  name              = "/aws/api-gateway/${var.service_prefix}-rd-api/${var.environment}"
   retention_in_days = "0"
 }

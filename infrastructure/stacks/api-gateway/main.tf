@@ -43,21 +43,8 @@ resource "aws_apigatewayv2_authorizer" "road_distance_api_auth" {
   authorizer_payload_format_version = "2.0"
   authorizer_result_ttl_in_seconds  = 0
   enable_simple_responses           = true
-
   # identity_sources                  = ["event.headers.authorization"]
 }
-
-
-# Will be picked up on DR Phase II DS-2030
-# resource "aws_iam_role" "road_distance_apigateway_invocation_role" {
-#   name               =  "${var.service_prefix}-apigateway-invocation-role"
-#   assume_role_policy = data.aws_iam_policy_document.apigateway_role_policy.json
-# }
-
-# resource "aws_iam_role_policy_attachment" "road_distance_apigateway_invocation_policy" {
-#   role       = aws_iam_role.road_distance_apigateway_invocation_role.name
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
-# }
 
 resource "aws_lambda_permission" "auth_invoke_lambda_permission" {
   action        = "lambda:InvokeFunction"
