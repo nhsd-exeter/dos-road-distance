@@ -1,6 +1,7 @@
 pipeline {
   agent any
   parameters {
+    choice(name: 'ENVIRONMENT', choices: ['nonprod'], description: 'Environment:')
     choice(name: 'DeployTask', choices: ['No', 'Yes'], description: 'Deploying from Task Branch?')
     choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
   }
@@ -12,8 +13,8 @@ pipeline {
   }
   environment {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
-    PROFILE = "nonprod"
-    ENVIRONMENT = "nonprod"
+    PROFILE = "${params.ENVIRONMENT}"
+    ENVIRONMENT = "${params.ENVIRONMENT}"
     TF_VAR_drd_mock = "${params.Mock}"
   }
 
