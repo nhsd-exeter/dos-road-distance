@@ -8,6 +8,7 @@ from authlogger import AuthLogger
 
 logger: AuthLogger = AuthLogger()
 
+
 def authorize_api_request(event, context) -> dict:
     response: dict = {"isAuthorized": False}
     logger.log_info("Event: {}".format(event))
@@ -30,7 +31,7 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
 
     time_x = str(int((time.time() - 900) / 900))
     time_y = str(int(time.time() / 900))
-    token_hash_sent_encoded = re.sub(r"^\$2y", "$2b", token_hash_sent).encode("utf-8")
+    token_hash_sent = re.sub(r"^\$2y", "$2b", token_hash_sent)
 
     if os.environ.get("RD_API_TOKEN_X_SLOT", "") == time_x and os.environ.get("RD_API_TOKEN_Y_SLOT", "") == time_y:
         if os.environ.get("RD_API_TOKEN_X_TOKEN", "") == token_hash_sent or os.environ.get("RD_API_TOKEN_Y_TOKEN", "") == token_hash_sent:
@@ -48,6 +49,7 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     token_x = (str(secrets["ROAD_DISTANCE_API_TOKEN"]) + time_x)
     token_y = (str(secrets["ROAD_DISTANCE_API_TOKEN"]) + time_y)
 
+    token_hash_sent_encoded = token_hash_sent.encode("utf-8")
     if bcrypt.checkpw(token_y.encode("utf-8"), token_hash_sent_encoded) or bcrypt.checkpw(token_x.encode("utf-8"), token_hash_sent_encoded):
         os.environ["RD_API_TOKEN_X_SLOT"] = time_x
         os.environ["RD_API_TOKEN_X_TOKEN"] = token_x
@@ -57,4 +59,3 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
         return True
 
     return False
-
