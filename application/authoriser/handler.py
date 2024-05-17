@@ -8,7 +8,8 @@ from authlogger import AuthLogger
 
 logger: AuthLogger = AuthLogger()
 
-cache_state : str = ""
+cached: bool = False
+
 
 def authorize_api_request(event, context) -> dict:
     response: dict = {"isAuthorized": False}
@@ -25,23 +26,26 @@ def authorize_api_request(event, context) -> dict:
         )
     return response
 
-def fetch_secret_token(current_window : str) -> str:
-        global cache_state
 
-        if os.environ.get("RD_WINDOW", "") == current_window:
-            cache_state = "CACHED"
+def fetch_secret_token(current_window: str) -> str:
+    global cached
+
+    if os.environ.get("RD_WINDOW", "") == current_window:
+        cached = True
+        if os.environ.get("RD_TOKEN", "") != "":
             return os.environ["RD_TOKEN"]
-        else:
-            client = boto3.client("secretsmanager")
-            secrets_response = client.get_secret_value(
-                SecretId=os.environ["SECRET_STORE"],
-            )
-            secrets = json.loads(secrets_response["SecretString"])
-            os.environ["RD_WINDOW"] = current_window
-            token = str(secrets["ROAD_DISTANCE_API_TOKEN"])
-            os.environ["RD_TOKEN"] = token
-            cache_state = "UNCACHED"
-            return token
+
+    client = boto3.client("secretsmanager")
+    secrets_response = client.get_secret_value(
+        SecretId=os.environ["SECRET_STORE"],
+    )
+    secrets = json.loads(secrets_response["SecretString"])
+    os.environ["RD_WINDOW"] = current_window
+    token = str(secrets["ROAD_DISTANCE_API_TOKEN"])
+    os.environ["RD_TOKEN"] = token
+    cached = False
+    return token
+
 
 def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", "False") == "True":
@@ -61,7 +65,9 @@ def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     token_y = rd_token + time_y
 
     token_hash_sent_encoded = token_hash_sent.encode("utf-8")
-    if bcrypt.checkpw(token_y.encode("utf-8"), token_hash_sent_encoded) or bcrypt.checkpw(token_x.encode("utf-8"), token_hash_sent_encoded):
+    if bcrypt.checkpw(token_y.encode("utf-8"), token_hash_sent_encoded) or bcrypt.checkpw(
+        token_x.encode("utf-8"), token_hash_sent_encoded
+    ):
         return True
 
     return False

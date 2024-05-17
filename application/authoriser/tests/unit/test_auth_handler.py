@@ -38,11 +38,11 @@ class TestAuthHandler:
         token = self.get_token()
         authorised_state = handler.check_authorisation_token(token, False)
         assert authorised_state
-        assert handler.cache_state == "UNCACHED"
+        assert not handler.cached
         token = self.get_token()
         authorised_state = handler.check_authorisation_token(token, False)
         assert authorised_state
-        assert handler.cache_state == "CACHED"
+        assert handler.cached
 
     def test_valid_check_authorisation_token(self) -> None:
         authorised_state = handler.check_authorisation_token(self.get_token(), False)
