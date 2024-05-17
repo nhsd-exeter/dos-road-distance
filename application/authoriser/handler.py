@@ -8,6 +8,7 @@ from authlogger import AuthLogger
 
 logger: AuthLogger = AuthLogger()
 
+cache_state : str = ""
 
 def authorize_api_request(event, context) -> dict:
     response: dict = {"isAuthorized": False}
@@ -24,38 +25,43 @@ def authorize_api_request(event, context) -> dict:
         )
     return response
 
+def fetch_secret_token(current_window : str) -> str:
+        global cache_state
+
+        if os.environ.get("RD_WINDOW", "") == current_window:
+            cache_state = "CACHED"
+            return os.environ["RD_TOKEN"]
+        else:
+            client = boto3.client("secretsmanager")
+            secrets_response = client.get_secret_value(
+                SecretId=os.environ["SECRET_STORE"],
+            )
+            secrets = json.loads(secrets_response["SecretString"])
+            os.environ["RD_WINDOW"] = current_window
+            token = str(secrets["ROAD_DISTANCE_API_TOKEN"])
+            os.environ["RD_TOKEN"] = token
+            cache_state = "UNCACHED"
+            return token
+
 def check_authorisation_token(token_hash_sent: str, noauth: bool) -> bool:
     if noauth and os.environ.get("DRD_ALLOW_NO_AUTH", "False") == "True":
         logger.log_info("Noauth actioned as allowed")
         return True
 
+    if not re.match(r"^\$2[by]\$(0[4-9]|1[012])\$[.\/0-9A-Za-z]{21}[.Oeu][.\/0-9A-Za-z]{31}$", token_hash_sent):
+        return False
+
     time_x = str(int((time.time() - 900) / 900))
     time_y = str(int(time.time() / 900))
     token_hash_sent = re.sub(r"^\$2y", "$2b", token_hash_sent)
 
-    if os.environ.get("RD_API_TOKEN_X_SLOT", "") == time_x and os.environ.get("RD_API_TOKEN_Y_SLOT", "") == time_y:
-        if os.environ.get("RD_API_TOKEN_X_TOKEN", "") == token_hash_sent or os.environ.get("RD_API_TOKEN_Y_TOKEN", "") == token_hash_sent:
-            return True
+    rd_token = fetch_secret_token(time_y)
 
-    if not re.match(r"^\$2[by]\$(0[4-9]|1[012])\$[.\/0-9A-Za-z]{21}[.Oeu][.\/0-9A-Za-z]{31}$", token_hash_sent):
-        return False
-
-    client = boto3.client("secretsmanager")
-
-    secrets_response = client.get_secret_value(
-        SecretId=os.environ["SECRET_STORE"],
-    )
-    secrets = json.loads(secrets_response["SecretString"])
-    token_x = (str(secrets["ROAD_DISTANCE_API_TOKEN"]) + time_x)
-    token_y = (str(secrets["ROAD_DISTANCE_API_TOKEN"]) + time_y)
+    token_x = rd_token + time_x
+    token_y = rd_token + time_y
 
     token_hash_sent_encoded = token_hash_sent.encode("utf-8")
     if bcrypt.checkpw(token_y.encode("utf-8"), token_hash_sent_encoded) or bcrypt.checkpw(token_x.encode("utf-8"), token_hash_sent_encoded):
-        os.environ["RD_API_TOKEN_X_SLOT"] = time_x
-        os.environ["RD_API_TOKEN_X_TOKEN"] = token_x
-        os.environ["RD_API_TOKEN_Y_SLOT"] = time_y
-        os.environ["RD_API_TOKEN_Y_TOKEN"] = token_y
-
         return True
 
     return False
