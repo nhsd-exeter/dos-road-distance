@@ -8,8 +8,8 @@ from authlogger import AuthLogger
 
 logger: AuthLogger = AuthLogger()
 
-cached: bool = False
-
+# this global var is used only for unit testing
+token_cached: bool = False
 
 def authorize_api_request(event, context) -> dict:
     response: dict = {"isAuthorized": False}
@@ -28,10 +28,10 @@ def authorize_api_request(event, context) -> dict:
 
 
 def fetch_secret_token(current_window: str) -> str:
-    global cached
+    global token_cached
 
     if os.environ.get("RD_WINDOW", "") == current_window:
-        cached = True
+        token_cached = True
         if os.environ.get("RD_TOKEN", "") != "":
             return os.environ["RD_TOKEN"]
 
@@ -43,7 +43,7 @@ def fetch_secret_token(current_window: str) -> str:
     os.environ["RD_WINDOW"] = current_window
     token = str(secrets["ROAD_DISTANCE_API_TOKEN"])
     os.environ["RD_TOKEN"] = token
-    cached = False
+    token_cached = False
     return token
 
 
