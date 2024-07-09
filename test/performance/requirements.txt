@@ -12,6 +12,7 @@ geventhttpclient==2.3.1
 greenlet==3.0.3
 idna==3.7
 itsdangerous==2.2.0
+Jinja2==3.1.4
 locust==2.29.1
 MarkupSafe==2.1.5
 msgpack==1.0.8
