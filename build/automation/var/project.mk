@@ -1,8 +1,8 @@
 ORG_NAME = nhsd-exeter
 PROGRAMME = uec
 PROJECT_GROUP = uec/dos
-PROJECT_GROUP_SHORT_OLD = uec-dos
-PROJECT_GROUP_SHORT = uec-core-dos
+PROJECT_GROUP_SHORT = uec-dos
+PROJECT_GROUP_SHORT_NEW = uec-core-dos
 PROJECT_NAME = road-distance
 PROJECT_NAME_SHORT = rd
 PROJECT_DISPLAY_NAME = DoS Road Distance
