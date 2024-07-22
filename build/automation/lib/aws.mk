@@ -307,12 +307,12 @@ aws-ecr-create-repository: ### Create ECR repository to store an image - mandato
 	make file-copy-and-replace SRC=$$policy_file DEST=$$effective_policy_file && trap "rm -f $$effective_policy_file" EXIT
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 		$(AWSCLI) ecr create-repository \
-			--repository-name $(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)/$(NAME) \
+			--repository-name $(PROJECT_GROUP_SHORT_OLD)/$(PROJECT_NAME_SHORT)/$(NAME) \
 			--tags Key=Programme,Value=$(PROGRAMME) Key=Service,Value=$(SERVICE_TAG) \
 	"
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 		$(AWSCLI) ecr set-repository-policy \
-			--repository-name $(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)/$(NAME) \
+			--repository-name $(PROJECT_GROUP_SHORT_OLD)/$(PROJECT_NAME_SHORT)/$(NAME) \
 			--policy-text file://$$effective_policy_file \
 	"
 
@@ -327,7 +327,7 @@ aws-ecr-get-image-digest: ### Get ECR image digest by matching tag pattern - man
 aws-ecr-untag: ### Untag (and remove if none) images in the ECR - mandatory: NAME=[repository name],TAG=[string to match tag of an image] optional:INCLUDE_LATEST=[true,false]
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 		$(AWSCLI) ecr batch-delete-image \
-			--repository-name $(PROJECT_GROUP_SHORT)/$(PROJECT_NAME_SHORT)/$(NAME) \
+			--repository-name $(PROJECT_GROUP_SHORT_OLD)/$(PROJECT_NAME_SHORT)/$(NAME) \
 			--image-ids $$(if [ "$(INCLUDE_LATEST)" = "true" ]; then echo imageTag=latest; fi) imageTag=$(TAG) \
 	"
 
