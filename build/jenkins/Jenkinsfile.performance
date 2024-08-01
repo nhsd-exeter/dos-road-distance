@@ -30,8 +30,8 @@ pipeline {
     stage ("Provision") {
       steps {
         script {
-          sh "make provision STACKS=performance ENVIRONMENT=nonprod | tee /tmp/terraform_changes.txt"
           sh "make aws-user-get-role"
+          sh "make provision STACKS=performance ENVIRONMENT=nonprod | tee /tmp/terraform_changes.txt"
         }
       }
     }
@@ -63,7 +63,10 @@ pipeline {
         LOCUST_RUN_TIME = "${RUNTIME}s"
       }
       steps {
-        script { sh "make performance-deploy PROFILE=performance SECONDS=${RUNTIME}" }
+        script {
+          sh "make aws-user-get-role"
+          sh "make performance-deploy PROFILE=performance SECONDS=${RUNTIME}"
+          }
       }
     }
     stage ("Deploy Job Two") {
