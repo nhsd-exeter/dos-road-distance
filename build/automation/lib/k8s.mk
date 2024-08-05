@@ -97,7 +97,7 @@ k8s-job-delete-tester: ### Remove tester resources from application namespace - 
 	fi
 
 k8s-job-tester-wait-to-complete: ### Wait for the job to complete mandatory: TESTER_NAME=[tester_name] - optional SECONDS=[number of seconds, defaults to 60]
-	seconds=$(or $(SECONDS), 60)
+	seconds=$(or $(SECONDS), 1800)
 	echo "Waiting for the job to complete in $$seconds seconds"
 	count=0
 	get_log=false
@@ -175,7 +175,7 @@ k8s-pod-get-status-phase: ### Get the pod status phase - return: [phase name]
 	| make -s docker-run-tools CMD="jq -r '.status.phase'" | tr '[:upper:]' '[:lower:]' | tr -d '\n'
 
 k8s-job-wait-to-complete: ### Wait for the job to complete - optional SECONDS=[number of seconds, defaults to 60]
-	seconds=$(or $(SECONDS), 60)
+	seconds=$(or $(SECONDS), 1800)
 	echo "Waiting for the job to complete in $$seconds seconds"
 	sleep 10 && kubectl logs --follow --namespace=$(K8S_NAMESPACE) $$(make k8s-job-get-pod-name) &
 	count=0
