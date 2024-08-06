@@ -101,7 +101,7 @@ k8s-job-tester-wait-to-complete: ### Wait for the job to complete mandatory: TES
 	echo "Waiting for the job to complete in $$seconds seconds"
 	count=0
 	get_log=false
-	sleep 30
+	sleep 180
 	while [ $$count -lt $$seconds ]; do
 		if [ true == "$$(make k8s-job-tester-is-running)" ]; then
 			if [ false == $$get_log ]; then
