@@ -101,6 +101,7 @@ k8s-job-tester-wait-to-complete: ### Wait for the job to complete mandatory: TES
 	echo "Waiting for the job to complete in $$seconds seconds"
 	count=0
 	get_log=false
+	sleep 30
 	while [ $$count -lt $$seconds ]; do
 		if [ true == "$$(make k8s-job-tester-is-running)" ]; then
 			if [ false == $$get_log ]; then
@@ -177,7 +178,7 @@ k8s-pod-get-status-phase: ### Get the pod status phase - return: [phase name]
 k8s-job-wait-to-complete: ### Wait for the job to complete - optional SECONDS=[number of seconds, defaults to 60]
 	seconds=$(or $(SECONDS), 1800)
 	echo "Waiting for the job to complete in $$seconds seconds"
-	sleep 120 && kubectl logs --follow --namespace=$(K8S_NAMESPACE) $$(make k8s-job-get-pod-name) &
+	sleep 30 && kubectl logs --follow --namespace=$(K8S_NAMESPACE) $$(make k8s-job-get-pod-name) &
 	count=0
 	while [ $$count -lt $$seconds ]; do
 		if [ true == "$$(make k8s-job-has-failed)" ]; then
