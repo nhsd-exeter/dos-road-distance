@@ -382,16 +382,13 @@ k8s-job: ### Show status of jobs - mandatory: PROFILE=[name]
 	k8s-cnf \
 	k8s-get-namespace-ttl \
 	k8s-job-get-name \
-	k8s-job-get-pod-name \
 	k8s-job-has-completed \
 	k8s-job-has-failed \
 	k8s-job-log \
 	k8s-job-wait-to-complete \
-	k8s-job-tester-get-pod-name \
 	k8s-job-tester-has-failed \
 	k8s-job-tester-has-completed \
 	k8s-job-tester-is-running \
-	k8s-job-tester-wait-to-complete \
 	k8s-kubeconfig-export \
 	k8s-kubeconfig-export-variables \
 	k8s-log \
