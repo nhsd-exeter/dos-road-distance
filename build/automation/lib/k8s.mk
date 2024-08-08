@@ -151,9 +151,9 @@ k8s-job-tester-get-pod-name: ### Get the name of the job pod mandatory: TESTER_N
 	eval "$$(make k8s-kubeconfig-export-variables)"
 	kubectl get pods \
 		--namespace=$(K8S_APP_NAMESPACE) \
-		#--selector "name=$(TESTER_NAME)" \
 		--selector "env=$(ENVIRONMENT)" \
 		--output jsonpath='{.items..metadata.name}'
+		#was --selector "name=$(TESTER_NAME)" \
 
 k8s-alb-get-ingress-endpoint: ### Get ALB ingress enpoint - mandatory: PROFILE=[name]
 	# set up
