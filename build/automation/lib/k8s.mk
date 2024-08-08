@@ -101,6 +101,7 @@ k8s-job-tester-wait-to-complete: ### Wait for the job to complete mandatory: TES
 	echo "Waiting for the job to complete in $$seconds seconds"
 	count=0
 	get_log=false
+	sleep 360
 	while [ $$count -lt $$seconds ]; do
 		if [ true == "$$(make k8s-job-tester-is-running)" ]; then
 			if [ false == $$get_log ]; then
@@ -151,9 +152,8 @@ k8s-job-tester-get-pod-name: ### Get the name of the job pod mandatory: TESTER_N
 	eval "$$(make k8s-kubeconfig-export-variables)"
 	kubectl get pods \
 		--namespace=$(K8S_APP_NAMESPACE) \
-		--selector "env=$(ENVIRONMENT)" \
+		--selector "name=$(TESTER_NAME)" \
 		--output jsonpath='{.items..metadata.name}'
-		#was --selector "name=$(TESTER_NAME)" \
 
 k8s-alb-get-ingress-endpoint: ### Get ALB ingress enpoint - mandatory: PROFILE=[name]
 	# set up
