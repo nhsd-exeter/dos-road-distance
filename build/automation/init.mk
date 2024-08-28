@@ -648,7 +648,7 @@ MAKE_VERSION := $(shell make --version | grep -Eo '[0-9]+\.[0-9]+(\.[0-9]+)?' | 
 MAKEFLAGS := --no-print-director
 PATH := $(PATH_DEVOPS):$(PATH_HOMEBREW):$(PATH_SYSTEM)
 SHELL := /bin/bash
-TERM := ${TERM:-dumb}
+TERM := dumb
 ifeq (true, $(shell [[ "$(DEBUG)" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$$ ]] && echo true))
 	.SHELLFLAGS := -cex
 else
