@@ -799,9 +799,10 @@ endif
 ifneq (0, $(shell which docker > /dev/null 2>&1; echo $$?))
 $(error $(shell tput setaf 202; echo "WARNING: Please, before proceeding install Docker"; tput sgr0))
 endif
-# *NIX: Docker Compose
-ifneq (0, $(shell which docker-compose > /dev/null 2>&1; echo $$?))
-$(error $(shell tput setaf 202; echo "WARNING: Please, before proceeding install Docker Compose"; tput sgr0))
+# *NIX: Docker Compose (Disabled due to github error: 'tput: No value for $TERM and no -T specified')
+# ifneq (0, $(shell which docker-compose > /dev/null 2>&1; echo $$?))
+# $(error $(shell tput setaf 202; echo "WARNING: Please, before proceeding install Docker Compose"; tput sgr0))
+# endif
 endif
 endif
 endif
