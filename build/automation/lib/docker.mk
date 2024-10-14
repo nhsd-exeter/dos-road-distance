@@ -66,6 +66,7 @@ docker-create-from-template: ### Create Docker image from template - mandatory: 
 
 docker-config: ### Configure Docker networking
 	docker network create $(DOCKER_NETWORK) 2> /dev/null ||:
+	docker network ls
 
 docker-build docker-image: ### Build Docker image - mandatory: NAME; optional: VERSION,FROM_CACHE=false,BUILD_OPTS=[build options],EXAMPLE=false
 	reg=$$(make _docker-get-reg)

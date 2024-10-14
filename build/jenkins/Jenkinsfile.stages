@@ -1,8 +1,8 @@
 pipeline {
   agent any
   parameters {
-    choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'regression'], description: 'Environment of the Stage to deploy')
-    string(name: 'LAMBDA_VERSION', defaultValue: '1', description:  'Lambda Version to Stage in API Gateway')
+    choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'performance2', 'regression'], description: 'Environment of the Stage to deploy')
+    string(name: 'LAMBDA_VERSION', defaultValue: '1', description:  'Version or alias of the RD Lambda for stage to point at')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
