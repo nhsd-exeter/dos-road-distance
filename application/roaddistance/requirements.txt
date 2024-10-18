@@ -1,8 +1,8 @@
-awscli==1.32.39
+awscli==1.35.7
 jsonschema==4.21.1
-pytest==8.0.0
+pytest==8.3.3
 protobuf==4.25.2
 pyyaml==6.0.1
-requests==2.31.0
-numpy==1.26.4
-boto3==1.34.39
+requests==2.32.3
+numpy==2.1.2
+boto3==1.35.41

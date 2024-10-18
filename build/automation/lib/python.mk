@@ -3,23 +3,23 @@ PYTHON_VERSION_MINOR = 10
 PYTHON_VERSION_PATCH = 2
 PYTHON_VERSION = $(PYTHON_VERSION_MAJOR).$(PYTHON_VERSION_MINOR).$(PYTHON_VERSION_PATCH)
 PYTHON_BASE_PACKAGES = \
-	awscli-local==0.21 \
-	awscli==1.29.69 \
-	black==23.10.1 \
-	boto3==1.28.69 \
+	awscli-local==0.22.0 \
+	awscli==1.35.7 \
+	black==24.10.0 \
+	boto3==1.35.41 \
 	bpython==0.24 \
-	configparser==6.0.0 \
-	coverage==7.3.2 \
-	diagrams==0.23.3 \
-	flake8==6.1.0 \
-	mypy==1.6.1 \
-	prettytable==3.9.0 \
-	pyflakes==3.1.0 \
-	pygments==2.16.1 \
-	pylint==3.0.2 \
-	pytest==7.4.2 \
-	pyyaml==6.0.1 \
-	requests==2.31.0
+	configparser==7.1.0 \
+	coverage==7.6.3 \
+	diagrams==0.23.4 \
+	flake8==7.1.1 \
+	mypy==1.12.0 \
+	prettytable==3.11.0 \
+	pyflakes==3.2.0 \
+	pygments==2.18.0 \
+	pylint==3.3.1 \
+	pytest==8.3.3 \
+	pyyaml==6.0.2 \
+	requests==2.32.3
 
 python-install: ### Install and configure Python - optional: PYTHON_VERSION
 	if [ $(SYSTEM_DIST) == macos ]; then

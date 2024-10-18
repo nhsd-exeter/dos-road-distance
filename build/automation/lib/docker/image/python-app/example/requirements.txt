@@ -1,2 +1,2 @@
-awscli==1.32.39
-Django==5.0.2
+awscli==1.35.7
+Django==5.1.2

@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.12
 
 COPY assets/sbin/ /sbin/
 RUN chmod u+x /sbin/*.sh
