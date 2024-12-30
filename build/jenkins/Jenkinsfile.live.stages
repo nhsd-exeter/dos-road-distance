@@ -16,7 +16,7 @@ pipeline {
     TF_VAR_lambda_version = "${params.LAMBDA_VERSION}"
   }
   stages{
-    stage("Show Configurations") {
+    stage("Show Configuration") {
       steps {
         script { sh "make show-configuration" }
       }
