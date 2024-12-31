@@ -23,6 +23,12 @@ resource "aws_lambda_function" "road_distance_lambda" {
   ]
 }
 
+resource "aws_lambda_alias" "latest-rd-lambda-version" {
+  name             = "latest-rd-lambda-version"
+  function_name    = "${var.service_prefix}-rd-lambda"
+  function_version = aws_lambda_function.road_distance_lambda.version
+}
+
 resource "aws_lambda_function_event_invoke_config" "road_distance_lambda_invoke_config" {
   function_name          = aws_lambda_function.road_distance_lambda.function_name
   maximum_retry_attempts = 0
