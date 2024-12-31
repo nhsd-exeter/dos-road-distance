@@ -2,7 +2,7 @@ pipeline {
   agent any
   parameters {
     choice(name: 'ENVIRONMENT', choices: ['build', 'uat1', 'uat2', 'uat3', 'uat4', 'ut'], description: 'Environment of the Stage to deploy')
-    string(name: 'LAMBDA_VERSION', defaultValue: 'latest', description:  'Version or alias of the RD Lambda for stage to point at')
+    string(name: 'LAMBDA_VERSION', defaultValue: 'latest-rd-lambda-version', description:  'Version or alias of the RD Lambda for stage to point at')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
