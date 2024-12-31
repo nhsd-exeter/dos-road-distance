@@ -274,11 +274,11 @@ aws-lambda-create-alias: ### Creates aliases for a lambda version - Mandatory NA
 		echo 'Waiting for alias propagation...'; \
 		sleep 5; \
 		$(AWSCLI) lambda create-alias \
-			--name latest \
+			--name latest-rd-lambda-version \
 			--function-name $(NAME) \
 			--function-version $(VERSION) || \
 		$(AWSCLI) lambda update-alias \
-			--name latest \
+			--name latest-rd-lambda-version \
 			--function-name $(NAME) \
 			--function-version $(VERSION); \
 	"

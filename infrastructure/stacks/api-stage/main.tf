@@ -11,11 +11,18 @@ resource "aws_apigatewayv2_stage" "road_distance_api_stage" {
   }
 }
 
+resource "aws_lambda_alias" "latest-rd-lambda-version" {
+  name             = "latest"
+  function_name    = "${var.service_prefix}-rd-lambda"
+  function_version = aws_lambda_function.rd_lambda.version
+}
+
 resource "aws_lambda_permission" "road_distance_invoke_lambda_permission" {
   action        = "lambda:InvokeFunction"
   function_name = "${var.service_prefix}-rd-lambda:${var.lambda_version}"
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${data.terraform_remote_state.api_gateway.outputs.api_execution_arn}/*/*/"
+  depends_on    = [aws_lambda_alias.latest-rd-lambda-version]
 }
 
 resource "aws_cloudwatch_log_group" "road_distance_lambda_log_group" {
