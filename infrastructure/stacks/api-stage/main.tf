@@ -12,9 +12,9 @@ resource "aws_apigatewayv2_stage" "road_distance_api_stage" {
 }
 
 resource "aws_lambda_alias" "latest-rd-lambda-version" {
-  name             = "latest"
+  name             = "latest-rd-lambda-version"
   function_name    = "${var.service_prefix}-rd-lambda"
-  function_version = aws_lambda_function.rd_lambda.version
+  function_version = aws_lambda_function.road_distance_lambda.version
 }
 
 resource "aws_lambda_permission" "road_distance_invoke_lambda_permission" {
