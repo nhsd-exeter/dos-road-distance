@@ -264,7 +264,7 @@ aws-lambda-create-alias: ### Creates an alias for a lambda version - Mandatory N
 	fi
 	make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 		$(AWSCLI) lambda create-alias \
-			--name $(VERSION)-$(BUILD_COMMIT_HASH)$$ALIAS_SUFFIX \
+			--name $(VERSION)-$(BUILD_COMMIT_HASH)$$ALIAS_SUFFIX latest \
 			--function-name $(NAME) \
 			--function-version $(VERSION) \
 		"
