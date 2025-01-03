@@ -1,8 +1,7 @@
 pipeline {
   agent any
   parameters {
-    choice(name: 'ENVIRONMENT', choices: ['build', 'live'], description: 'Environment of the Stage to deploy')
-    string(name: 'LAMBDA_VERSION', defaultValue: 'latest', description:  'Version or alias of the RD Lambda for stage to point at')
+    string(name: 'LAMBDA_VERSION', defaultValue: '1', description:  'Version or alias of the RD Lambda for stage to point at')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -11,7 +10,7 @@ pipeline {
     timeout(time: 25, unit: "MINUTES")
   }
   environment {
-    ENVIRONMENT = "${params.ENVIRONMENT}"
+    ENVIRONMENT = "live"
     PROFILE = "live"
     TF_VAR_lambda_version = "${params.LAMBDA_VERSION}"
   }
