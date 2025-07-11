@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.12
+FROM public.ecr.aws/lambda/python:3.13
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
@@ -9,8 +9,9 @@ ENV DEPENDENCIES="tar gzip less"
 COPY assets/ .
 COPY root/ /root/
 
-RUN dnf -y update
-RUN dnf -y install $DEPENDENCIES
+RUN dnf -y update \
+    && dnf -y install $DEPENDENCIES libxml2 libcap libarchive sqlite-libs \
+    && dnf clean all
 
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN pip3 install pytest
