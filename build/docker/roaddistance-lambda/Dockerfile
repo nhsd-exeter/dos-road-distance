@@ -10,7 +10,8 @@ COPY assets/ .
 COPY root/ /root/
 
 RUN dnf -y update \
-    && dnf -y install $DEPENDENCIES libxml2 libcap libarchive sqlite-libs \
+    && dnf -y upgrade glib2 glibc glibc-common glibc-minimal-langpack libxml2 libcap libarchive sqlite-libs \
+    && dnf -y install $DEPENDENCIES \
     && dnf clean all
 
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
