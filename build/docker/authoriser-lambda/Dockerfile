@@ -9,7 +9,7 @@ ENV DEPENDENCIES="tar gzip less"
 COPY assets/ .
 
 RUN dnf -y update && \
-    dnf -y install $DEPENDENCIES libxml2 libarchive sqlite-libs libcap && \
+    dnf -y install $DEPENDENCIES libxml2 libarchive sqlite-libs libcap glib2 glibc glibc-common glibc-minimal-langpack && \
     dnf clean all
 
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
