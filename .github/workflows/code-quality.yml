@@ -36,3 +36,4 @@ jobs:
             -Dsonar.coverage.exclusions=tests/****/*,utilities/*
             -Dsonar.python.coverage.reportPaths=coverage.xml
             -Dsonar.python.version=3.10.2
+          token: ${{ secrets.SONAR_TOKEN }}
