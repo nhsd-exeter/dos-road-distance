@@ -27,7 +27,7 @@ jobs:
         # SEE: https://github.com/SonarSource/sonarcloud-github-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.RD_SONAR_TOKEN }}
         with:
           projectBaseDir: ./application/roaddistance
           args: >
