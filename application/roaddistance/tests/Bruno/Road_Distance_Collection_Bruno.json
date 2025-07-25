@@ -1,0 +1,414 @@
+{
+  "name": "RoadDistanceAPI",
+  "version": "1",
+  "items": [
+    {
+      "type": "http",
+      "name": "DOS_ROAD_DISTANCE_HAPPY",
+      "filename": "DOS_ROAD_DISTANCE_HAPPY.bru",
+      "seq": 2,
+      "settings": {},
+      "tags": [],
+      "request": {
+        "url": "{{HOST}}/{{TEST_ENVIRONMENT}}/",
+        "method": "POST",
+        "headers": [
+          {
+            "name": "x-authorization",
+            "value": "{{TOKEN}}",
+            "enabled": true
+          },
+          {
+            "name": "Host",
+            "value": "{{HOST}}",
+            "enabled": false
+          },
+          {
+            "name": "x-noauth",
+            "value": "True",
+            "enabled": false
+          }
+        ],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"transactionid\": \"2fd0632c-0124-4bb1-b907-573658cc05f7\",\n  \"origin\": {\n    \"reference\": \"locationReference\",\n    \"latitude\": 50.72179229048227,\n    \"longitude\": -3.525942582444856\n  },\n  \"destinations\": [\n    {\n      \"reference\": \"1000\",\n      \"latitude\": 50.71731288843375,\n      \"longitude\": -3.5389588298795496\n    },\n    {\n      \"reference\": \"1001\",\n      \"latitude\": 50.71691049054391,\n      \"longitude\": -3.5367355145986004\n    },\n    {\n      \"reference\": \"1002\",\n      \"latitude\": 50.9917288843375,\n      \"longitude\": -3.53895882987634\n    },\n    {\n      \"reference\": \"1003\",\n      \"latitude\": 51.991728884,\n      \"longitude\": -3.53895882987262\n    }\n  ]\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "DOS_ROAD_DISTANCE_RESPONSE_INVALID_DISTANCE",
+      "filename": "DOS_ROAD_DISTANCE_RESPONSE_INVALID_DISTANCE.bru",
+      "seq": 8,
+      "settings": {},
+      "tags": [],
+      "request": {
+        "url": "{{HOST}}/{{TEST_ENVIRONMENT}}/",
+        "method": "POST",
+        "headers": [
+          {
+            "name": "x-authorization",
+            "value": "{{TOKEN}}",
+            "enabled": true
+          },
+          {
+            "name": "Host",
+            "value": "{{HOST}}",
+            "enabled": false
+          },
+          {
+            "name": "x-noauth",
+            "value": "True",
+            "enabled": false
+          }
+        ],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"status\": 200,\n  \"message\": \"\",\n  \"transactionid\": \"43c31af7-1f53-470f-9edc-fed8f447dc8f\",\n  \"destinations\": {\n    \"1001\": 15595,\n    \"1002\": 1000000\n  },\n  \"unreachable\": [\"1003\", \"1004\"]\n}\n",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "DOS_ROAD_DISTANCE_INVALID_JSON",
+      "filename": "DOS_ROAD_DISTANCE_INVALID_JSON.bru",
+      "seq": 4,
+      "settings": {},
+      "tags": [],
+      "request": {
+        "url": "{{HOST}}/{{TEST_ENVIRONMENT}}/",
+        "method": "POST",
+        "headers": [
+          {
+            "name": "x-authorization",
+            "value": "{{TOKEN}}",
+            "enabled": true
+          },
+          {
+            "name": "Host",
+            "value": "{{HOST}}",
+            "enabled": false
+          },
+          {
+            "name": "x-noauth",
+            "value": "True",
+            "enabled": false
+          }
+        ],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"transactionid\": \"2fd0632c-0124-4bb1-b907-573658cc05f7\",\n  \"origin\": {\n    \"reference\": \"locationReference\",\n    \"latitude\": 50.72179229048227,\n    \"longitude\": -3.525942582444856\n  }\n  \"destinations\": [\n    {\n      \"reference\": \"1000\",\n      \"latitude\": 50.71731288843375,\n      \"longitude\": -3.5389588298795496\n    },\n    {\n      \"reference\": \"1001\",\n      \"latitude\": 50.71691049054391,\n      \"longitude\": -3.5367355145986004\n    },\n    {\n      \"reference\": \"1002\",\n      \"latitude\": 50.9917288843375,\n      \"longitude\": -3.53895882987634\n    },\n    {\n      \"reference\": \"1003\",\n      \"latitude\": 51.991728884,\n      \"longitude\": -3.53895882987262\n    }\n}\n",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "DOS_ROAD_DISTANCE_INVALID_MISSING_ELEMENT",
+      "filename": "DOS_ROAD_DISTANCE_INVALID_MISSING_ELEMENT.bru",
+      "seq": 5,
+      "settings": {},
+      "tags": [],
+      "request": {
+        "url": "{{HOST}}/{{TEST_ENVIRONMENT}}/",
+        "method": "POST",
+        "headers": [
+          {
+            "name": "x-authorization",
+            "value": "{{TOKEN}}",
+            "enabled": true
+          },
+          {
+            "name": "Host",
+            "value": "{{HOST}}",
+            "enabled": false
+          },
+          {
+            "name": "x-noauth",
+            "value": "True",
+            "enabled": false
+          }
+        ],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"origin\": {\n    \"reference\": \"locationReference\",\n    \"latitude\": 50.72179229048227,\n    \"longitude\": -3.525942582444856\n  },\n  \"destinations\": [\n    {\n      \"reference\": \"1000\",\n      \"latitude\": 50.71731288843375,\n      \"longitude\": -3.5389588298795496\n    },\n    {\n      \"reference\": \"1001\",\n      \"latitude\": 50.71691049054391,\n      \"longitude\": -3.5367355145986004\n    },\n    {\n      \"reference\": \"1002\",\n      \"latitude\": 50.9917288843375,\n      \"longitude\": -3.53895882987634\n    },\n    {\n      \"reference\": \"1003\",\n      \"latitude\": 51.991728884,\n      \"longitude\": -3.53895882987262\n    }\n  ]\n}\n",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "DOS_ROAD_DISTANCE_INVALID_COORD",
+      "filename": "DOS_ROAD_DISTANCE_INVALID_COORD.bru",
+      "seq": 3,
+      "settings": {},
+      "tags": [],
+      "request": {
+        "url": "{{HOST}}/{{TEST_ENVIRONMENT}}/",
+        "method": "POST",
+        "headers": [
+          {
+            "name": "x-authorization",
+            "value": "{{TOKEN}}",
+            "enabled": true
+          },
+          {
+            "name": "Host",
+            "value": "{{HOST}}",
+            "enabled": false
+          },
+          {
+            "name": "x-noauth",
+            "value": "True",
+            "enabled": false
+          }
+        ],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"transactionid\": \"2fd0632c-0124-4bb1-b907-573658cc05f7\",\n  \"origin\": {\n    \"reference\": \"locationReference\",\n    \"latitude\": 500.72179229048227,\n    \"longitude\": -3.525942582444856\n  },\n  \"destinations\": [\n    {\n      \"reference\": \"1000\",\n      \"latitude\": 50.71731288843375,\n      \"longitude\": -3.5389588298795496\n    },\n    {\n      \"reference\": \"1001\",\n      \"latitude\": 50.71691049054391,\n      \"longitude\": -3.5367355145986004\n    },\n    {\n      \"reference\": \"1002\",\n      \"latitude\": 50.9917288843375,\n      \"longitude\": -3.53895882987634\n    },\n    {\n      \"reference\": \"1003\",\n      \"latitude\": 51.991728884,\n      \"longitude\": -3.53895882987262\n    }\n  ]\n}\n",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "DOS_ROAD_DISTANCE_INVALID_REFERENCE",
+      "filename": "DOS_ROAD_DISTANCE_INVALID_REFERENCE.bru",
+      "seq": 6,
+      "settings": {},
+      "tags": [],
+      "request": {
+        "url": "{{HOST}}/{{TEST_ENVIRONMENT}}/",
+        "method": "POST",
+        "headers": [
+          {
+            "name": "x-authorization",
+            "value": "{{TOKEN}}",
+            "enabled": true
+          },
+          {
+            "name": "Host",
+            "value": "{{HOST}}",
+            "enabled": false
+          },
+          {
+            "name": "x-noauth",
+            "value": "True",
+            "enabled": false
+          }
+        ],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"transactionid\": \"error400_invalid_reference\",\n  \"origin\": {\n    \"reference\": \"locationReference\",\n    \"latitude\": 50.72179229048227,\n    \"longitude\": -3.525942582444856\n  },\n  \"destinations\": [\n    {\n      \"reference\": \"&1000\",\n      \"latitude\": 50.71731288843375,\n      \"longitude\": -3.5389588298795496\n    }\n  ]\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "DOS_ROAD_DISTANCE_RESPONSE_HAPPY",
+      "filename": "DOS_ROAD_DISTANCE_RESPONSE_HAPPY.bru",
+      "seq": 7,
+      "settings": {},
+      "tags": [],
+      "request": {
+        "url": "{{HOST}}/{{TEST_ENVIRONMENT}}/",
+        "method": "POST",
+        "headers": [
+          {
+            "name": "x-authorization",
+            "value": "{{TOKEN}}",
+            "enabled": true
+          },
+          {
+            "name": "Host",
+            "value": "{{HOST}}",
+            "enabled": false
+          },
+          {
+            "name": "x-noauth",
+            "value": "True",
+            "enabled": false
+          }
+        ],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"status\": 200,\n  \"message\": \"\",\n  \"transactionid\": \"43c31af7-1f53-470f-9edc-fed8f447dc8f\",\n  \"destinations\": {\n    \"1001\": 15595,\n    \"1002\": 17595\n  },\n  \"unreachable\": [\"1003\", \"1004\"]\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "http",
+      "name": "DOS_ROAD_DISTANCE_RESPONSE_MISSING_TRANSACTION_ID",
+      "filename": "DOS_ROAD_DISTANCE_RESPONSE_MISSING_TRANSACTION_ID.bru",
+      "seq": 9,
+      "settings": {},
+      "tags": [],
+      "request": {
+        "url": "{{HOST}}/{{TEST_ENVIRONMENT}}/",
+        "method": "POST",
+        "headers": [
+          {
+            "name": "x-authorization",
+            "value": "{{TOKEN}}",
+            "enabled": true
+          },
+          {
+            "name": "Host",
+            "value": "{{HOST}}",
+            "enabled": false
+          },
+          {
+            "name": "x-noauth",
+            "value": "True",
+            "enabled": false
+          }
+        ],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"status\": 200,\n  \"message\": \"\",\n  \"destinations\": {\n    \"1001\": 15595,\n    \"1002\": 17595\n  },\n  \"unreachable\": [\"1003\", \"1004\"]\n}",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    }
+  ],
+  "activeEnvironmentUid": "cVQLnoLajnZFKNlaWa8AT",
+  "environments": [
+    {
+      "variables": [
+        {
+          "name": "TEST_ENVIRONMENT",
+          "value": "test3",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "TOKEN",
+          "value": "$2y$04$edYIlPj0pyDNtazZyvn6..z96AoDB1SMNBJWFxnWESSWmjRsu4ckS",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "HOST",
+          "value": "",
+          "enabled": true,
+          "secret": true,
+          "type": "text"
+        }
+      ],
+      "name": "ROAD_DISTANCE_NON_PROD"
+    }
+  ],
+  "root": {
+    "request": {
+      "auth": {
+        "mode": "none"
+      }
+    },
+    "meta": {
+      "name": "RoadDistance (Lambda)"
+    }
+  },
+  "brunoConfig": {
+    "version": "1",
+    "name": "RoadDistanceAPI",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ]
+  }
+}
