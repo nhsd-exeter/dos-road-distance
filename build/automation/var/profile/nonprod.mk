@@ -7,6 +7,7 @@ PROJECT_IMAGE_TAG :=
 ENV := nonprod
 SERVICE_PREFIX := $(PROJECT_ID)-$(ENV)
 AWS_LAMBDA_ECR = $(or $(AWS_ACCOUNT_ID), 000000000000).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com
+API_ENDPOINT = https://$(PROJECT_GROUP_SHORT)-$(PROJECT_NAME_SHORT)-$(ENV)-api.$(TEXAS_HOSTED_ZONE)
 
 # ==============================================================================
 # Infrastructure variables
