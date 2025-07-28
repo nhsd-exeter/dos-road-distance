@@ -27,7 +27,7 @@ class FiveDest(HttpUser):
     @tag('load')
     @task
     def do_test(self):
-        self.client.post("", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
 
 
 class StepLoadShape(LoadTestShape):

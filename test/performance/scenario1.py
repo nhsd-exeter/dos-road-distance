@@ -61,7 +61,7 @@ class FiveDest(FastHttpUser):
 
 class FiftyDest(FastHttpUser):
     weight = 15
-    host = API_HOST
+    host = config.BASE_HOST  # Use config.BASE_HOST directly for consistency
 
     def on_start(self):
         # Debug: Print host configuration when user starts
@@ -85,9 +85,9 @@ class FiftyDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        print(f"DEBUG: Making request to {API_ENDPOINT} with host {self.host}")
+        print(f"DEBUG: Making request to {config.API_ENDPOINT} with host {self.host}")
         try:
-            response = self.client.post(API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
+            response = self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
             print(f"FiftyDest response status: {response.status_code}")
         except Exception as e:
             print(f"ERROR in request: {e}")
@@ -95,7 +95,7 @@ class FiftyDest(FastHttpUser):
 
 class FiveHundredDest(FastHttpUser):
     weight = 3
-    host = API_HOST
+    host = config.BASE_HOST  # Use config.BASE_HOST for consistency
 
     def on_start(self):
         print(f"DEBUG: User host = {self.host}")
@@ -127,7 +127,7 @@ class FiveHundredDest(FastHttpUser):
 
 class OneThousandFiveHundredDest(FastHttpUser):
     weight = 1
-    host = API_HOST
+    host = config.BASE_HOST  # Use config.BASE_HOST for consistency
 
     def on_start(self):
         print(f"DEBUG: User host = {self.host}")
@@ -159,7 +159,7 @@ class OneThousandFiveHundredDest(FastHttpUser):
 
 class ThreeThousandDest(FastHttpUser):
     weight = 1
-    host = API_HOST
+    host = config.BASE_HOST  # Use config.BASE_HOST for consistency
 
     def on_start(self):
         print(f"DEBUG: User host = {self.host}")

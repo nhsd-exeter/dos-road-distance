@@ -16,6 +16,6 @@ class FiveHundredDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
         self.delay_time += self.delay_increment
         time.sleep(self.delay_time)
