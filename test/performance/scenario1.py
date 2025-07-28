@@ -15,7 +15,7 @@ class FiveDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("/calculate", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post("/calculate", json=self.payload, headers=config.headers)
 
 
 class FiftyDest(FastHttpUser):
@@ -30,7 +30,7 @@ class FiftyDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("/calculate", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post("/calculate", json=self.payload, headers=config.headers)
 
 
 class FiveHundredDest(FastHttpUser):
@@ -45,7 +45,7 @@ class FiveHundredDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("/calculate", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post("/calculate", json=self.payload, headers=config.headers)
 
 
 class OneThousandFiveHundredDest(FastHttpUser):
@@ -60,7 +60,7 @@ class OneThousandFiveHundredDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("/calculate", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post("/calculate", json=self.payload, headers=config.headers)
 
 
 class ThreeThousandDest(FastHttpUser):
@@ -75,4 +75,4 @@ class ThreeThousandDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("/calculate", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post("/calculate", json=self.payload, headers=config.headers)

@@ -60,7 +60,7 @@ pipeline {
         LOCUST_RUN_TIME = "${RUNTIME}s"
       }
       steps {
-        script { sh "make performance-deploy PROFILE=nonprod SECONDS=${RUNTIME}" }
+        script { sh "make performance-deploy PROFILE=performance SECONDS=${RUNTIME}" }
       }
     }
     stage ("Deploy Job Two") {
@@ -76,13 +76,6 @@ pipeline {
     stage ("Deployment Summary") {
       steps {
         script { sh "make deployment-summary" }
-      }
-    }
-    stage ("Show ConfigMap Values") {
-      steps {
-        script {
-          sh "make performance-show-config PROFILE=nonprod"
-        }
       }
     }
   }
