@@ -4,7 +4,7 @@ import config as config
 
 
 class FiveDest(FastHttpUser):
-    weight = 0
+    weight = 80
     wait_time = between(0.5, 2)
     host = config.API_ENDPOINT  # Set the host URL
 
@@ -15,11 +15,11 @@ class FiveDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post("/calculate", data=json.dumps(self.payload), headers=config.headers)
 
 
 class FiftyDest(FastHttpUser):
-    weight = 0
+    weight = 15
     host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
@@ -29,11 +29,11 @@ class FiftyDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post("/calculate", data=json.dumps(self.payload), headers=config.headers)
 
 
 class FiveHundredDest(FastHttpUser):
-    weight = 0
+    weight = 3
     host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
@@ -43,11 +43,11 @@ class FiveHundredDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post("/calculate", data=json.dumps(self.payload), headers=config.headers)
 
 
 class OneThousandFiveHundredDest(FastHttpUser):
-    weight = 0
+    weight = 1
     host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
@@ -57,11 +57,11 @@ class OneThousandFiveHundredDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post("/calculate", data=json.dumps(self.payload), headers=config.headers)
 
 
 class ThreeThousandDest(FastHttpUser):
-    weight = 100
+    weight = 1
     host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
@@ -71,4 +71,4 @@ class ThreeThousandDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("", data=json.dumps(self.payload), headers=config.headers)
+        self.client.post("/calculate", data=json.dumps(self.payload), headers=config.headers)
