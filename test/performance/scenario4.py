@@ -7,7 +7,6 @@ import config as config
 class FiveHundredDest(FastHttpUser):
     delay_increment = 30
     delay_time = 0
-    host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_500_destinations.json') as json_file:
@@ -16,6 +15,6 @@ class FiveHundredDest(FastHttpUser):
     @tag('load')
     @task
     def start_test(self):
-        self.client.post("/calculate", json=self.payload, headers=config.headers)
+        self.client.post("", data=json.dumps(self.payload), headers=config.headers)
         self.delay_time += self.delay_increment
         time.sleep(self.delay_time)

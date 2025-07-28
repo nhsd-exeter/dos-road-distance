@@ -10,11 +10,8 @@ from traveltime_request import TravelTimeRequest
 from traveltime_response import TravelTimeResponse
 import config as config
 import requests
-import urllib3
-from requests.adapters import HTTPAdapter
 from traveltime_mock import TravelTimeMock
 import time
-import base64
 
 
 class RoadDistance(Common):
@@ -154,17 +151,7 @@ class RoadDistance(Common):
             if drd_api_key == "":
                 self.logger.log("DRD_API_KEY was not set")
 
-            # Create a fresh requests session with custom adapter to avoid numpy interference
-            session = requests.Session()
-            # Mount a fresh HTTPAdapter that bypasses any monkey-patching
-            adapter = HTTPAdapter(max_retries=3)
-            session.mount('http://', adapter)
-            session.mount('https://', adapter)
-
-            # Disable urllib3 warnings about unverified HTTPS requests
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-            r = session.post(
+            r = requests.post(
                 url=endpoint,
                 data=request,
                 auth=(drd_app_id, drd_api_key),
@@ -172,8 +159,6 @@ class RoadDistance(Common):
                     "Content-type": "application/octet-stream",
                     "Accept": "application/octet-stream",
                 },
-                verify=True,
-                timeout=30
             )
 
         tt_request_time = time.time() - tt_request_start

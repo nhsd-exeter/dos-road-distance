@@ -19,7 +19,6 @@ current_file = LoadFile()
 
 class TestUser(HttpUser):
     weight = 1
-    host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
         with open(f'{config.ccs_prefix}{current_file.get_file()}') as json_file:
@@ -28,7 +27,7 @@ class TestUser(HttpUser):
     @tag('load')
     @task
     def do_test(self):
-        self.client.post("/calculate", json=self.payload, headers=config.headers)
+        self.client.post("", data=json.dumps(self.payload), headers=config.headers)
 
 
 class StepLoadShape(LoadTestShape):
