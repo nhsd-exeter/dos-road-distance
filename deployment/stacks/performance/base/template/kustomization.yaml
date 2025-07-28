@@ -12,8 +12,8 @@ configMapGenerator:
       - API_ENDPOINT=API_ENDPOINT_TO_REPLACE
       - SERVICE_PREFIX=SERVICE_PREFIX_TO_REPLACE
       - LOCUST_LOCUSTFILE=LOCUST_LOCUSTFILE_TO_REPLACE
-      - PERF_TEST_HOST=https://7bmdvfro69.execute-api.eu-west-2.amazonaws.com
-      - LOCUST_HOST=https://7bmdvfro69.execute-api.eu-west-2.amazonaws.com
+      - PERF_TEST_HOST=API_ENDPOINT_TO_REPLACE
+      - LOCUST_HOST=API_ENDPOINT_TO_REPLACE
 
 namespace: K8S_APP_NAMESPACE_TO_REPLACE
 
