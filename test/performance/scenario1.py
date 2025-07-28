@@ -2,6 +2,10 @@ import json
 from locust import task, FastHttpUser, tag, between
 import config as config
 
+# Debug: Print configuration at module load time
+print(f"DEBUG: BASE_HOST = {config.BASE_HOST}")
+print(f"DEBUG: API_ENDPOINT = {config.API_ENDPOINT}")
+
 
 class FiveDest(FastHttpUser):
     weight = 80
@@ -9,12 +13,15 @@ class FiveDest(FastHttpUser):
     host = config.BASE_HOST  # Set the host for this user class
 
     def on_start(self):
+        # Debug: Print host configuration when user starts
+        print(f"DEBUG: User host = {self.host}")
         with open(config.ccs_prefix + 'ccs_5_destinations.json') as json_file:
             self.payload = json.load(json_file)
 
     @tag('load')
     @task
     def start_test(self):
+        print(f"DEBUG: Making request to {config.API_ENDPOINT} with host {self.host}")
         self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
 
 
