@@ -3,12 +3,12 @@ aws-session-fail-if-invalid: ### Fail if the session variables are not set
 		&& exit 1 ||:
 
 aws-assume-role-export-variables: ### Get assume role export for the pipeline user - optional: AWS_ACCOUNT_ID|PROFILE=[profile name to load relevant platform configuration file]
-	if [ "$(AWS_ROLE)" == $(AWS_ROLE_PIPELINE) ]; then
-		if [ $(AWS_ACCOUNT_ID) == "$$(make aws-account-get-id)" ] && [ $(AWS_ACCOUNT_ID) != $(AWS_ACCOUNT_ID_MGMT) ]; then
+	if [ "$(AWS_ROLE)" == $(AWS_ROLE_PIPELINE) ] && [ -n "$(AWS_ACCOUNT_ID)" ] && [ "$(AWS_ACCOUNT_ID)" != "000000000000" ]; then
+		if [ $(AWS_ACCOUNT_ID) == "$$(make aws-account-get-id 2>/dev/null || echo '')" ] && [ $(AWS_ACCOUNT_ID) != $(AWS_ACCOUNT_ID_MGMT) ]; then
 			echo "Already assumed arn:aws:iam::$(AWS_ACCOUNT_ID):role/$(AWS_ROLE)" >&2
 			exit
 		fi
-		array=($$(
+		if array=($$(
 			make -s docker-run-tools ARGS="$$(echo $(AWSCLI) | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=$(LOCALSTACK_HOST)' ||:)" CMD=" \
 				$(AWSCLI) sts assume-role \
 					--role-arn arn:aws:iam::$(AWS_ACCOUNT_ID):role/$(AWS_ROLE) \
@@ -16,11 +16,16 @@ aws-assume-role-export-variables: ### Get assume role export for the pipeline us
 					--query=Credentials.[AccessKeyId,SecretAccessKey,SessionToken] \
 					--output text \
 				| sed -E 's/[[:blank:]]+/ /g' \
-			"
-		))
-		echo "export AWS_ACCESS_KEY_ID=$${array[0]}"
-		echo "export AWS_SECRET_ACCESS_KEY=$${array[1]}"
-		echo "export AWS_SESSION_TOKEN=$${array[2]}"
+			" 2>/dev/null
+		)); then
+			echo "export AWS_ACCESS_KEY_ID=$${array[0]}"
+			echo "export AWS_SECRET_ACCESS_KEY=$${array[1]}"
+			echo "export AWS_SESSION_TOKEN=$${array[2]}"
+		else
+			echo "# Warning: AWS role assumption failed, using existing credentials"
+		fi
+	else
+		echo "# Warning: AWS role assumption skipped (missing or default account ID)"
 	fi
 
 aws-user-get-role:

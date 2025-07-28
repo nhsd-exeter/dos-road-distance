@@ -308,11 +308,11 @@ performance-push: # mandatory - PROFILE=[name]
 	eval "$$(make aws-assume-role-export-variables)"
 	make docker-push NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
 
-performance-deploy: # mandatory - PROFILE=[name], SECONDS=[time of performance]
-	eval "$$(make aws-assume-role-export-variables)"
+performance-deploy: # mandatory - SECONDS=[time of performance]
+	eval "$$(make aws-assume-role-export-variables PROFILE=nonprod)"
 	eval "$$(make secret-fetch-and-export-variables ENVIRONMENT=nonprod)"
-	make k8s-deploy STACK=performance AWS_ECR=$(AWS_LAMBDA_ECR)
-	make k8s-job-tester-wait-to-complete TESTER_NAME=$(SERVICE_PREFIX)-performance SECONDS=$(SECONDS) AWS_ECR=$(AWS_LAMBDA_ECR)
+	make k8s-deploy STACK=performance PROFILE=nonprod AWS_ECR=$(AWS_LAMBDA_ECR)
+	make k8s-job-tester-wait-to-complete TESTER_NAME=$(SERVICE_PREFIX)-performance SECONDS=$(SECONDS) AWS_ECR=$(AWS_LAMBDA_ECR) PROFILE=nonprod
 
 performance-delete: # mandatory - PROFILE=[name]
 	eval "$$(make aws-assume-role-export-variables)"
