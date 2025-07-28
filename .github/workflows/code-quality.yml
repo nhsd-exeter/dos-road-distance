@@ -32,10 +32,8 @@ jobs:
         with:
           projectBaseDir: ./application/roaddistance
           args: >
-            -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=uec-dos-rd
-            -Dsonar.host.url='https://sonarqube.mgmt.texasplatform.uk'
+            -Dsonar.host.url=https://sonarqube.mgmt.texasplatform.uk
             -Dsonar.login=$SONAR_HOST_TOKEN
             -Dsonar.coverage.exclusions=tests/****/*,utilities/*
             -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.python.version=3.10.2
