@@ -20,6 +20,7 @@ class FiveDest(FastHttpUser):
 
 class FiftyDest(FastHttpUser):
     weight = 15
+    wait_time = between(1, 3)
     host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
@@ -34,6 +35,7 @@ class FiftyDest(FastHttpUser):
 
 class FiveHundredDest(FastHttpUser):
     weight = 3
+    wait_time = between(2, 5)
     host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
@@ -48,6 +50,7 @@ class FiveHundredDest(FastHttpUser):
 
 class OneThousandFiveHundredDest(FastHttpUser):
     weight = 1
+    wait_time = between(3, 7)
     host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
@@ -62,6 +65,7 @@ class OneThousandFiveHundredDest(FastHttpUser):
 
 class ThreeThousandDest(FastHttpUser):
     weight = 1
+    wait_time = between(5, 10)
     host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
