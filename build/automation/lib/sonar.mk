@@ -2,7 +2,7 @@ SONAR_SCANNER_CLI_VERSION = 4.6
 
 sonar-scanner-cli: ### Run Sonar scanner CLI- mandatory: SONAR_HOST_TOKEN; optional: SONAR_HOST_URL=[defaults to 'https://sonarcloud.io'],SONAR_EXCLUSIONS=[e.g. '**/*.java'],SONAR_ARGS
 	make docker-run-sonar-scanner-cli CMD=" \
-		-D sonar.host.url='$(or $(SONAR_HOST_URL), https://sonarcloud.io)' \
+		-D sonar.host.url='$(or $(SONAR_HOST_URL), https://sonarqube.mgmt.texasplatform.uk)' \
 		-D sonar.login='$(SONAR_HOST_TOKEN)' \
 		-D sonar.organization='$(ORG_NAME)' \
 		-D sonar.projectKey='$(PROJECT_ID)' \
