@@ -273,7 +273,11 @@ aws-lambda-create-alias: ### Creates an alias for a lambda version - Mandatory N
 
 deployment-summary: # Returns a deployment summary
 	echo Terraform Changes
-	cat /tmp/terraform_changes.txt | grep -E 'Apply...'
+	if [ -f /tmp/terraform_changes.txt ]; then \
+		cat /tmp/terraform_changes.txt | grep -E 'Apply...' || echo "No Terraform changes applied"; \
+	else \
+		echo "No Terraform changes file found"; \
+	fi
 
 pipeline-send-notification: ## Send Slack notification with the pipeline status - mandatory: PIPELINE_NAME,BUILD_STATUS
 	eval "$$(make aws-assume-role-export-variables)"

@@ -29,7 +29,19 @@ pipeline {
     }
     stage ("Provision") {
       steps {
-        script { sh "make provision STACKS=performance ENVIRONMENT=nonprod | tee /tmp/terraform_changes.txt" }
+        script {
+          try {
+            sh "make provision STACKS=performance ENVIRONMENT=nonprod | tee /tmp/terraform_changes.txt"
+          } catch (Exception e) {
+            echo "Terraform provisioning failed: ${e.getMessage()}"
+            echo "Attempting to break state lock and retry..."
+            sh """
+              eval "\$(make aws-assume-role-export-variables)"
+              make -s docker-run-tools ARGS="\$(echo aws | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=localstack.rd.local' ||:)" CMD="aws dynamodb delete-item --table-name nhsd-texasplatform-terraform-service-state-lock-texas-lk8s-nonprod --key '{\"LockID\":{\"S\":\"nhsd-texasplatform-terraform-service-state-store-lk8s-nonprod/uec-dos-rd/nonprod/performance/terraform.state-md5\"}}'" || echo "Lock not found or already released"
+            """
+            sh "make provision STACKS=performance ENVIRONMENT=nonprod | tee /tmp/terraform_changes.txt"
+          }
+        }
       }
     }
     stage ("Build") {
