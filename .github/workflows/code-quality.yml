@@ -23,16 +23,18 @@ jobs:
       - name: Create coverage report
         run: |
           make build-tester coverage PROFILE=local
-      - uses: sonarsource/sonarcloud-github-action@master
+      - uses: SonarSource/sonarqube-scan-action@v5.3
         # SEE: https://github.com/SonarSource/sonarcloud-github-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_TOKEN: ${{ secrets.SONAR_HOST_TOKEN }}
+          SONARQUBE_VERSION: '8.9.7'
         with:
           projectBaseDir: ./application/roaddistance
           args: >
-            -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=uec-dos-rd
+            -Dsonar.host.url=https://sonarqube.mgmt.texasplatform.uk
+            -Dsonar.login=$SONAR_HOST_TOKEN
             -Dsonar.coverage.exclusions=tests/****/*,utilities/*
             -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.python.version=3.10.2
