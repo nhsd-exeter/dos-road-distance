@@ -256,7 +256,7 @@ k8s-kubeconfig-get: ### Get configuration file
 	make aws-s3-download \
 		URI=$(K8S_KUBECONFIG_FILE) \
 		FILE=$(TMP_DIR_REL)/lk8s-$(AWS_ACCOUNT_NAME)-kubeconfig
-	if [ "$(PROFILE)" == "local" ] && [ "$(BUILD_ID)" -eq 0 ]; then
+	if [ $(PROFILE) == "local" ] && [ $(BUILD_ID) -eq 0 ]; then
 		mkdir -p $(HOME)/.kube/configs
 		cp -f \
 			$(TMP_DIR_REL)/lk8s-$(AWS_ACCOUNT_NAME)-kubeconfig \

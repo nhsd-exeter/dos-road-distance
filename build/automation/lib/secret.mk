@@ -10,13 +10,10 @@ secret-get-random-string secret-random: ### Generate random string - optional: L
 secret-fetch-and-export-variables: ### Get secret and print variable exports - mandatory: NAME|DEPLOYMENT_SECRETS=[secret name]; return: [variables export]
 	if [ -n "$(NAME)" ] || [ -n "$(DEPLOYMENT_SECRETS)" ]; then
 		# set up
-		eval "$$(make aws-assume-role-export-variables)" || true
-		# fetch (with error handling)
-		if secret=$$(make aws-secret-get NAME=$(or $(NAME), $(DEPLOYMENT_SECRETS)) 2>/dev/null); then
-			make _secret-export-variables-from-json JSON="$$secret"
-		else
-			echo "# Warning: Secret $(or $(NAME), $(DEPLOYMENT_SECRETS)) not found, proceeding without secrets"
-		fi
+		eval "$$(make aws-assume-role-export-variables)"
+		# fetch
+		secret=$$(make aws-secret-get NAME=$(or $(NAME), $(DEPLOYMENT_SECRETS)))
+		make _secret-export-variables-from-json JSON="$$secret"
 	fi
 
 secret-fetch: ### Get secret - mandatory: NAME=[secret name]; return: [json object]
