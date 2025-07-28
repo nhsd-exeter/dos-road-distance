@@ -7,6 +7,7 @@ import config as config
 class FiveHundredDest(FastHttpUser):
     delay_increment = 30
     delay_time = 0
+    host = config.BASE_HOST  # Add missing host configuration
 
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_500_destinations.json') as json_file:

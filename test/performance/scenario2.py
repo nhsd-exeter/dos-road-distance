@@ -19,6 +19,7 @@ current_file = LoadFile()
 
 class FiveDest(HttpUser):
     weight = 1
+    host = config.BASE_HOST  # Add missing host configuration
 
     def on_start(self):
         with open(f'{config.ccs_prefix}{current_file.get_file()}') as json_file:

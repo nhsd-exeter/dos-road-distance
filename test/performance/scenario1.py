@@ -3,14 +3,10 @@ import os
 from locust import task, FastHttpUser, tag, between
 import config as config
 
-# Use environment variable if set, otherwise raise an error
-# The PERF_TEST_HOST and LOCUST_HOST should be provided by the deployment configuration
-API_HOST = os.environ.get('PERF_TEST_HOST') or os.environ.get('LOCUST_HOST')
-API_ENDPOINT = "/"
-
-# Validate that we have a valid API host configured
-if not API_HOST or API_HOST == 'NOT SET' or API_HOST.endswith('_TO_REPLACE'):
-    raise ValueError("API_HOST not properly configured. PERF_TEST_HOST or LOCUST_HOST environment variable must be set to a valid API endpoint.")
+# Use the centralized config for all host configuration
+# This ensures consistency across all scenario files
+API_HOST = config.BASE_HOST
+API_ENDPOINT = config.API_ENDPOINT
 
 # Debug: Print all relevant environment variables and configuration
 print("=== DEBUG CONFIGURATION ===")
@@ -20,15 +16,14 @@ print(f"API_HOST = {API_HOST}")
 print(f"API_ENDPOINT = {API_ENDPOINT}")
 print(f"Environment PERF_TEST_HOST = {os.environ.get('PERF_TEST_HOST', 'NOT SET')}")
 print(f"Environment LOCUST_HOST = {os.environ.get('LOCUST_HOST', 'NOT SET')}")
-print(f"All environment variables: {dict(os.environ)}")
 print("=== END DEBUG ===")
 
 
 class FiveDest(FastHttpUser):
     weight = 80
     wait_time = between(0.5, 2)
-    # Use the configured host
-    host = API_HOST
+    # Use the configured host from config module
+    host = config.BASE_HOST
 
     def on_start(self):
         # Debug: Print host configuration when user starts
