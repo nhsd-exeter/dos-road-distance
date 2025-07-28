@@ -29,6 +29,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_TOKEN: ${{ secrets.SONAR_HOST_TOKEN }}
+          SONARQUBE_VERSION: '8.9.7'
         with:
           projectBaseDir: ./application/roaddistance
           args: >
