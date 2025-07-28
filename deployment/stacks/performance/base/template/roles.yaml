@@ -4,7 +4,7 @@ metadata:
   name: dos-role
 rules:
   - apiGroups: [ "" ]
-    resources: [ "configmaps", "events", "persistentvolumeclaims", "pods", "secrets", "serviceaccounts", "services",  "pods/log", "pods/exec" ]
+    resources: [ "configmaps", "events", "persistentvolumeclaims", "pods", "secrets", "serviceaccounts", "services", "pods/log", "pods/exec" ]
     verbs: [ "create", "delete", "get", "list", "patch", "update", "watch", "scale" ]
   - apiGroups: [ "batch" ]
     resources: [ "jobs", "cronjobs" ]
@@ -18,8 +18,9 @@ kind: RoleBinding
 metadata:
   name: dos-role-binding
 subjects:
-  - kind: Group
-    name: texas:dos-service-developer
+  - kind: ServiceAccount
+    name: uec-sa
+    namespace: ${K8S_APP_NAMESPACE}
 roleRef:
   kind: Role
   name: dos-role
