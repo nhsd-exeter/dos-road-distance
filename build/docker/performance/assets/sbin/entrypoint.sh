@@ -15,8 +15,8 @@ then
 else
   OUTPUT_FILE=results/locust.cli.log
   echo "Remote Performance Tests" > ${OUTPUT_FILE}
-  echo locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/ >> ${OUTPUT_FILE}
-  locust --config locust.conf --host ${API_ENDPOINT}/${ENVIRONMENT}/ 2>&1 >> ${OUTPUT_FILE}
+  echo locust --config locust.conf --host ${API_ENDPOINT} >> ${OUTPUT_FILE}
+  locust --config locust.conf --host ${API_ENDPOINT} 2>&1 >> ${OUTPUT_FILE}
   echo "Performance tests finished" >> ${OUTPUT_FILE}
   cd results
   zip -r results.zip ./
