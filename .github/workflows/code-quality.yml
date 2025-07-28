@@ -23,7 +23,7 @@ jobs:
       - name: Create coverage report
         run: |
           make build-tester coverage PROFILE=local
-      - uses: SonarSource/sonarqube-scan-action@v5.3.0
+      - uses: SonarSource/sonarcloud-github-action@v5.0.0
         # SEE: https://github.com/SonarSource/sonarcloud-github-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
