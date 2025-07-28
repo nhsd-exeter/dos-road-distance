@@ -304,8 +304,8 @@ performance-build: # mandatory - PROFILE=[name]
 	make docker-image NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
 	rm -rf $(DOCKER_DIR)/performance/assets/locust/*
 
-performance-push: # mandatory - PROFILE=[name]
-	eval "$$(make aws-assume-role-export-variables)"
+performance-push: # Push performance image to ECR
+	eval "$$(make aws-assume-role-export-variables PROFILE=nonprod)"
 	make docker-push NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
 
 performance-deploy: # mandatory - SECONDS=[time of performance]
@@ -314,14 +314,14 @@ performance-deploy: # mandatory - SECONDS=[time of performance]
 	make k8s-deploy STACK=performance PROFILE=nonprod AWS_ECR=$(AWS_LAMBDA_ECR)
 	make k8s-job-tester-wait-to-complete TESTER_NAME=$(SERVICE_PREFIX)-performance SECONDS=$(SECONDS) AWS_ECR=$(AWS_LAMBDA_ECR) PROFILE=nonprod
 
-performance-delete: # mandatory - PROFILE=[name]
-	eval "$$(make aws-assume-role-export-variables)"
-	make k8s-undeploy AWS_ECR=$(AWS_LAMBDA_ECR)
+performance-delete: # Delete performance deployment
+	eval "$$(make aws-assume-role-export-variables PROFILE=nonprod)"
+	make k8s-undeploy PROFILE=nonprod AWS_ECR=$(AWS_LAMBDA_ECR)
 	make aws-ecr-untag NAME=performance TAG=$$(make docker-image-get-version NAME=performance) INCLUDE_LATEST=true
 
-performance-start: # mandatory - PROFILE=[name]
-	if [ $(PROFILE) != local ]; then
-		eval "$$(make secret-fetch-and-export-variables)"
+performance-start: # Start performance testing locally
+	if [ nonprod != local ]; then
+		eval "$$(make secret-fetch-and-export-variables ENVIRONMENT=nonprod)"
 	fi
 	make docker-image-start NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
 
