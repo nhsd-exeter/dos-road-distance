@@ -10,8 +10,11 @@ from traveltime_request import TravelTimeRequest
 from traveltime_response import TravelTimeResponse
 import config as config
 import requests
+import urllib3
+from requests.adapters import HTTPAdapter
 from traveltime_mock import TravelTimeMock
 import time
+import base64
 
 
 class RoadDistance(Common):
@@ -151,21 +154,29 @@ class RoadDistance(Common):
             if drd_api_key == "":
                 self.logger.log("DRD_API_KEY was not set")
 
-            r = requests.post(
-                url=endpoint,
-                data=request,
-                auth=(drd_app_id, drd_api_key),
+            # Create HTTP Basic Auth header to avoid urllib monkey-patching issues
+            auth_string = f"{drd_app_id}:{drd_api_key}"
+            auth_bytes = auth_string.encode('ascii')
+            auth_b64 = base64.b64encode(auth_bytes).decode('ascii')
+
+            # Use urllib3 PoolManager to bypass numpy's test monkey-patching
+            http = urllib3.PoolManager()
+            r = http.request(
+                "POST",
+                endpoint,
+                body=request,
                 headers={
                     "Content-type": "application/octet-stream",
                     "Accept": "application/octet-stream",
-                },
+                    "Authorization": f"Basic {auth_b64}"
+                }
             )
 
         tt_request_time = time.time() - tt_request_start
         self.logger.log_system_time("provider_complete", str(tt_request_time))
 
-        self.status_code = r.status_code
-        self.response = self.decode_response(r.content)
+        self.status_code = r.status
+        self.response = self.decode_response(r.data)
         if "error" in self.response:
             self.status_code = 400
             self.response = self.response["error"]
