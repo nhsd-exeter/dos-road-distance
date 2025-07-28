@@ -34,7 +34,7 @@ jobs:
           args: >
             -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=uec-dos-rd
-            -Dsonar.host.url=$SONAR_HOST_URL
+            -Dsonar.host.url='https://sonarqube.mgmt.texasplatform.uk'
             -Dsonar.login=$SONAR_HOST_TOKEN
             -Dsonar.coverage.exclusions=tests/****/*,utilities/*
             -Dsonar.python.coverage.reportPaths=coverage.xml
