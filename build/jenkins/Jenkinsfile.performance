@@ -78,6 +78,13 @@ pipeline {
         script { sh "make deployment-summary" }
       }
     }
+    stage ("Show ConfigMap Values") {
+      steps {
+        script {
+          sh "make performance-show-config PROFILE=nonprod"
+        }
+      }
+    }
   }
   post {
     always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Performance)' BUILD_STATUS=${currentBuild.currentResult}" }

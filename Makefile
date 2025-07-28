@@ -340,12 +340,18 @@ performance-download:
 	eval "$$(make aws-assume-role-export-variables)"
 	make aws-s3-download FILE=$(FILE) URI=$(SERVICE_PREFIX)-performance
 
-# ==============================================================================
-
-create-artefact-repositories: # Create ECR repositories to store the artefacts
-	make docker-create-repository NAME=roaddistance-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
-	make docker-create-repository NAME=authoriser-lambda AWS_ECR=$(AWS_LAMBDA_ECR)
-	make docker-create-repository NAME=performance AWS_ECR=$(AWS_LAMBDA_ECR)
+performance-show-config: # Show ConfigMap values - mandatory: PROFILE=[name]
+	eval "$$(make aws-assume-role-export-variables)"
+	make k8s-kubeconfig-get
+	eval "$$(make k8s-kubeconfig-export-variables)"
+	@echo "=== Performance ConfigMap Values ==="
+	@echo "Namespace: $(K8S_APP_NAMESPACE)"
+	@echo "ConfigMap Name: performance-config"
+	@echo ""
+	kubectl get configmap performance-config -o yaml -n $(K8S_APP_NAMESPACE) 2>/dev/null || echo "ConfigMap 'performance-config' not found in namespace '$(K8S_APP_NAMESPACE)'"
+	@echo ""
+	@echo "=== ConfigMap Data (Key-Value pairs) ==="
+	kubectl get configmap performance-config -o jsonpath='{range .data.*}{@}{"\n"}{end}' -n $(K8S_APP_NAMESPACE) 2>/dev/null || echo "Could not extract ConfigMap data"
 
 # ==============================================================================
 .SILENT: \
