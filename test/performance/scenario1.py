@@ -4,8 +4,13 @@ from locust import task, FastHttpUser, tag, between
 import config as config
 
 # Use environment variable if set, otherwise use the known working API Gateway URL
-API_HOST = os.environ.get('PERF_TEST_HOST', 'https://7bmdvfro69.execute-api.eu-west-2.amazonaws.com')
+# Try multiple fallback approaches to avoid DNS issues
+API_HOST = os.environ.get('PERF_TEST_HOST') or os.environ.get('LOCUST_HOST') or 'https://7bmdvfro69.execute-api.eu-west-2.amazonaws.com'
 API_ENDPOINT = "/"
+
+# Force to use the hardcoded API Gateway URL if environment variables fail
+if not API_HOST or API_HOST == 'NOT SET':
+    API_HOST = 'https://7bmdvfro69.execute-api.eu-west-2.amazonaws.com'
 
 # Debug: Print all relevant environment variables and configuration
 print("=== DEBUG CONFIGURATION ===")
@@ -15,6 +20,7 @@ print(f"API_HOST = {API_HOST}")
 print(f"API_ENDPOINT = {API_ENDPOINT}")
 print(f"Environment PERF_TEST_HOST = {os.environ.get('PERF_TEST_HOST', 'NOT SET')}")
 print(f"Environment LOCUST_HOST = {os.environ.get('LOCUST_HOST', 'NOT SET')}")
+print(f"All environment variables: {dict(os.environ)}")
 print("=== END DEBUG ===")
 
 
