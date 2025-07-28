@@ -154,6 +154,34 @@ k8s-job-tester-get-pod-name: ### Get the name of the job pod mandatory: TESTER_N
 		--selector "name=$(TESTER_NAME)" \
 		--output jsonpath='{.items..metadata.name}'
 
+k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status only - mandatory: TESTER_NAME=[tester_name], SECONDS=[timeout seconds]
+	eval "$$(make k8s-kubeconfig-export-variables)"
+	seconds=$(or $(SECONDS), 60)
+	echo "Waiting for job $(TESTER_NAME) to complete in $$seconds seconds"
+	echo "Monitoring job status (no pod access required)..."
+
+	# Use kubectl wait with timeout for job completion
+	if kubectl wait --for=condition=complete job/$(TESTER_NAME) \
+		--timeout=$${seconds}s \
+		--namespace=$(K8S_APP_NAMESPACE) 2>/dev/null; then
+		echo "SUCCESS: Job $(TESTER_NAME) completed successfully"
+		echo "Getting job logs..."
+		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+		exit 0
+	elif kubectl wait --for=condition=failed job/$(TESTER_NAME) \
+		--timeout=5s \
+		--namespace=$(K8S_APP_NAMESPACE) 2>/dev/null; then
+		echo "ERROR: Job $(TESTER_NAME) failed"
+		echo "Getting job logs..."
+		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+		exit 1
+	else
+		echo "ERROR: Job $(TESTER_NAME) did not complete within $$seconds seconds"
+		echo "Current job status:"
+		kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status"
+		exit 1
+	fi
+
 k8s-alb-get-ingress-endpoint: ### Get ALB ingress enpoint - mandatory: PROFILE=[name]
 	# set up
 	eval "$$(make aws-assume-role-export-variables)"
