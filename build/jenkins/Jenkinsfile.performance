@@ -60,7 +60,7 @@ pipeline {
         LOCUST_RUN_TIME = "${RUNTIME}s"
       }
       steps {
-        script { sh "make performance-deploy PROFILE=performance SECONDS=${RUNTIME}" }
+        script { sh "make performance-deploy PROFILE=performance SECONDS=\$((\${RUNTIME} + 60))" }
       }
     }
     stage ("Deploy Job Two") {
