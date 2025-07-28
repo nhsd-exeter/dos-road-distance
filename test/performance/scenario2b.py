@@ -19,6 +19,7 @@ current_file = LoadFile()
 
 class TestUser(HttpUser):
     weight = 1
+    host = config.API_ENDPOINT  # Set the host URL
 
     def on_start(self):
         with open(f'{config.ccs_prefix}{current_file.get_file()}') as json_file:
