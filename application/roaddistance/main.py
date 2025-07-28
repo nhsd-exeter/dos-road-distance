@@ -154,29 +154,33 @@ class RoadDistance(Common):
             if drd_api_key == "":
                 self.logger.log("DRD_API_KEY was not set")
 
-            # Create HTTP Basic Auth header to avoid urllib monkey-patching issues
-            auth_string = f"{drd_app_id}:{drd_api_key}"
-            auth_bytes = auth_string.encode('ascii')
-            auth_b64 = base64.b64encode(auth_bytes).decode('ascii')
+            # Create a fresh requests session with custom adapter to avoid numpy interference
+            session = requests.Session()
+            # Mount a fresh HTTPAdapter that bypasses any monkey-patching
+            adapter = HTTPAdapter(max_retries=3)
+            session.mount('http://', adapter)
+            session.mount('https://', adapter)
 
-            # Use urllib3 PoolManager to bypass numpy's test monkey-patching
-            http = urllib3.PoolManager()
-            r = http.request(
-                "POST",
-                endpoint,
-                body=request,
+            # Disable urllib3 warnings about unverified HTTPS requests
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+            r = session.post(
+                url=endpoint,
+                data=request,
+                auth=(drd_app_id, drd_api_key),
                 headers={
                     "Content-type": "application/octet-stream",
                     "Accept": "application/octet-stream",
-                    "Authorization": f"Basic {auth_b64}"
-                }
+                },
+                verify=True,
+                timeout=30
             )
 
         tt_request_time = time.time() - tt_request_start
         self.logger.log_system_time("provider_complete", str(tt_request_time))
 
-        self.status_code = r.status
-        self.response = self.decode_response(r.data)
+        self.status_code = r.status_code
+        self.response = self.decode_response(r.content)
         if "error" in self.response:
             self.status_code = 400
             self.response = self.response["error"]
