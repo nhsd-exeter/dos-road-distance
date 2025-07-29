@@ -67,14 +67,13 @@ push-tester: # Pushes image used for testing - mandatory: PROFILE=[name]
 	make docker-push NAME=tester
 
 coverage:
-    mkdir -p coverage \
-    echo "Sending image $$(make _docker-get-reg)/tester:latest" \
-    make docker-run-tools IMAGE=$$(make _docker-get-reg)/tester:latest SH=y \
-        DIR=$(or $(DIR), $(APPLICATION_DIR_REL)) \
-        ARGS="$(ARGS) -v $(PWD)/coverage:/project/application/roaddistance/coverage" \
-        CMD="cd /project/application/roaddistance/ && \
-            python -m coverage run --omit=tests/*,utilities/* -m pytest && \
-            python -m coverage xml -o coverage/coverage.xml"
+	echo "Sending image $$(make _docker-get-reg)/tester:latest"
+	make docker-run-tools IMAGE=$$(make _docker-get-reg)/tester:latest SH=y DIR=$(or $(DIR), $(APPLICATION_DIR_REL)) ARGS="$(ARGS)" CMD=" \
+		cd /project/application/roaddistance/ && \
+		python -m coverage run \
+			--omit=tests/*,utilities/* \
+			-m pytest && \
+			python -m coverage xml -o coverage/coverage.xml"
 
 
 upgrade-pip:
