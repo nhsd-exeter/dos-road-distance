@@ -14,6 +14,7 @@ pipeline {
     PROFILE = "nonprod"
     ENVIRONMENT = "${params.ENVIRONMENT}"
     LOCUST_LOCUSTFILE = "${params.SCENARIO}"
+    PERF_TEST_HOST = "https://uec-dos-rd-nonprod-api.k8s-nonprod.texasplatform.uk"
   }
   stages {
     stage("Show Configuration") {
