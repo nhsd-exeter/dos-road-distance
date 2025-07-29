@@ -1,5 +1,5 @@
-resources:
-  - ../../../base
+bases:
+  - ../../base
 
 patchesStrategicMerge:
   - performance-job-patch.yaml
