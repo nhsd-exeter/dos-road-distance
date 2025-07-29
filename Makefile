@@ -73,7 +73,7 @@ coverage:
 		python -m coverage run \
 			--omit=tests/*,utilities/* \
 			-m pytest && \
-			python -m coverage xml"
+			python -m coverage xml -o coverage/coverage.xml"
 
 
 upgrade-pip:

@@ -34,5 +34,10 @@ jobs:
             -Dsonar.organization=nhsd-exeter
             -Dsonar.projectKey=uec-dos-rd
             -Dsonar.coverage.exclusions=tests/****/*,utilities/*
-            -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.python.version=3.10.2
+            -Dsonar.python.coverage.reportPaths=../coverage/coverage.xml
+            -Dsonar.python.version=3.13
+            -Dsonar.sources=.
+            -Dsonar.working.directory=.
+            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+            -Dsonar.pullrequest.branch=${{ github.head_ref }}
+            -Dsonar.pullrequest.base=main
