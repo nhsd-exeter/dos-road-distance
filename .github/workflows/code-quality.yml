@@ -21,6 +21,7 @@ jobs:
         run: |
           build/automation/etc/githooks/scripts/terraform-format-pre-commit.sh
       - name: Create coverage report
+        working-directory: ./application/roaddistance
         run: |
           make build-tester coverage PROFILE=local
       - uses: sonarsource/sonarcloud-github-action@master
@@ -35,4 +36,6 @@ jobs:
             -Dsonar.projectKey=uec-dos-rd
             -Dsonar.coverage.exclusions=tests/****/*,utilities/*
             -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.python.version=3.10.2
+            -Dsonar.python.version=3.13
+            -Dsonar.sources=.
+            -Dsonar.working.directory=.
