@@ -21,9 +21,8 @@ jobs:
         run: |
           build/automation/etc/githooks/scripts/terraform-format-pre-commit.sh
       - name: Create coverage report
-        working-directory: ./application/roaddistance
         run: |
-          make -C ../ ../ build-tester coverage PROFILE=local
+          make build-tester coverage PROFILE=local
       - uses: sonarsource/sonarcloud-github-action@master
         # SEE: https://github.com/SonarSource/sonarcloud-github-action
         env:
