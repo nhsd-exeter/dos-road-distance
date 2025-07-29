@@ -67,8 +67,8 @@ push-tester: # Pushes image used for testing - mandatory: PROFILE=[name]
 	make docker-push NAME=tester
 
 coverage:
-    mkdir -p coverage
-    echo "Sending image $$(make _docker-get-reg)/tester:latest"
+    mkdir -p coverage \
+    echo "Sending image $$(make _docker-get-reg)/tester:latest" \
     make docker-run-tools IMAGE=$$(make _docker-get-reg)/tester:latest SH=y \
         DIR=$(or $(DIR), $(APPLICATION_DIR_REL)) \
         ARGS="$(ARGS) -v $(PWD)/coverage:/project/application/roaddistance/coverage" \
