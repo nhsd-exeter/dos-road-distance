@@ -1,5 +1,5 @@
 import json
-from locust import HttpUser, task, LoadTestShape, tag
+from locust import HttpUser, task, LoadTestShape, tag, between
 import config as config
 
 
@@ -19,15 +19,22 @@ current_file = LoadFile()
 
 class TestUser(HttpUser):
     weight = 1
+    wait_time = between(0.5, 2)
     host = config.BASE_HOST  # Add missing host configuration
 
     def on_start(self):
+        self.load_payload()
+
+    def load_payload(self):
+        """Load payload based on current file setting"""
         with open(f'{config.ccs_prefix}{current_file.get_file()}') as json_file:
             self.payload = json.load(json_file)
 
     @tag('load')
     @task
     def do_test(self):
+        # Reload payload in case file has changed
+        self.load_payload()
         self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
 
 

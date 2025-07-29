@@ -19,6 +19,7 @@ class FiveDest(FastHttpUser):
 
 class FiftyDest(FastHttpUser):
     weight = 0
+    wait_time = between(0.5, 2)
     host = config.BASE_HOST  # Add missing host configuration
 
     def on_start(self):
@@ -33,6 +34,7 @@ class FiftyDest(FastHttpUser):
 
 class FiveHundredDest(FastHttpUser):
     weight = 0
+    wait_time = between(0.5, 2)
     host = config.BASE_HOST  # Add missing host configuration
 
     def on_start(self):
@@ -47,6 +49,7 @@ class FiveHundredDest(FastHttpUser):
 
 class OneThousandFiveHundredDest(FastHttpUser):
     weight = 0
+    wait_time = between(0.5, 2)
     host = config.BASE_HOST  # Add missing host configuration
 
     def on_start(self):
@@ -61,6 +64,7 @@ class OneThousandFiveHundredDest(FastHttpUser):
 
 class ThreeThousandDest(FastHttpUser):
     weight = 100
+    wait_time = between(0.5, 2)
     host = config.BASE_HOST  # Add missing host configuration
 
     def on_start(self):
