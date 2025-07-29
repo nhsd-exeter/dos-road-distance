@@ -23,12 +23,11 @@ jobs:
       - name: Create coverage report
         run: |
           make build-tester coverage PROFILE=local
-      - uses: SonarSource/sonarcloud-github-action@v5.0.0
+      - uses: sonarsource/sonarcloud-github-action@master
         # SEE: https://github.com/SonarSource/sonarcloud-github-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.RD_SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: ./application/roaddistance
           args: >
@@ -36,4 +35,4 @@ jobs:
             -Dsonar.projectKey=uec-dos-rd
             -Dsonar.coverage.exclusions=tests/****/*,utilities/*
             -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.python.version=3.13
+            -Dsonar.python.version=3.10.2
