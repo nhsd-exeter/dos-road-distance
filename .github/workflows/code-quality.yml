@@ -23,7 +23,7 @@ jobs:
       - name: Create coverage report
         working-directory: ./application/roaddistance
         run: |
-          make build-tester coverage PROFILE=local
+          make -C ../ ../ build-tester coverage PROFILE=local
       - uses: sonarsource/sonarcloud-github-action@master
         # SEE: https://github.com/SonarSource/sonarcloud-github-action
         env:
