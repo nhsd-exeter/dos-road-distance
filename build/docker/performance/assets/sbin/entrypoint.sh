@@ -2,11 +2,20 @@
 cd /opt/locust
 BUILD_DATE=$(date +"%Y-%m-%dT%H:%M:%S")
 
-# Validate required environment variables
-if [[ -z "${API_ENDPOINT}" || "${API_ENDPOINT}" == "API_ENDPOINT_TO_REPLACE" ]]; then
-  echo "ERROR: API_ENDPOINT is not set or contains placeholder value"
-  echo "Current API_ENDPOINT: ${API_ENDPOINT:-<not set>}"
-  exit 1
+# Validate required environment variables - use PERF_TEST_HOST instead of API_ENDPOINT
+if [[ -z "${PERF_TEST_HOST}" ]]; then
+  echo "ERROR: PERF_TEST_HOST is not set"
+  echo "Current PERF_TEST_HOST: ${PERF_TEST_HOST:-<not set>}"
+  echo "Trying LOCUST_HOST as fallback..."
+  if [[ -z "${LOCUST_HOST}" ]]; then
+    echo "ERROR: LOCUST_HOST is also not set"
+    echo "Current LOCUST_HOST: ${LOCUST_HOST:-<not set>}"
+    exit 1
+  else
+    HOST_URL="${LOCUST_HOST}"
+  fi
+else
+  HOST_URL="${PERF_TEST_HOST}"
 fi
 
 if [[ -z "${SERVICE_PREFIX}" || "${SERVICE_PREFIX}" == "SERVICE_PREFIX_TO_REPLACE" ]]; then
@@ -22,7 +31,7 @@ if [[ -z "${ENVIRONMENT}" || "${ENVIRONMENT}" == "ENVIRONMENT_TO_REPLACE" ]]; th
 fi
 
 echo "Starting performance tests with:"
-echo "  API_ENDPOINT: ${API_ENDPOINT}"
+echo "  HOST_URL: ${HOST_URL}"
 echo "  SERVICE_PREFIX: ${SERVICE_PREFIX}"
 echo "  ENVIRONMENT: ${ENVIRONMENT}"
 echo "  PROFILE: ${PROFILE}"
@@ -30,7 +39,7 @@ echo "  PROFILE: ${PROFILE}"
 if [[ $PROFILE == "local" ]]
 then
   echo "Local Performance Tests"
-  locust --config locust.conf --host ${API_ENDPOINT}
+  locust --config locust.conf --host ${HOST_URL}
   echo "Performance tests finished"
   RESULTS_DIR=/project/test/performance/results/
   cp report.html ${RESULTS_DIR}report-${ENVIRONMENT}-${BUILD_DATE}.html
@@ -41,8 +50,8 @@ then
 else
   OUTPUT_FILE=results/locust.cli.log
   echo "Remote Performance Tests" > ${OUTPUT_FILE}
-  echo locust --config locust.conf --host ${API_ENDPOINT} >> ${OUTPUT_FILE}
-  locust --config locust.conf --host ${API_ENDPOINT} 2>&1 >> ${OUTPUT_FILE}
+  echo locust --config locust.conf --host ${HOST_URL} >> ${OUTPUT_FILE}
+  locust --config locust.conf --host ${HOST_URL} 2>&1 >> ${OUTPUT_FILE}
   echo "Performance tests finished" >> ${OUTPUT_FILE}
   cd results
   zip -r results.zip ./

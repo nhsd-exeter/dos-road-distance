@@ -1,5 +1,5 @@
-bases:
-  - ../../base
+resources:
+  - ../../../base
 
 patchesStrategicMerge:
   - performance-job-patch.yaml
@@ -10,8 +10,8 @@ configMapGenerator:
       - LOCUST_USERS=LOCUST_USERS_TO_REPLACE
       - LOCUST_SPAWN_RATE=LOCUST_SPAWN_RATE_TO_REPLACE
       - LOCUST_RUN_TIME=LOCUST_RUN_TIME_TO_REPLACE
-      - PERF_TEST_HOST=https://7bmdvfro69.execute-api.eu-west-2.amazonaws.com
-      - LOCUST_HOST=https://7bmdvfro69.execute-api.eu-west-2.amazonaws.com
+      - PERF_TEST_HOST=PERF_TEST_HOST_TO_REPLACE
+      - LOCUST_HOST=PERF_TEST_HOST_TO_REPLACE
 
 namespace: K8S_APP_NAMESPACE_TO_REPLACE
 
