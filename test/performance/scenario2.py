@@ -52,16 +52,11 @@ class FiveDest(HttpUser):
 
 class StepLoadShape(LoadTestShape):
     stages = [
-        {"duration": 180, "users": 10, "spawn_rate": 5, "request_file": "ccs_50_destinations.json"},    # 0-3 min: 10 users
-        {"duration": 360, "users": 20, "spawn_rate": 10, "request_file": "ccs_50_destinations.json"},   # 3-6 min: 20 users
-        {"duration": 540, "users": 30, "spawn_rate": 15, "request_file": "ccs_50_destinations.json"},   # 6-9 min: 30 users
-        {"duration": 720, "users": 40, "spawn_rate": 20, "request_file": "ccs_50_destinations.json"},   # 9-12 min: 40 users
-        {"duration": 900, "users": 50, "spawn_rate": 25, "request_file": "ccs_50_destinations.json"},   # 12-15 min: 50 users
-        {"duration": 1080, "users": 60, "spawn_rate": 30, "request_file": "ccs_50_destinations.json"},  # 15-18 min: 60 users
-        {"duration": 1260, "users": 70, "spawn_rate": 35, "request_file": "ccs_50_destinations.json"},  # 18-21 min: 70 users
-        {"duration": 1440, "users": 80, "spawn_rate": 40, "request_file": "ccs_50_destinations.json"},  # 21-24 min: 80 users
-        {"duration": 1620, "users": 90, "spawn_rate": 45, "request_file": "ccs_50_destinations.json"},  # 24-27 min: 90 users
-        {"duration": 1800, "users": 100, "spawn_rate": 50, "request_file": "ccs_50_destinations.json"}, # 27-30 min: 100 users
+        {"duration": 600, "users": 30, "spawn_rate": 10, "request_file": "ccs_50_destinations.json"},
+        {"duration": 1200, "users": 60, "spawn_rate": 20, "request_file": "ccs_50_destinations.json"},
+        {"duration": 1800, "users": 90, "spawn_rate": 30, "request_file": "ccs_50_destinations.json"},
+        {"duration": 2400, "users": 120, "spawn_rate": 40, "request_file": "ccs_50_destinations.json"},
+        {"duration": 3000, "users": 150, "spawn_rate": 50, "request_file": "ccs_50_destinations.json"},
     ]
 
     def tick(self):

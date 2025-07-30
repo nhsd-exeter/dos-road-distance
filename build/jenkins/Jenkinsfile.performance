@@ -104,7 +104,7 @@ pipeline {
         LOCUST_RUN_TIME = "1s"
       }
       steps {
-        script { sh "make performance-deploy SECONDS=2100" }  // Updated to 360 (5 min test + 1 min buffer)
+        script { sh "make performance-deploy SECONDS=3500" }
       }
     }
     stage ("Deployment Summary") {
