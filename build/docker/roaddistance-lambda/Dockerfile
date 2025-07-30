@@ -12,11 +12,11 @@ COPY root/ /root/
 RUN dnf -y update
 RUN dnf -y install $DEPENDENCIES
 
-# Added to fix CVE-2025-49796 vulnerability
-RUN dnf -y install python3-libxml2 && dnf clean all
-
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN pip3 install pytest
+
+# Added to fix CVE-2025-49796 vulnerability
+RUN dnf -y install python3-libxml2-0:2.10.4-1.amzn2023.0.12 && dnf clean all
 
 EXPOSE 8080
 
