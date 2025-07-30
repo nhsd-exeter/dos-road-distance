@@ -98,6 +98,11 @@ pipeline {
         beforeAgent true
         expression { params.SCENARIO == "scenario2.py" || params.SCENARIO == "scenario2b.py" ||params.SCENARIO == "scenario3.py" }
       }
+      environment {
+        LOCUST_USERS = "1"
+        LOCUST_SPAWN_RATE = "1"
+        LOCUST_RUN_TIME = "1s"
+      }
       steps {
         script { sh "make performance-deploy SECONDS=360" }  // Updated to 360 (5 min test + 1 min buffer)
       }
