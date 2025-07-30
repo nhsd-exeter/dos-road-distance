@@ -83,7 +83,7 @@ pipeline {
         expression { params.SCENARIO == "scenario2.py" || params.SCENARIO == "scenario2b.py" ||params.SCENARIO == "scenario3.py" }
       }
       steps {
-        script { sh "make performance-deploy SECONDS=600" }  // Updated from 1200 to 600 (10 min with buffer)
+        script { sh "make performance-deploy SECONDS=600" }  // Updated from 1200 to 600 (10 min with buffer for 5-min test)
       }
     }
     stage ("Deployment Summary") {

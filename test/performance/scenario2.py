@@ -1,6 +1,15 @@
 import json
+import os
 from locust import HttpUser, task, LoadTestShape, tag, between
 import config as config
+
+# Debug: Print all relevant environment variables and configuration
+print("=== SCENARIO2 DEBUG CONFIGURATION ===")
+print(f"config.BASE_HOST = {config.BASE_HOST}")
+print(f"config.API_ENDPOINT = {config.API_ENDPOINT}")
+print(f"Environment PERF_TEST_HOST = {os.environ.get('PERF_TEST_HOST', 'NOT SET')}")
+print(f"Environment LOCUST_HOST = {os.environ.get('LOCUST_HOST', 'NOT SET')}")
+print("=== END SCENARIO2 DEBUG ===")
 
 
 class LoadFile:
@@ -23,6 +32,8 @@ class FiveDest(HttpUser):
     host = config.BASE_HOST  # Add missing host configuration
 
     def on_start(self):
+        # Debug: Print host configuration when user starts
+        print(f"DEBUG: scenario2 User host = {self.host}")
         # Load initial payload
         self.load_payload()
 
@@ -41,11 +52,11 @@ class FiveDest(HttpUser):
 
 class StepLoadShape(LoadTestShape):
     stages = [
-        {"duration": 120, "users": 10, "spawn_rate": 5, "request_file": "ccs_50_destinations.json"},
-        {"duration": 240, "users": 20, "spawn_rate": 10, "request_file": "ccs_50_destinations.json"},
-        {"duration": 360, "users": 30, "spawn_rate": 15, "request_file": "ccs_50_destinations.json"},
-        {"duration": 480, "users": 40, "spawn_rate": 20, "request_file": "ccs_50_destinations.json"},
-        {"duration": 600, "users": 50, "spawn_rate": 25, "request_file": "ccs_50_destinations.json"},
+        {"duration": 60, "users": 10, "spawn_rate": 5, "request_file": "ccs_50_destinations.json"},
+        {"duration": 120, "users": 20, "spawn_rate": 10, "request_file": "ccs_50_destinations.json"},
+        {"duration": 180, "users": 30, "spawn_rate": 15, "request_file": "ccs_50_destinations.json"},
+        {"duration": 240, "users": 40, "spawn_rate": 20, "request_file": "ccs_50_destinations.json"},
+        {"duration": 300, "users": 50, "spawn_rate": 25, "request_file": "ccs_50_destinations.json"},
     ]
 
     def tick(self):
