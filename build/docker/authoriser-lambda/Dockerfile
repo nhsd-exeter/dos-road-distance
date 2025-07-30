@@ -1,5 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.13.2025.07.30.12
-# FROM public.ecr.aws/lambda/python:3.13.3
+FROM public.ecr.aws/lambda/python:3.13
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
