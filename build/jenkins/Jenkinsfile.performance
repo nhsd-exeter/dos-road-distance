@@ -64,7 +64,7 @@ pipeline {
         parameters {
           string(name: 'USERS', defaultValue: '5', description: 'Number of users to run')
           string(name: 'RATE', defaultValue: '1', description: 'Spawn rate of users per second')
-          string(name: 'RUNTIME', defaultValue: '60', description: 'Time to run tests in seconds')
+          string(name: 'RUNTIME', defaultValue: '300', description: 'Time to run tests in seconds (5 minutes = 300 seconds)')
         }
       }
       environment {
@@ -83,7 +83,7 @@ pipeline {
         expression { params.SCENARIO == "scenario2.py" || params.SCENARIO == "scenario2b.py" ||params.SCENARIO == "scenario3.py" }
       }
       steps {
-        script { sh "make performance-deploy SECONDS=600" }  // Updated from 1200 to 600 (10 min with buffer for 5-min test)
+        script { sh "make performance-deploy SECONDS=360" }  // Updated to 360 (5 min test + 1 min buffer)
       }
     }
     stage ("Deployment Summary") {
