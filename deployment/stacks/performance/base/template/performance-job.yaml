@@ -20,6 +20,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: performance-config
+            - configMapRef:
+                name: locust-config
           resources:
             requests:
               memory: "0Mi"

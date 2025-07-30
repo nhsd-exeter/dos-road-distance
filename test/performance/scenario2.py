@@ -1,9 +1,18 @@
 import json
-from locust import HttpUser, task, LoadTestShape, tag, events
-import config as config
+import os
 import time
+from locust import HttpUser, task, LoadTestShape, tag, events
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
+import config as config
+
+# Debug: Print environment state after importing config
+print("=== SCENARIO2.PY DEBUG START ===")
+print(f"Environment PERF_TEST_HOST = '{os.environ.get('PERF_TEST_HOST', 'NOT SET')}'")
+print(f"Environment LOCUST_HOST = '{os.environ.get('LOCUST_HOST', 'NOT SET')}'")
+print(f"All environment variables containing 'HOST': {[(k, v) for k, v in os.environ.items() if 'HOST' in k.upper()]}")
+print(f"Config imported successfully. BASE_HOST = '{config.BASE_HOST}'")
+print("=== SCENARIO2.PY DEBUG END ===")
 
 
 class LoadFile:
