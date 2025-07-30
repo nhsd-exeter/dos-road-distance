@@ -8,6 +8,8 @@ ENV DEPENDENCIES="tar gzip less"
 
 COPY assets/ .
 
+RUN yum -y --security update libxml2 && yum clean all
+
 RUN dnf -y update
 RUN dnf -y install $DEPENDENCIES
 
