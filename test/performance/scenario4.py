@@ -5,7 +5,7 @@ import config as config
 
 class FiveHundredDest(FastHttpUser):
     weight = 3
-    wait_time = between(0.5, 2)  # Use proper wait_time instead of manual sleep
+    wait_time = between(0.5, 2)
     host = config.BASE_HOST
 
     def on_start(self):
@@ -16,7 +16,6 @@ class FiveHundredDest(FastHttpUser):
     @task
     def start_test(self):
         self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
-        # Removed problematic manual delay logic that would cause exponential delays
 
 
 class OneThousandFiveHundredDest(FastHttpUser):
@@ -32,7 +31,6 @@ class OneThousandFiveHundredDest(FastHttpUser):
     @task
     def start_test(self):
         self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
-        # Removed problematic manual delay logic that would cause exponential delays
 
 
 class ThreeThousandDest(FastHttpUser):
@@ -48,4 +46,3 @@ class ThreeThousandDest(FastHttpUser):
     @task
     def start_test(self):
         self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
-        # Removed problematic manual delay logic that would cause exponential delays
