@@ -4,7 +4,7 @@ import config as config
 
 
 class FiveDest(FastHttpUser):
-    weight = 0
+    weight = 80
     wait_time = between(0.5, 2)
     host = config.BASE_HOST  # Add missing host configuration
     def on_start(self):
@@ -18,7 +18,7 @@ class FiveDest(FastHttpUser):
 
 
 class FiftyDest(FastHttpUser):
-    weight = 0
+    weight = 15
     wait_time = between(0.5, 2)
     host = config.BASE_HOST  # Add missing host configuration
 
@@ -33,7 +33,7 @@ class FiftyDest(FastHttpUser):
 
 
 class FiveHundredDest(FastHttpUser):
-    weight = 0
+    weight = 3
     wait_time = between(0.5, 2)
     host = config.BASE_HOST  # Add missing host configuration
 
@@ -48,10 +48,9 @@ class FiveHundredDest(FastHttpUser):
 
 
 class OneThousandFiveHundredDest(FastHttpUser):
-    weight = 0
+    weight = 1
     wait_time = between(0.5, 2)
-    host = config.BASE_HOST  # Add missing host configuration
-
+    host = config.BASE_HOST
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_1500_destinations.json') as json_file:
             self.payload = json.load(json_file)
@@ -63,10 +62,9 @@ class OneThousandFiveHundredDest(FastHttpUser):
 
 
 class ThreeThousandDest(FastHttpUser):
-    weight = 100
+    weight = 1
     wait_time = between(0.5, 2)
-    host = config.BASE_HOST  # Add missing host configuration
-
+    host = config.BASE_HOST
     def on_start(self):
         with open(config.ccs_prefix + "ccs_3000_destinations.json") as json_file:
             self.payload = json.load(json_file)
