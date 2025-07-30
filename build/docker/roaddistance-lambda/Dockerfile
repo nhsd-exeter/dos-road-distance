@@ -9,7 +9,8 @@ ENV DEPENDENCIES="tar gzip less"
 COPY assets/ .
 COPY root/ /root/
 
-RUN yum -y --security update libxml2 && yum clean all
+# Added to fix CVE-2025-49796 vulnerability
+RUN dnf -y --security update libxml2 && dnf clean all
 
 RUN dnf -y update
 RUN dnf -y install $DEPENDENCIES
