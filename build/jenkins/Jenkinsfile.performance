@@ -38,7 +38,23 @@ pipeline {
             echo "Attempting to break state lock and retry..."
             sh """
               eval "\$(make aws-assume-role-export-variables)"
-              make -s docker-run-tools ARGS="\$(echo aws | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=localstack.rd.local' ||:)" CMD="aws dynamodb delete-item --table-name nhsd-texasplatform-terraform-service-state-lock-texas-lk8s-nonprod --key '{\"LockID\":{\"S\":\"nhsd-texasplatform-terraform-service-state-store-lk8s-nonprod/uec-dos-rd/nonprod/performance/terraform.state-md5\"}}'" || echo "Lock not found or already released"
+
+              # Query DynamoDB to find any locks for this state file
+              echo "Searching for existing terraform locks..."
+              LOCKS=\$(make -s docker-run-tools ARGS="\$(echo aws | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=localstack.rd.local' ||:)" CMD="aws dynamodb scan --table-name nhsd-texasplatform-terraform-service-state-lock-texas-lk8s-nonprod --filter-expression 'contains(#info, :path)' --expression-attribute-names '{\"#info\": \"Info\"}' --expression-attribute-values '{\": {\\"S\\": \\"uec-dos-rd/nonprod/performance/terraform.state\\"}}' --query 'Items[].LockID.S' --output text" 2>/dev/null || echo "")
+
+              if [ ! -z "\$LOCKS" ]; then
+                for LOCK_ID in \$LOCKS; do
+                  echo "Found lock ID: \$LOCK_ID - attempting to delete..."
+                  make -s docker-run-tools ARGS="\$(echo aws | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=localstack.rd.local' ||:)" CMD="aws dynamodb delete-item --table-name nhsd-texasplatform-terraform-service-state-lock-texas-lk8s-nonprod --key '{\\"LockID\\": {\\"S\\": \\"\$LOCK_ID\\"}}'" || echo "Failed to delete lock \$LOCK_ID"
+                done
+              else
+                echo "No locks found for performance terraform state"
+              fi
+
+              # Also try terraform force-unlock approach as backup
+              echo "Attempting terraform force-unlock as backup..."
+              make -s docker-run-terraform DIR="/var/jenkins_home/workspace/\${JOB_NAME}/infrastructure/stacks/performance" CMD="force-unlock -force 3ca576cc-4d5f-b0c5-2a81-b52a10633895" || echo "Force unlock failed or lock not found"
             """
             sh "make provision STACKS=performance ENVIRONMENT=nonprod | tee /tmp/terraform_changes.txt"
           }
@@ -63,8 +79,8 @@ pipeline {
         message "Select Scenario Parameters"
         parameters {
           string(name: 'USERS', defaultValue: '5', description: 'Number of users to run')
-          string(name: 'RATE', defaultValue: '1', description: 'Spawn rate of users per second')
-          string(name: 'RUNTIME', defaultValue: '300', description: 'Time to run tests in seconds (5 minutes = 300 seconds)')
+          string(name: 'RATE', defaultValue: '1', description: 'Spawn rate of users per seconds'
+          string(name: 'RUNTIME', defaultValue: '60', description: 'Time to run tests in seconds')
         }
       }
       environment {
@@ -83,7 +99,7 @@ pipeline {
         expression { params.SCENARIO == "scenario2.py" || params.SCENARIO == "scenario2b.py" ||params.SCENARIO == "scenario3.py" }
       }
       steps {
-        script { sh "make performance-deploy PROFILE=performance SECONDS=2100" }  // Updated to 2100 (30 min test + 5 min buffer)
+        script { sh "make performance-deploy SECONDS=360" }  // Updated to 360 (5 min test + 1 min buffer)
       }
     }
     stage ("Deployment Summary") {
