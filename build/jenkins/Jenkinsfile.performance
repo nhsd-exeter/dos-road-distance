@@ -19,18 +19,14 @@ pipeline {
     stage('Init Perf Test Host') {
       steps {
         script {
-          try {
-            def baseUrl = sh(
-              script: "aws secretsmanager get-secret-value --region eu-west-2 --secret-id uec-dos-rd-nonprod/deployment --query 'SecretString' --output text | jq -r '.API_ENDPOINT'",
-              returnStdout: true
-            ).trim()
-            if (!baseUrl || baseUrl == "null") {
-              error("API_ENDPOINT not found in secret uec-dos-rd-nonprod/deployment")
-            }
-            env.PERF_TEST_HOST = "${baseUrl}/${params.ENVIRONMENT}"
-          } catch (Exception e) {
-            error("Failed to fetch API_ENDPOINT from AWS Secrets Manager: ${e.getMessage()}")
+          def apiEndpoint = sh(
+            script: "make get-api-endpoint",
+            returnStdout: true
+          ).trim()
+          if (!apiEndpoint || apiEndpoint == "null") {
+            error("API_ENDPOINT not found in secret uec-dos-rd-nonprod/deployment")
           }
+          env.PERF_TEST_HOST = "${apiEndpoint}/${params.ENVIRONMENT}"
         }
       }
     }

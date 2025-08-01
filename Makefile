@@ -359,3 +359,6 @@ create-artefact-repositories: # Create ECR repositories to store the artefacts
 	run-contract-test \
 	run-unit-test \
 	run-auth-unit-test
+
+get-api-endpoint:
+	@aws secretsmanager get-secret-value --region eu-west-2 --secret-id uec-dos-rd-nonprod/deployment --query 'SecretString' --output text | jq -r '.API_ENDPOINT'
