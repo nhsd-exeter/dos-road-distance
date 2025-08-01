@@ -52,15 +52,15 @@ pipeline {
 
               # Query DynamoDB to find any locks for this state file
               echo "Searching for existing terraform locks..."
-              LOCKS=\$(make -s docker-run-tools ARGS="\$(echo aws | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=localstack.rd.local' ||:)" CMD="aws dynamodb scan --table-name nhsd-texasplatform-terraform-service-state-lock-texas-lk8s-nonprod --filter-expression 'contains(#info, :path)' --expression-attribute-names '{\"#info\": \"Info\"}' --expression-attribute-values '{\": {\\"S\\": \\"uec-dos-rd/nonprod/performance/terraform.state\\"}}' --query 'Items[].LockID.S' --output text" 2>/dev/null || echo "")
+              LOCKS=\$(make -s docker-run-tools ARGS="\$(echo aws | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=localstack.rd.local' ||:)" CMD="aws dynamodb scan --table-name nhsd-texasplatform-terraform-service-state-lock-texas-lk8s-nonprod --filter-expression 'contains(#info, :path)' --expression-attribute-names '{\"#info\": \"Info\"}' --expression-attribute-values '{\": {\\\"S\\\": \\\"uec-dos-rd/nonprod/performance/terraform.state\\\"}}' --query 'Items[].LockID.S' --output text" 2>/dev/null || echo "")
 
-              if [ ! -z "$LOCKS" ]; then
-                for LOCK_ID in $LOCKS; do
-                  echo "Found lock ID: $LOCK_ID - attempting to delete..."
-                  make -s docker-run-tools ARGS="$(echo aws | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=localstack.rd.local' ||:)" CMD="aws dynamodb delete-item --table-name nhsd-texasplatform-terraform-service-state-lock-texas-lk8s-nonprod --key '{\"LockID\": {\"S\": \"$LOCK_ID\"}}'" || echo "Failed to delete lock $LOCK_ID"
+              if [ ! -z "\$LOCKS" ]; then
+                for LOCK_ID in \$LOCKS; do
+                  echo "Found lock ID: \$LOCK_ID - attempting to delete..."
+                  make -s docker-run-tools ARGS="\$(echo aws | grep awslocal > /dev/null 2>&1 && echo '--env LOCALSTACK_HOST=localstack.rd.local' ||:)" CMD="aws dynamodb delete-item --table-name nhsd-texasplatform-terraform-service-state-lock-texas-lk8s-nonprod --key '{\"LockID\": {\"S\": \"\$LOCK_ID\"}}'" || echo "Failed to delete lock \$LOCK_ID"
                   # Also try terraform force-unlock approach as backup for each lock
-                  echo "Attempting terraform force-unlock as backup for lock $LOCK_ID..."
-                  make -s docker-run-terraform DIR="/var/jenkins_home/workspace/${JOB_NAME}/infrastructure/stacks/performance" CMD="force-unlock -force $LOCK_ID" || echo "Force unlock failed or lock not found for $LOCK_ID"
+                  echo "Attempting terraform force-unlock as backup for lock \$LOCK_ID..."
+                  make -s docker-run-terraform DIR="/var/jenkins_home/workspace/\${JOB_NAME}/infrastructure/stacks/performance" CMD="force-unlock -force \$LOCK_ID" || echo "Force unlock failed or lock not found for \$LOCK_ID"
                 done
               else
                 echo "No locks found for performance terraform state"
