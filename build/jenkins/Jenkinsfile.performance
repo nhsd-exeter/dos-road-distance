@@ -21,7 +21,7 @@ pipeline {
       steps {
         script {
           def baseUrl = sh(
-            script: "aws secretsmanager get-secret-value --secret-id uec-dos-rd-performance/deployment --query 'SecretString' --output text | jq -r '.ROAD_DISTANCE_API_ENDPOINT'",
+            script: "aws secretsmanager get-secret-value --secret-id uec-dos-rd-nonprod/deployment --query 'SecretString' --output text | jq -r '.API_ENDPOINT'",
             returnStdout: true
           ).trim()
           env.PERF_TEST_HOST = "${baseUrl}/${params.ENVIRONMENT}"
