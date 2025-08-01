@@ -19,6 +19,8 @@ pipeline {
     stage('Init Perf Test Host') {
       steps {
         script {
+          // Debug AWS identity and region in Jenkins
+          sh 'make get-aws-debug'
           def apiEndpoint = sh(
             script: "make get-api-endpoint",
             returnStdout: true

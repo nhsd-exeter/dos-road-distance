@@ -362,3 +362,6 @@ create-artefact-repositories: # Create ECR repositories to store the artefacts
 
 get-api-endpoint:
 	make docker-run-tools CMD="aws secretsmanager get-secret-value --region eu-west-2 --secret-id uec-dos-rd-nonprod/deployment --query 'SecretString' --output text | jq -r '.API_ENDPOINT'"
+
+get-aws-debug:
+	make docker-run-tools CMD="aws sts get-caller-identity && aws configure get region"
