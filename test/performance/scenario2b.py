@@ -19,7 +19,6 @@ current_file = LoadFile()
 
 class TestUser(HttpUser):
     weight = 1
-    wait_time = between(0.5, 2)
     host = config.BASE_HOST  # Add missing host configuration
 
     def on_start(self):
