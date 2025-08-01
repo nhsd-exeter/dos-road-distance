@@ -17,6 +17,18 @@ pipeline {
     PERF_TEST_HOST = "https://uqh6i1a6dg.execute-api.eu-west-2.amazonaws.com/${params.ENVIRONMENT}"
   }
   stages {
+    stage('Fetch and Set Perf Test Host') {
+      steps {
+        script {
+          def apiEndpoint = sh(
+            script: 'eval "$(make secret-fetch-and-export-variables NAME=uec-dos-rd-nonprod/deployment)"; echo $API_ENDPOINT',
+            returnStdout: true
+          ).trim()
+          env.PERF_TEST_HOST = apiEndpoint + "/" + env.ENVIRONMENT
+          echo "PERF_TEST_HOST set to: ${env.PERF_TEST_HOST}"
+        }
+      }
+    }
     stage("Show Configuration") {
       steps { sh "make show-configuration" }
     }
