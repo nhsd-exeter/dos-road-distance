@@ -14,24 +14,9 @@ pipeline {
     PROFILE = "nonprod"
     ENVIRONMENT = "${params.ENVIRONMENT}"
     LOCUST_LOCUSTFILE = "${params.SCENARIO}"
+    PERF_TEST_HOST = "https://uqh6i1a6dg.execute-api.eu-west-2.amazonaws.com/${params.ENVIRONMENT}"
   }
   stages {
-    stage('Init Perf Test Host') {
-      steps {
-        script {
-          // Debug AWS identity and region in Jenkins
-          sh 'make get-aws-debug'
-          def apiEndpoint = sh(
-            script: "make get-api-endpoint",
-            returnStdout: true
-          ).trim()
-          if (!apiEndpoint || apiEndpoint == "null") {
-            error("API_ENDPOINT not found in secret uec-dos-rd-nonprod/deployment")
-          }
-          env.PERF_TEST_HOST = "${apiEndpoint}/${params.ENVIRONMENT}"
-        }
-      }
-    }
     stage("Show Configuration") {
       steps { sh "make show-configuration" }
     }
