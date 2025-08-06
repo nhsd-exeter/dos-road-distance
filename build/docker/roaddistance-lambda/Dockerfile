@@ -16,6 +16,11 @@ RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN pip3 install pytest
 
 # Added to fix CVE-2025-49796 vulnerability
+RUN dnf update -y && \
+    dnf upgrade -y libxml2 && \
+    dnf clean all
+# Check libxm2 version
+RUN rpm -q libxml2
 # RUN dnf -y install libxml2-2.10.4-1.amzn2023.0.12
 
 EXPOSE 8080
