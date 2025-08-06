@@ -5,4 +5,4 @@ protobuf==6.31.1
 pyyaml==6.0.1
 requests==2.32.4
 numpy==2.1.2
-boto3==1.40.3
+boto3==1.35.41
