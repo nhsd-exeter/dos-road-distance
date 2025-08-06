@@ -20,9 +20,6 @@ RUN dnf update -y && \
 # Check libxm2 version
 RUN rpm -q libxml2
 
-# Added to fix CVE-2025-49796 vulnerability
-# RUN dnf -y install libxml2-2.10.4-1.amzn2023.0.12
-
 EXPOSE 8080
 
 CMD [ "handler.authorize_api_request" ]

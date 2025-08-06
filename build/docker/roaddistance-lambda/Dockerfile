@@ -21,7 +21,6 @@ RUN dnf update -y && \
     dnf clean all
 # Check libxm2 version
 RUN rpm -q libxml2
-# RUN dnf -y install libxml2-2.10.4-1.amzn2023.0.12
 
 EXPOSE 8080
 
