@@ -90,7 +90,7 @@ pipeline {
         parameters {
           string(name: 'USERS', defaultValue: '5', description: 'Number of users to run')
           string(name: 'RATE', defaultValue: '1', description: 'Spawn rate of users per seconds')
-          string(name: 'RUNTIME', defaultValue: '60', description: 'Time to run tests in seconds')
+          string(name: 'RUNTIME', defaultValue: '120', description: 'Time to run tests in seconds')
         }
       }
       environment {
