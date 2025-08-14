@@ -120,27 +120,11 @@ class RoadDistance(Common):
         except Exception:
             return None
 
-    def fetch_secrets(self):
-        secret_store = os.environ.get("SECRET_STORE")
-        if not secret_store:
-            self.logger.log("SECRET_STORE environment variable is not set or is empty. Skipping secrets fetch.", "warning")
-            return {}
-        client = boto3.client("secretsmanager")
-        secrets_response = client.get_secret_value(
-            SecretId=secret_store,
-        )
-        return json.loads(secrets_response["SecretString"])
-
     def send_request(self, request: bytes):
+        mock_mode = os.environ.get("DRD_MOCK_MODE")
         tt_request_start = time.time()
 
-        secrets = self.fetch_secrets()
-        drd_mock_mode = str(secrets.get("DRD_MOCK_MODE", "True"))
-
-        if drd_mock_mode == "":
-            self.logger.log("DRD_MOCK_MODE was not set")
-
-        if drd_mock_mode == "True":
+        if mock_mode == "True":
             self.logger.log("MOCK MODE ENABLED")
             if self.transaction_id[0:5] == "mock-":
                 self.logger.log("Processing by transaction id " + self.transaction_id[5:])
@@ -152,6 +136,11 @@ class RoadDistance(Common):
                 )
             self.logger.log(r.status_message + "; delay added: " + str(r.delay))
         else:
+            client = boto3.client("secretsmanager")
+            secrets_response = client.get_secret_value(
+                SecretId=os.environ["SECRET_STORE"],
+            )
+            secrets = json.loads(secrets_response["SecretString"])
             endpoint = str(secrets["DRD_ENDPOINT"])
             drd_app_id = str(secrets["DRD_APP_ID"])
             drd_api_key = str(secrets["DRD_API_KEY"])
