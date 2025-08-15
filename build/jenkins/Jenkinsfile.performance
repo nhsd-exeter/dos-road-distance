@@ -1,7 +1,7 @@
 pipeline {
   agent any
   parameters {
-    choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'fix', 'performance', 'regression'], description: 'Environment to test')
+    choice(name: 'ENVIRONMENT', choices: ['performance', 'test', 'test1', 'test2', 'test3', 'test4', 'fix', 'regression'], description: 'Environment to test')
     choice(name: 'SCENARIO', choices: ['scenario1.py', 'scenario1b.py', 'scenario2.py', 'scenario2b.py', 'scenario3.py', 'scenario4.py'], description: 'Performance scenario to run')
   }
   options {
@@ -47,7 +47,7 @@ pipeline {
           } catch (Exception e) {
             echo "Terraform provisioning failed: ${e.getMessage()}"
             echo "Attempting to break state lock and retry..."
-            sh """
+            sh "
               eval "\$(make aws-assume-role-export-variables)"
 
               # Query DynamoDB to find any locks for this state file
@@ -65,7 +65,7 @@ pipeline {
               else
                 echo "No locks found for performance terraform state"
               fi
-            """
+            "
             sh "make provision STACKS=performance ENVIRONMENT=nonprod | tee /tmp/terraform_changes.txt"
           }
         }
