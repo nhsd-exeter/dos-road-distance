@@ -160,7 +160,7 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 	echo "Waiting for job $(TESTER_NAME) to complete in $$seconds seconds"
 	echo "Monitoring job status (no pod access required)..."
 	# Ensure variables are set
-	if [[ -z "$TESTER_NAME" || -z "$K8S_APP_NAMESPACE" || -z "$seconds" ]]; then
+	if [[ -z $(TESTER_NAME) || -z $(K8S_APP_NAMESPACE) || -z $(SECONDS) ]]; then
 		echo "ERROR: One or more variables (TESTER_NAME, K8S_APP_NAMESPACE, seconds) are not set."
 		exit 1
 	fi
@@ -182,28 +182,28 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 	fi
 
 	# Use kubectl wait with timeout for job completion
-	if kubectl wait --for=condition=complete job/"$TESTER_NAME" \
+	if kubectl wait --for=condition=complete job/$(TESTER_NAME) \
 			--timeout="${seconds}s" \
-			--namespace="$K8S_APP_NAMESPACE" 2>&1; then
+			--namespace=$(K8S_APP_NAMESPACE) 2>&1; then
 			echo "SUCCESS: Job $TESTER_NAME completed successfully"
 			echo "Getting job logs..."
-			kubectl logs --namespace="$K8S_APP_NAMESPACE" job/"$TESTER_NAME" --tail=50 || echo "Could not retrieve logs"
+			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
 			exit 0
-	elif kubectl wait --for=condition=failed job/"$TESTER_NAME" \
+	elif kubectl wait --for=condition=failed job/$(TESTER_NAME) \
 			--timeout="${seconds}s" \
-			--namespace="$K8S_APP_NAMESPACE" 2>&1; then
+			--namespace=$(K8S_APP_NAMESPACE) 2>&1; then
 			echo "ERROR: Job $TESTER_NAME failed"
 			echo "Getting job logs..."
-			kubectl logs --namespace="$K8S_APP_NAMESPACE" job/"$TESTER_NAME" --tail=50 || echo "Could not retrieve logs"
+			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
 			exit 1
 	else
 			# Job either did not complete or did not fail within the specified timeout
 			echo "ERROR: Job $TESTER_NAME did not complete within $seconds seconds"
 			echo "Current job status:"
-			kubectl get job "$TESTER_NAME" --namespace="$K8S_APP_NAMESPACE" -o wide || echo "Could not get job status"
+			kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status"
 
 			echo "Getting available logs..."
-			kubectl logs --namespace="$K8S_APP_NAMESPACE" job/"$TESTER_NAME" --tail=50 || echo "Could not retrieve logs"
+			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
 			exit 1
 	fi
 
