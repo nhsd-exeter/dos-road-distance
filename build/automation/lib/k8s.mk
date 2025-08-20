@@ -177,15 +177,14 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 	fi
 
 	# Use kubectl wait with timeout for job completion
-	if kubectl wait --for=condition=Complete job/$(TESTER_NAME) \
+	if kubectl wait --for=condition=complete job/$(TESTER_NAME) \
 		--timeout=$${seconds}s \
 		--namespace=$(K8S_APP_NAMESPACE) 2>/dev/null; then
 		echo "SUCCESS: Job $(TESTER_NAME) completed successfully"
 		echo "Getting job logs..."
 		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
 		exit 0
-	fi
-	if kubectl wait --for=condition=failed job/$(TESTER_NAME) \
+	elif kubectl wait --for=condition=failed job/$(TESTER_NAME) \
 		--timeout=5s \
 		--namespace=$(K8S_APP_NAMESPACE) 2>/dev/null; then
 		echo "ERROR: Job $(TESTER_NAME) failed"
@@ -194,7 +193,7 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 		exit 1
 	else
 		# Check if job is already complete first
-		if kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}' 2>/dev/null | grep -q "True"; then
+		if kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o jsonpath='{.status.conditions[?(@.type=="complete")].status}' 2>/dev/null | grep -q "True"; then
 			echo "SUCCESS: Job $(TESTER_NAME) is already completed"
 			echo "Getting job logs..."
 			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
