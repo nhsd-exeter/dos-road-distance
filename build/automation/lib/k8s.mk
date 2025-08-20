@@ -182,29 +182,37 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 	fi
 
 	# Use kubectl wait with timeout for job completion
-	if kubectl wait --for=condition=complete job/$(TESTER_NAME) \
-			--timeout="${seconds}s" \
+	if kubectl wait --for=condition=Complete job/$(TESTER_NAME) \
+			--timeout="${seconds}" \
 			--namespace=$(K8S_APP_NAMESPACE) 2>&1; then
-			echo "SUCCESS: Job $TESTER_NAME completed successfully"
+			echo "SUCCESS: Job $(TESTER_NAME) completed successfully"
 			echo "Getting job logs..."
 			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
 			exit 0
 	elif kubectl wait --for=condition=failed job/$(TESTER_NAME) \
 			--timeout="${seconds}s" \
 			--namespace=$(K8S_APP_NAMESPACE) 2>&1; then
-			echo "ERROR: Job $TESTER_NAME failed"
+			echo "ERROR: Job $(TESTER_NAME) failed"
 			echo "Getting job logs..."
 			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
 			exit 1
 	else
-			# Job either did not complete or did not fail within the specified timeout
-			echo "ERROR: Job $TESTER_NAME did not complete within $seconds seconds"
-			echo "Current job status:"
-			kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status"
+			# Cross check if job is already complete first
+			if kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}' 2>/dev/null | grep -q "True"; then
+				echo "SUCCESS: Job $(TESTER_NAME) is already completed"
+				echo "Getting job logs..."
+				kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+				exit 0
+			else
+				# Job either did not complete or did not fail within the specified timeout
+				echo "ERROR: Job $(TESTER_NAME) did not complete within $seconds seconds"
+				echo "Current job status:"
+				kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status"
 
-			echo "Getting available logs..."
-			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
-			exit 1
+				echo "Getting available logs..."
+				kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+				exit 1
+			fi
 	fi
 
 
