@@ -178,8 +178,9 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 
 	# Use kubectl wait with timeout for job completion
 	if kubectl wait --for=condition=complete job/$(TESTER_NAME) \
-		--timeout=$${seconds}s \
+		--timeout=120s \
 		--namespace=$(K8S_APP_NAMESPACE) 2>/dev/null; then
+		echo "job time:  $(seconds) provided"
 		echo "SUCCESS: Job $(TESTER_NAME) completed successfully"
 		echo "Getting job logs..."
 		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
