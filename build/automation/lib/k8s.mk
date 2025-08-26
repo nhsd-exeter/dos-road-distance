@@ -182,6 +182,8 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 		--namespace=$(K8S_APP_NAMESPACE) 2>/dev/null; then
 		echo "job time:  $(seconds) provided"
 		echo "SUCCESS: Job $(TESTER_NAME) completed successfully"
+		echo "Current job status in if:-----"
+		kubectl get events --namespace=uec-dos-rd-performance --sort-by=.metadata.creationTimestamp
 		echo "Getting job logs..."
 		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
 		echo "Current job status in if:-----"
@@ -191,6 +193,8 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 		--timeout=5s \
 		--namespace=$(K8S_APP_NAMESPACE) 2>/dev/null; then
 		echo "ERROR: Job $(TESTER_NAME) failed"
+		echo "Current job status in else if:-----"
+		kubectl get events --namespace=uec-dos-rd-performance --sort-by=.metadata.creationTimestamp
 		echo "Getting job logs..."
 		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
 		echo "Current job status in else if:-----"
@@ -206,6 +210,8 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 # 				echo "ERROR: Job ${TESTER_NAME} is not completed or doesn't exist"
 # 				exit 1
 # 		fi
+		echo "Current job status in else:-----"
+		kubectl get events --namespace=uec-dos-rd-performance --sort-by=.metadata.creationTimestamp
 		echo "Current job status in else:-----"
 		kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status"
 		# Check if job is already complete first
