@@ -183,6 +183,8 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 		echo "SUCCESS: Job $(TESTER_NAME) completed successfully"
 		echo "Getting job logs..."
 		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+		echo "Current job status in if:-----"
+		kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status
 		exit 0
 	elif kubectl wait --for=condition=failed job/$(TESTER_NAME) \
 		--timeout=5s \
@@ -190,11 +192,24 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 		echo "ERROR: Job $(TESTER_NAME) failed"
 		echo "Getting job logs..."
 		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+		echo "Current job status in else if:-----"
+		kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status
 		exit 1
 	else
+# 		if kubectl get job "${TESTER_NAME}" --namespace="${K8S_APP_NAMESPACE}" -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}' 2>/dev/null | grep -q "True"; then
+# 				echo "SUCCESS: Job ${TESTER_NAME} is already completed"
+# 				echo "Getting job logs..."
+# 				kubectl logs --namespace="${K8S_APP_NAMESPACE}" job/"${TESTER_NAME}" --tail=50 || echo "Could not retrieve logs"
+# 				exit 0
+# 		else
+# 				echo "ERROR: Job ${TESTER_NAME} is not completed or doesn't exist"
+# 				exit 1
+# 		fi
+		echo "Current job status in else:-----"
+		kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status"
 		# Check if job is already complete first
 		if kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o jsonpath='{.status.conditions[?(@.type=="complete")].status}' 2>/dev/null | grep -q "True"; then
-			echo "SUCCESS: Job $(TESTER_NAME) is already completed"
+			echo "SUCCESS: Job $(TESTER_NAME) is successfully completed"
 			echo "Getting job logs..."
 			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
 			exit 0
