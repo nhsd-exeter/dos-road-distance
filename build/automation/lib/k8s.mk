@@ -201,6 +201,7 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 # 				echo "ERROR: Job ${TESTER_NAME} is not completed or doesn't exist"
 # 				exit 1
 # 		fi
+		sleep 20
 		# Check if job is already complete first
 		if kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o jsonpath='{.status.conditions[?(@.type=="complete")].status}' 2>/dev/null | grep -q "True"; then
 			echo "SUCCESS: Job $(TESTER_NAME) is successfully completed"
