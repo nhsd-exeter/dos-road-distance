@@ -99,7 +99,7 @@ pipeline {
         LOCUST_RUN_TIME = "${RUNTIME}s"
       }
       steps {
-        script { sh "make performance-deploy PROFILE=performance SECONDS=${RUNTIME}" }
+        script { sh "make performance-deploy PROFILE=performance SECONDS=\$((\${RUNTIME} + 60))" }
       }
     }
     stage ("Deploy Job Two") {
@@ -125,6 +125,6 @@ pipeline {
   }
   post {
     always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Performance)' BUILD_STATUS=${currentBuild.currentResult}" }
-    // cleanup { sh "make clean && make performance-delete" }
+    cleanup { sh "make clean && make performance-delete" }
   }
 }
