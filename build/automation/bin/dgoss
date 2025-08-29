@@ -39,7 +39,7 @@ run(){
     case "$GOSS_FILES_STRATEGY" in
       mount)
         info "Starting docker container"
-        id=$(docker run -d -v "$tmp_dir:/goss:z" "${@:2}")
+        id=$(docker run -d --cpus=2 -v "$tmp_dir:/goss:z" "${@:2}")
         ;;
       cp)
         info "Creating docker container"
