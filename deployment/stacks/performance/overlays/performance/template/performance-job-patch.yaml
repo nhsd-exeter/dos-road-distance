@@ -24,11 +24,13 @@ spec:
                 name: locust-config
           resources:
             requests:
-              memory: "0Mi"
-              cpu: "250m"
+              memory: "1024Mi"
+              cpu: "1000m"
             limits:
               memory: "2048Mi"
-              cpu: "1822m"
+              cpu: "2000m"
           imagePullPolicy: Always
       restartPolicy: Never
+  apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
   backoffLimit: 0
