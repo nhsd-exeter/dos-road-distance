@@ -22,8 +22,8 @@ spec:
                 name: performance-config
           resources:
             requests:
-              memory: "0Mi"
-              cpu: "0m"
+              memory: "194Mi"
+              cpu: "285m"
             limits:
               memory: "2048Mi"
               cpu: "1822m"
