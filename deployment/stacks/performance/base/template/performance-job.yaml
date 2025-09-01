@@ -29,6 +29,6 @@ spec:
               cpu: "2000m"
           imagePullPolicy: Always
       restartPolicy: Never
-  apiVersion: autoscaling/v2
+  apiVersion: autoscaling/v1
   kind: HorizontalPodAutoscaler
   backoffLimit: 0
