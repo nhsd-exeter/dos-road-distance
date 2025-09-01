@@ -24,8 +24,8 @@ spec:
                 name: locust-config
           resources:
             requests:
-              memory: "0Mi"
-              cpu: "0m"
+              memory: "1024Mi"
+              cpu: "2000m"
             limits:
               memory: "2048Mi"
               cpu: "3000m"
