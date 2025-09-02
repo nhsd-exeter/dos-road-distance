@@ -22,11 +22,11 @@ spec:
                 name: performance-config
           resources:
             requests:
-              memory: "1024Mi"
-              cpu: "2000m"
+              memory: "0Mi"
+              cpu: "0m"
             limits:
               memory: "2048Mi"
-              cpu: "3000m"
+              cpu: "1822m"
           imagePullPolicy: Always
       restartPolicy: Never
   backoffLimit: 0
