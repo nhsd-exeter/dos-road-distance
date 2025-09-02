@@ -111,7 +111,7 @@ pipeline {
       environment {
         LOCUST_USERS = "1"
         LOCUST_SPAWN_RATE = "1"
-        LOCUST_RUN_TIME = "1s"
+        LOCUST_RUN_TIME = "30s"
       }
       steps {
         script { sh "make performance-deploy SECONDS=3500" }

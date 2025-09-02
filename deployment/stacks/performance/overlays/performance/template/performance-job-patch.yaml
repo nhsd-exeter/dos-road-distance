@@ -28,7 +28,7 @@ spec:
               cpu: "0m"
             limits:
               memory: "2048Mi"
-              cpu: "1822m"
+              cpu: "4000m"
           imagePullPolicy: Always
       restartPolicy: Never
   backoffLimit: 0
