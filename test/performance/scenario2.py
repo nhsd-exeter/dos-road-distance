@@ -28,7 +28,7 @@ current_file = LoadFile()
 class FiveDest(HttpUser):
     weight = 1
     host = config.BASE_HOST
-    wait_time = between(1, 3)  # Add wait time between requests
+    wait_time = between(0.1, 0.3)  # Add wait time between requests
     
     def on_start(self):
         self.payload_cache = {}
