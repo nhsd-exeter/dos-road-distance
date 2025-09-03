@@ -108,7 +108,7 @@ pipeline {
         beforeAgent true
         expression { params.SCENARIO == "scenario2.py" || params.SCENARIO == "scenario2b.py" ||params.SCENARIO == "scenario3.py" }
       }
-      ## These are used as default values only for scenarios 1, 1b and 4. Error occurs if not set.
+      // These are used as default values only for scenarios 1, 1b and 4. Error occurs if not set.
       environment {
         LOCUST_USERS = "1"
         LOCUST_SPAWN_RATE = "1"
