@@ -13,28 +13,31 @@ class LoadFile:
     def get_file(self):
         return self.file
 
-
 current_file = LoadFile()
-
 
 class TestUser(HttpUser):
     weight = 1
     host = config.BASE_HOST  # Add missing host configuration
+    wait_time = between(0.1, 0.3)  # Add wait time between requests
 
     def on_start(self):
         self.load_payload()
 
     def load_payload(self):
-        """Load payload based on current file setting"""
-        with open(f'{config.ccs_prefix}{current_file.get_file()}') as json_file:
-            self.payload = json.load(json_file)
+        """Load and cache payload based on current file setting"""
+        file_name = current_file.get_file()
+        if file_name != self.current_payload_file or file_name not in self.payload_cache:
+            with open(f'{config.ccs_prefix}{file_name}') as json_file:
+                self.payload_cache[file_name] = json.dumps(json.load(json_file))
+            self.current_payload_file = file_name
+        self.payload = self.payload_cache[file_name]
 
     @tag('load')
     @task
     def do_test(self):
-        # Reload payload in case file has changed
-        self.load_payload()
-        self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
+        if current_file.get_file() != self.current_payload_file:
+            self.load_payload()
+        self.client.post(config.API_ENDPOINT, data=self.payload, headers=config.headers)
 
 
 class StepLoadShape(LoadTestShape):
