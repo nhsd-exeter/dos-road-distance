@@ -1,7 +1,14 @@
 import json
 import os
+import multiprocessing
 from locust import HttpUser, task, LoadTestShape, tag, between
 import config as config
+
+# Print CPU configuration for load testing reference
+print(f"Available CPU cores: {multiprocessing.cpu_count()}")
+print(f"CPU limit from cgroup: {open('/sys/fs/cgroup/cpu/cpu.cfs_quota_us').read().strip() if os.path.exists('/sys/fs/cgroup/cpu/cpu.cfs_quota_us') else 'Not available'}")
+print(f"Memory limit: {open('/sys/fs/cgroup/memory/memory.limit_in_bytes').read().strip() if os.path.exists('/sys/fs/cgroup/memory/memory.limit_in_bytes') else 'Not available'}")
+print("=== Load Test Configuration ===")
 
 
 class LoadFile:
@@ -47,11 +54,11 @@ class FiveDest(HttpUser):
 
 class StepLoadShape(LoadTestShape):
     stages = [
-        {"duration": 600, "users": 20, "spawn_rate": 2, "request_file": "ccs_50_destinations.json"},
-        {"duration": 1200, "users": 40, "spawn_rate": 3, "request_file": "ccs_50_destinations.json"},
-        {"duration": 1800, "users": 60, "spawn_rate": 4, "request_file": "ccs_50_destinations.json"},
-        {"duration": 2400, "users": 80, "spawn_rate": 5, "request_file": "ccs_50_destinations.json"},
-        {"duration": 3000, "users": 100, "spawn_rate": 6, "request_file": "ccs_50_destinations.json"},
+        {"duration": 600, "users": 20, "spawn_rate": 5, "request_file": "ccs_50_destinations.json"},
+        {"duration": 1200, "users": 40, "spawn_rate": 10, "request_file": "ccs_50_destinations.json"},
+        {"duration": 1800, "users": 60, "spawn_rate": 15, "request_file": "ccs_50_destinations.json"},
+        {"duration": 2400, "users": 80, "spawn_rate": 20, "request_file": "ccs_50_destinations.json"},
+        {"duration": 3000, "users": 100, "spawn_rate": 25, "request_file": "ccs_50_destinations.json"},
     ]
 
     def tick(self):
