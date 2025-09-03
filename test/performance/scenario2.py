@@ -3,14 +3,6 @@ import os
 from locust import HttpUser, task, LoadTestShape, tag, between
 import config as config
 
-# Debug: Print all relevant environment variables and configuration
-print("=== SCENARIO2 DEBUG CONFIGURATION ===")
-print(f"config.BASE_HOST = {config.BASE_HOST}")
-print(f"config.API_ENDPOINT = {config.API_ENDPOINT}")
-print(f"Environment PERF_TEST_HOST = {os.environ.get('PERF_TEST_HOST', 'NOT SET')}")
-print(f"Environment LOCUST_HOST = {os.environ.get('LOCUST_HOST', 'NOT SET')}")
-print("=== END SCENARIO2 DEBUG ===")
-
 
 class LoadFile:
     def __init__(self):
@@ -28,34 +20,38 @@ current_file = LoadFile()
 
 class FiveDest(HttpUser):
     weight = 1
-    host = config.BASE_HOST  # Add missing host configuration
-
+    host = config.BASE_HOST
+    wait_time = between(1, 3)  # Add wait time between requests
+    
     def on_start(self):
-        # Debug: Print host configuration when user starts
-        print(f"DEBUG: scenario2 User host = {self.host}")
-        # Load initial payload
+        self.payload_cache = {}
+        self.current_payload_file = None
         self.load_payload()
 
     def load_payload(self):
-        """Load payload based on current file setting"""
-        with open(f'{config.ccs_prefix}{current_file.get_file()}') as json_file:
-            self.payload = json.load(json_file)
+        """Load and cache payload based on current file setting"""
+        file_name = current_file.get_file()
+        if file_name != self.current_payload_file or file_name not in self.payload_cache:
+            with open(f'{config.ccs_prefix}{file_name}') as json_file:
+                self.payload_cache[file_name] = json.dumps(json.load(json_file))
+            self.current_payload_file = file_name
+        self.payload = self.payload_cache[file_name]
 
     @tag('load')
     @task
     def do_test(self):
-        # Reload payload in case file has changed
-        self.load_payload()
-        self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
+        if current_file.get_file() != self.current_payload_file:
+            self.load_payload()
+        self.client.post(config.API_ENDPOINT, data=self.payload, headers=config.headers)
 
 
 class StepLoadShape(LoadTestShape):
     stages = [
-        {"duration": 600, "users": 30, "spawn_rate": 10, "request_file": "ccs_50_destinations.json"},
-        {"duration": 1200, "users": 60, "spawn_rate": 20, "request_file": "ccs_50_destinations.json"},
-        {"duration": 1800, "users": 90, "spawn_rate": 30, "request_file": "ccs_50_destinations.json"},
-        {"duration": 2400, "users": 120, "spawn_rate": 40, "request_file": "ccs_50_destinations.json"},
-        {"duration": 3000, "users": 150, "spawn_rate": 50, "request_file": "ccs_50_destinations.json"},
+        {"duration": 600, "users": 20, "spawn_rate": 2, "request_file": "ccs_50_destinations.json"},
+        {"duration": 1200, "users": 40, "spawn_rate": 3, "request_file": "ccs_50_destinations.json"},
+        {"duration": 1800, "users": 60, "spawn_rate": 4, "request_file": "ccs_50_destinations.json"},
+        {"duration": 2400, "users": 80, "spawn_rate": 5, "request_file": "ccs_50_destinations.json"},
+        {"duration": 3000, "users": 100, "spawn_rate": 6, "request_file": "ccs_50_destinations.json"},
     ]
 
     def tick(self):
