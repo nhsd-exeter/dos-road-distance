@@ -119,15 +119,6 @@ pipeline {
           echo "=== PERFORMANCE TEST DEPLOYMENT ==="
           echo "Scenario: ${params.SCENARIO}"
           sh "make performance-deploy SECONDS=3500"
-          echo "=== GETTING POD INFORMATION ==="
-          sh '''
-            POD_NAME=$(kubectl get pods --namespace=uec-dos-rd-performance-job --selector="env=performance" --output jsonpath='{.items[0].metadata.name}' 2>/dev/null || echo "Pod not found")
-            echo "📦 PERFORMANCE TEST POD NAME: $POD_NAME"
-            if [ "$POD_NAME" != "Pod not found" ]; then
-              echo "📊 Pod Status:"
-              kubectl get pod $POD_NAME --namespace=uec-dos-rd-performance-job -o wide || echo "Could not get pod details"
-            fi
-          '''
         }
       }
     }

@@ -2,7 +2,6 @@ import json
 from locust import HttpUser, task, LoadTestShape, tag, between
 import config as config
 
-
 class LoadFile:
     def __init__(self):
         self.file = "ccs_5_destinations.json"
@@ -21,6 +20,8 @@ class TestUser(HttpUser):
     wait_time = between(0.1, 0.3)  # Add wait time between requests
 
     def on_start(self):
+        self.payload_cache = {}
+        self.current_payload_file = None
         self.load_payload()
 
     def load_payload(self):
