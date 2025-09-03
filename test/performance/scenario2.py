@@ -28,7 +28,7 @@ current_file = LoadFile()
 class FiveDest(HttpUser):
     weight = 1
     host = config.BASE_HOST
-    wait_time = between(1, 3)  # Add wait time between requests
+    wait_time = between(0.1, 0.5)  # Add wait time between requests
     
     def on_start(self):
         self.payload_cache = {}
@@ -54,11 +54,11 @@ class FiveDest(HttpUser):
 
 class StepLoadShape(LoadTestShape):
     stages = [
-        {"duration": 600, "users": 20, "spawn_rate": 5, "request_file": "ccs_50_destinations.json"},
-        {"duration": 1200, "users": 40, "spawn_rate": 10, "request_file": "ccs_50_destinations.json"},
-        {"duration": 1800, "users": 60, "spawn_rate": 15, "request_file": "ccs_50_destinations.json"},
-        {"duration": 2400, "users": 80, "spawn_rate": 20, "request_file": "ccs_50_destinations.json"},
-        {"duration": 3000, "users": 100, "spawn_rate": 25, "request_file": "ccs_50_destinations.json"},
+        {"duration": 600, "users": 50, "spawn_rate": 10, "request_file": "ccs_50_destinations.json"},
+        {"duration": 1200, "users": 100, "spawn_rate": 20, "request_file": "ccs_50_destinations.json"},
+        {"duration": 1800, "users": 150, "spawn_rate": 30, "request_file": "ccs_50_destinations.json"},
+        {"duration": 2400, "users": 200, "spawn_rate": 40, "request_file": "ccs_50_destinations.json"},
+        {"duration": 3000, "users": 250, "spawn_rate": 50, "request_file": "ccs_50_destinations.json"},
     ]
 
     def tick(self):
