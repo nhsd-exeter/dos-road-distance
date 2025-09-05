@@ -3,63 +3,111 @@ from locust import task, FastHttpUser, tag, between
 import config as config
 
 
-class FiveDest(FastHttpUser):
-    weight = 0
+class SmallRequestUser(FastHttpUser):
+    weight = 0  # Disabled for 3000 destination focus
     wait_time = between(0.5, 2)
-    host = config.BASE_HOST  # Add missing host configuration
+    host = config.BASE_HOST
+    
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_5_destinations.json') as json_file:
-            self.payload = json.load(json_file)
+            self.payload = json.dumps(json.load(json_file))
 
-    @tag('load')
+    @tag('peak_3k')
     @task
-    def start_test(self):
-        self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
+    def small_request(self):
+        with self.client.post(
+            config.API_ENDPOINT, 
+            data=self.payload, 
+            headers=config.headers,
+            catch_response=True
+        ) as response:
+            if response.status_code != 200:
+                response.failure(f"HTTP {response.status_code}")
 
 
-class FiftyDest(FastHttpUser):
-    weight = 0
+class MediumRequestUser(FastHttpUser):
+    weight = 0  # Disabled for 3000 destination focus
+    wait_time = between(1, 3)
+    host = config.BASE_HOST
+    
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_50_destinations.json') as json_file:
-            self.payload = json.load(json_file)
+            self.payload = json.dumps(json.load(json_file))
 
-    @tag('load')
+    @tag('peak_3k')
     @task
-    def start_test(self):
-        self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
+    def medium_request(self):
+        with self.client.post(
+            config.API_ENDPOINT, 
+            data=self.payload, 
+            headers=config.headers,
+            catch_response=True
+        ) as response:
+            if response.status_code != 200:
+                response.failure(f"HTTP {response.status_code}")
 
 
-class FiveHundredDest(FastHttpUser):
-    weight = 0
+class LargeRequestUser(FastHttpUser):
+    weight = 0  # Disabled for 3000 destination focus
+    wait_time = between(2, 5)
+    host = config.BASE_HOST
+    
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_500_destinations.json') as json_file:
-            self.payload = json.load(json_file)
+            self.payload = json.dumps(json.load(json_file))
 
-    @tag('load')
+    @tag('peak_3k')
     @task
-    def start_test(self):
-        self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
+    def large_request(self):
+        with self.client.post(
+            config.API_ENDPOINT, 
+            data=self.payload, 
+            headers=config.headers,
+            catch_response=True
+        ) as response:
+            if response.status_code != 200:
+                response.failure(f"HTTP {response.status_code}")
 
 
-class OneThousandFiveHundredDest(FastHttpUser):
-    weight = 0
+class ExtraLargeRequestUser(FastHttpUser):
+    weight = 0  # Disabled for 3000 destination focus
+    wait_time = between(3, 8)
+    host = config.BASE_HOST
+    
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_1500_destinations.json') as json_file:
-            self.payload = json.load(json_file)
+            self.payload = json.dumps(json.load(json_file))
 
-    @tag('load')
+    @tag('peak_3k')
     @task
-    def start_test(self):
-        self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
+    def extra_large_request(self):
+        with self.client.post(
+            config.API_ENDPOINT, 
+            data=self.payload, 
+            headers=config.headers,
+            catch_response=True
+        ) as response:
+            if response.status_code != 200:
+                response.failure(f"HTTP {response.status_code}")
 
 
-class ThreeThousandDest(FastHttpUser):
-    weight = 100
+class MassiveRequestUser(FastHttpUser):
+    weight = 100  # Only active user class for 3000 destination testing
+    wait_time = between(5, 15)
+    host = config.BASE_HOST
+    
     def on_start(self):
         with open(config.ccs_prefix + "ccs_3000_destinations.json") as json_file:
-            self.payload = json.load(json_file)
+            self.payload = json.dumps(json.load(json_file))
 
-    @tag('load')
+    @tag('peak_3k')
     @task
-    def start_test(self):
-        self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
+    def massive_request(self):
+        with self.client.post(
+            config.API_ENDPOINT, 
+            data=self.payload, 
+            headers=config.headers,
+            catch_response=True
+        ) as response:
+            if response.status_code != 200:
+                response.failure(f"HTTP {response.status_code}")

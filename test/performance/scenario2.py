@@ -1,15 +1,6 @@
 import json
-import os
-import multiprocessing
 from locust import HttpUser, task, LoadTestShape, tag, between
 import config as config
-
-# Print CPU configuration for load testing reference
-print(f"Available CPU cores: {multiprocessing.cpu_count()}")
-print(f"CPU limit from cgroup: {open('/sys/fs/cgroup/cpu/cpu.cfs_quota_us').read().strip() if os.path.exists('/sys/fs/cgroup/cpu/cpu.cfs_quota_us') else 'Not available'}")
-print(f"Memory limit: {open('/sys/fs/cgroup/memory/memory.limit_in_bytes').read().strip() if os.path.exists('/sys/fs/cgroup/memory/memory.limit_in_bytes') else 'Not available'}")
-print("=== Load Test Configuration ===")
-
 
 class LoadFile:
     def __init__(self):
@@ -25,10 +16,9 @@ class LoadFile:
 current_file = LoadFile()
 
 
-class FiveDest(HttpUser):
-    weight = 1
+class StepUpStressUser(HttpUser):
     host = config.BASE_HOST
-    wait_time = between(0.1, 0.3)  # Add wait time between requests
+    wait_time = between(0.1, 0.3)
     
     def on_start(self):
         self.payload_cache = {}
@@ -44,15 +34,23 @@ class FiveDest(HttpUser):
             self.current_payload_file = file_name
         self.payload = self.payload_cache[file_name]
 
-    @tag('load')
+    @tag('step_up')
     @task
-    def do_test(self):
+    def stress_request(self):
         if current_file.get_file() != self.current_payload_file:
             self.load_payload()
-        self.client.post(config.API_ENDPOINT, data=self.payload, headers=config.headers)
+        
+        with self.client.post(
+            config.API_ENDPOINT, 
+            data=self.payload, 
+            headers=config.headers,
+            catch_response=True
+        ) as response:
+            if response.status_code != 200:
+                response.failure(f"HTTP {response.status_code}")
 
 
-class StepLoadShape(LoadTestShape):
+class StepUpLoadShape(LoadTestShape):
     stages = [
         {"duration": 600, "users": 30, "spawn_rate": 10, "request_file": "ccs_50_destinations.json"},
         {"duration": 1200, "users": 60, "spawn_rate": 20, "request_file": "ccs_50_destinations.json"},

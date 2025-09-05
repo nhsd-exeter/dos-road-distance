@@ -1,5 +1,5 @@
 import json
-from locust import HttpUser, task, LoadTestShape, tag, between
+from locust import FastHttpUser, task, LoadTestShape, tag, between
 import config as config
 
 class LoadFile:
@@ -14,10 +14,9 @@ class LoadFile:
 
 current_file = LoadFile()
 
-class TestUser(HttpUser):
-    weight = 1
-    host = config.BASE_HOST  # Add missing host configuration
-    wait_time = between(0.1, 0.3)  # Add wait time between requests
+class StepUp3kStressUser(FastHttpUser):
+    host = config.BASE_HOST
+    wait_time = between(0.1, 0.5)  # Minimal wait for stress testing
 
     def on_start(self):
         self.payload_cache = {}
@@ -33,15 +32,23 @@ class TestUser(HttpUser):
             self.current_payload_file = file_name
         self.payload = self.payload_cache[file_name]
 
-    @tag('load')
+    @tag('step_up_3k')
     @task
-    def do_test(self):
+    def massive_stress_request(self):
         if current_file.get_file() != self.current_payload_file:
             self.load_payload()
-        self.client.post(config.API_ENDPOINT, data=self.payload, headers=config.headers)
+        
+        with self.client.post(
+            config.API_ENDPOINT, 
+            data=self.payload, 
+            headers=config.headers,
+            catch_response=True
+        ) as response:
+            if response.status_code != 200:
+                response.failure(f"HTTP {response.status_code}")
 
 
-class StepLoadShape(LoadTestShape):
+class StepUp3kLoadShape(LoadTestShape):
     stages = [
         {"duration": 600, "users": 30, "spawn_rate": 10, "request_file": "ccs_3000_destinations.json"},
         {"duration": 1200, "users": 60, "spawn_rate": 20, "request_file": "ccs_3000_destinations.json"},

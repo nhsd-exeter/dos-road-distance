@@ -16,27 +16,41 @@ class LoadFile:
 current_file = LoadFile()
 
 
-class FiveDest(HttpUser):
-    weight = 1
-    host = config.BASE_HOST  # Add missing host configuration
+class StepDownStressUser(HttpUser):
+    host = config.BASE_HOST
+    wait_time = between(0.1, 0.3)
 
     def on_start(self):
+        self.payload_cache = {}
+        self.current_payload_file = None
         self.load_payload()
 
     def load_payload(self):
-        """Load payload based on current file setting"""
-        with open(f'{config.ccs_prefix}{current_file.get_file()}') as json_file:
-            self.payload = json.load(json_file)
+        """Load and cache payload based on current file setting"""
+        file_name = current_file.get_file()
+        if file_name != self.current_payload_file or file_name not in self.payload_cache:
+            with open(f'{config.ccs_prefix}{file_name}') as json_file:
+                self.payload_cache[file_name] = json.dumps(json.load(json_file))
+            self.current_payload_file = file_name
+        self.payload = self.payload_cache[file_name]
 
-    @tag('load')
+    @tag('step_down')
     @task
-    def do_test(self):
-        # Reload payload in case file has changed
-        self.load_payload()
-        self.client.post(config.API_ENDPOINT, data=json.dumps(self.payload), headers=config.headers)
+    def stress_request(self):
+        if current_file.get_file() != self.current_payload_file:
+            self.load_payload()
+        
+        with self.client.post(
+            config.API_ENDPOINT, 
+            data=self.payload, 
+            headers=config.headers,
+            catch_response=True
+        ) as response:
+            if response.status_code != 200:
+                response.failure(f"HTTP {response.status_code}")
 
 
-class StepLoadShape(LoadTestShape):
+class StepDownLoadShape(LoadTestShape):
     stages = [
         {"duration": 600, "users": 150, "spawn_rate": 50, "request_file": "ccs_50_destinations.json"},
         {"duration": 1200, "users": 120, "spawn_rate": 40, "request_file": "ccs_50_destinations.json"},
