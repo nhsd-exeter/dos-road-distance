@@ -60,24 +60,6 @@ else
   S3_BUCKET="${SERVICE_PREFIX}-performance"
   S3_KEY="${ENVIRONMENT}-${BUILD_DATE}.zip"
 
-  echo "Checking if S3 bucket ${S3_BUCKET} exists..."
-  if ! aws s3api head-bucket --bucket "${S3_BUCKET}" 2>/dev/null; then
-    echo "S3 bucket ${S3_BUCKET} does not exist. Creating it..."
-    aws s3 mb "s3://${S3_BUCKET}" || {
-      echo "ERROR: Failed to create S3 bucket ${S3_BUCKET}"
-      echo "Attempting to upload to alternative location..."
-      S3_BUCKET="${SERVICE_PREFIX}-performance-${ENVIRONMENT}"
-      echo "Trying bucket: ${S3_BUCKET}"
-      if ! aws s3api head-bucket --bucket "${S3_BUCKET}" 2>/dev/null; then
-        echo "Creating alternative bucket: ${S3_BUCKET}"
-        aws s3 mb "s3://${S3_BUCKET}" || {
-          echo "ERROR: Failed to create alternative S3 bucket. Skipping upload."
-          exit 0
-        }
-      fi
-    }
-  fi
-
   echo "Uploading results to s3://${S3_BUCKET}/${S3_KEY}"
   aws s3 cp results.zip "s3://${S3_BUCKET}/${S3_KEY}" || {
     echo "ERROR: Failed to upload results to S3"
