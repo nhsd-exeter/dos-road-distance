@@ -5,7 +5,7 @@ import config as config
 
 class SmallRequestUser(FastHttpUser):
     weight = 80
-    wait_time = between(0.5, 2)
+    wait_time = between(0.1, 0.5)
     host = config.BASE_HOST
     
     def on_start(self):
@@ -27,7 +27,7 @@ class SmallRequestUser(FastHttpUser):
 
 class MediumRequestUser(FastHttpUser):
     weight = 15
-    wait_time = between(1, 3)
+    wait_time = between(0.1, 0.5)
     host = config.BASE_HOST
     
     def on_start(self):
@@ -49,7 +49,7 @@ class MediumRequestUser(FastHttpUser):
 
 class LargeRequestUser(FastHttpUser):
     weight = 3
-    wait_time = between(2, 5)
+    wait_time = between(0.1, 0.5)
     host = config.BASE_HOST
     
     def on_start(self):
@@ -71,7 +71,7 @@ class LargeRequestUser(FastHttpUser):
 
 class ExtraLargeRequestUser(FastHttpUser):
     weight = 1
-    wait_time = between(3, 8)
+    wait_time = between(0.1, 0.5)
     host = config.BASE_HOST
     
     def on_start(self):
@@ -93,7 +93,7 @@ class ExtraLargeRequestUser(FastHttpUser):
 
 class MassiveRequestUser(FastHttpUser):
     weight = 1
-    wait_time = between(5, 15)
+    wait_time = between(0.1, 0.5)
     host = config.BASE_HOST
     
     def on_start(self):
