@@ -57,7 +57,7 @@ else
   zip -r results.zip ./
 
   # Check if S3 bucket exists and create if necessary
-  S3_BUCKET="${SERVICE_PREFIX}-performance"
+  S3_BUCKET="${SERVICE_PREFIX}"
   S3_KEY="${ENVIRONMENT}-${BUILD_DATE}.zip"
 
   echo "Uploading results to s3://${S3_BUCKET}/${S3_KEY}"

@@ -2,14 +2,14 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   namespace: K8S_APP_NAMESPACE_TO_REPLACE
-  name: ${SERVICE_PREFIX_TO_REPLACE}-performance
+  name: ${SERVICE_PREFIX_TO_REPLACE}
   labels:
-    app: ${SERVICE_PREFIX_TO_REPLACE}-performance
+    app: ${SERVICE_PREFIX_TO_REPLACE}
 spec:
   template:
     metadata:
       labels:
-        name: ${SERVICE_PREFIX_TO_REPLACE}-performance
+        name: ${SERVICE_PREFIX_TO_REPLACE}
     spec:
       serviceAccountName: uec-sa
       securityContext: {}

@@ -209,7 +209,7 @@ k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status o
 			exit 0
 		else
 			echo "Current job events:--------------------------------------------------------------"
-			kubectl get events --namespace=uec-dos-rd-performance --sort-by=.metadata.creationTimestamp
+			kubectl get events --namespace=$(K8S_APP_NAMESPACE) --sort-by=.metadata.creationTimestamp
 			echo "ERROR: Job $(TESTER_NAME) did not complete within $$seconds seconds"
 			echo "Current job status in else for failed:"
 			kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status"

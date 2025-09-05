@@ -316,7 +316,7 @@ performance-deploy: # mandatory - PROFILE=[name], SECONDS=[time of performance]
 	eval "$$(make aws-assume-role-export-variables)"
 	eval "$$(make secret-fetch-and-export-variables ENVIRONMENT=performance)"
 	make k8s-deploy STACK=performance AWS_ECR=$(AWS_LAMBDA_ECR)
-	make k8s-job-simple-wait-to-complete TESTER_NAME=$(SERVICE_PREFIX)-performance SECONDS=$(SECONDS)
+	make k8s-job-simple-wait-to-complete TESTER_NAME=$(SERVICE_PREFIX) SECONDS=$(SECONDS)
 
 performance-delete: # mandatory - PROFILE=[name]
 	eval "$$(make aws-assume-role-export-variables)"
@@ -342,7 +342,7 @@ performance-clean:
 
 performance-download:
 	eval "$$(make aws-assume-role-export-variables)"
-	make aws-s3-download FILE=$(FILE) URI=$(SERVICE_PREFIX)-performance
+	make aws-s3-download FILE=$(FILE) URI=$(SERVICE_PREFIX)
 
 # ==============================================================================
 
