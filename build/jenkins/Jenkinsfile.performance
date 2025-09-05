@@ -118,7 +118,7 @@ pipeline {
         script {
           echo "=== PERFORMANCE TEST DEPLOYMENT ==="
           echo "Scenario: ${params.SCENARIO}"
-          sh "make performance-deploy SECONDS=3500"
+          sh "make performance-deploy PROFILE=performance SECONDS=3500"
         }
       }
     }
