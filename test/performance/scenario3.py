@@ -18,7 +18,7 @@ current_file = LoadFile()
 
 class StepDownStressUser(HttpUser):
     host = config.BASE_HOST
-    wait_time = between(0.1, 0.3)
+    wait_time = between(0.1, 0.5)
 
     def on_start(self):
         self.payload_cache = {}
