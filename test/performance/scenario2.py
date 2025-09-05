@@ -1,5 +1,5 @@
 import json
-from locust import HttpUser, task, LoadTestShape, tag, between
+from locust import FastHttpUser, task, LoadTestShape, tag, between
 import config as config
 
 class LoadFile:
@@ -16,7 +16,7 @@ class LoadFile:
 current_file = LoadFile()
 
 
-class StepUpStressUser(HttpUser):
+class StepUpStressUser(FastHttpUser):
     host = config.BASE_HOST
     wait_time = between(0.1, 0.5)
     
