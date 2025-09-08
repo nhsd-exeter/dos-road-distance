@@ -16,5 +16,6 @@ configMapGenerator:
 
 namespace: K8S_APP_NAMESPACE_TO_REPLACE
 
-commonLabels:
-  env: ENVIRONMENT_TO_REPLACE
+labels:
+  - pairs:
+      env: ENVIRONMENT_TO_REPLACE
