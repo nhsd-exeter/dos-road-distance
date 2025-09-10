@@ -8,13 +8,13 @@ ENV DEPENDENCIES="tar gzip less"
 
 COPY assets/ .
 
-RUN dnf -y update
+RUN dnf -y update --refresh
 RUN dnf -y install $DEPENDENCIES
 
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
 # Added to fix CVE-2025-49796 vulnerability
-RUN dnf update -y && \
+RUN dnf update -y --refresh && \
     dnf upgrade -y libxml2 && \
     dnf clean all
 # Check libxm2 version
