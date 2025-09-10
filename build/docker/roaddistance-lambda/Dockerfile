@@ -9,18 +9,20 @@ ENV DEPENDENCIES="tar gzip less"
 COPY assets/ .
 COPY root/ /root/
 
-RUN dnf -y update
-RUN dnf -y install $DEPENDENCIES
+# Single dnf operation: upgrade all (ensures patched libxml2) then install extras; fix CVE (libxml2)
+RUN set -eux; \
+    dnf -y upgrade --refresh; \
+    dnf -y install $DEPENDENCIES; \
+    rpm -q libxml2; \
+    dnf clean all; \
+    rm -rf /var/cache/dnf
 
-RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
-RUN pip3 install pytest
+RUN pip3 install --no-cache-dir -r requirements.txt --target "${LAMBDA_TASK_ROOT}" && \
+    pip3 install --no-cache-dir pytest && \
+    rm -rf ~/.cache/pip
 
-# Added to fix CVE-2025-49796 vulnerability
-RUN dnf update -y && \
-    dnf upgrade -y libxml2 && \
-    dnf clean all
-# Check libxm2 version
-RUN rpm -q libxml2
+# Final libxml2 version check (optional; can be removed later to reduce layer size)
+RUN rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' libxml2
 
 EXPOSE 8080
 
