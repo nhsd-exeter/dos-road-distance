@@ -111,3 +111,4 @@ class MassiveRequestUser(FastHttpUser):
         ) as response:
             if response.status_code != 200:
                 response.failure(f"HTTP {response.status_code}")
+                

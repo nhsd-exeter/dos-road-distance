@@ -68,3 +68,4 @@ class StepUpLoadShape(LoadTestShape):
                 current_file.set_file(stage["request_file"])
                 return tick_data
         return None
+    

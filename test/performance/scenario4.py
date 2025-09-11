@@ -27,3 +27,4 @@ class TimeDelayStressUser(FastHttpUser):
 
         self.delay_time += self.delay_increment
         time.sleep(self.delay_time)  # Intentional delay for this test type
+        
