@@ -15,10 +15,10 @@ RUN dnf -y install $DEPENDENCIES
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN pip3 install pytest
 
-# Added to fix CVE-2025-49796 vulnerability
+# Added to fix CVE-2025-7425 vulnerability
 RUN dnf clean all && \
     dnf --refresh makecache && \
-    dnf --refresh install -y libxml2-2.10.4-1.amzn2023.0.13 || dnf --refresh upgrade -y libxml2 && \
+    dnf --refresh upgrade -y libxml2 && \
     dnf clean all
 
 # Check libxm2 version
