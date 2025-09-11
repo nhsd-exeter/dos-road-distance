@@ -19,7 +19,7 @@ current_file = LoadFile()
 class StepUpStressUser(FastHttpUser):
     host = config.BASE_HOST
     wait_time = between(0.1, 0.5)
-    
+
     def on_start(self):
         self.payload_cache = {}
         self.current_payload_file = None
@@ -39,10 +39,10 @@ class StepUpStressUser(FastHttpUser):
     def stress_request(self):
         if current_file.get_file() != self.current_payload_file:
             self.load_payload()
-        
+
         with self.client.post(
-            config.API_ENDPOINT, 
-            data=self.payload, 
+            config.API_ENDPOINT,
+            data=self.payload,
             headers=config.headers,
             catch_response=True
         ) as response:

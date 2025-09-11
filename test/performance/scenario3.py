@@ -39,10 +39,10 @@ class StepDownStressUser(FastHttpUser):
     def stress_request(self):
         if current_file.get_file() != self.current_payload_file:
             self.load_payload()
-        
+
         with self.client.post(
-            config.API_ENDPOINT, 
-            data=self.payload, 
+            config.API_ENDPOINT,
+            data=self.payload,
             headers=config.headers,
             catch_response=True
         ) as response:

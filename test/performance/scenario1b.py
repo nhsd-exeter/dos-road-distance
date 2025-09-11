@@ -7,7 +7,7 @@ class SmallRequestUser(FastHttpUser):
     weight = 0  # Disabled for 3000 destination focus
     wait_time = between(0.1, 0.5)
     host = config.BASE_HOST
-    
+
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_5_destinations.json') as json_file:
             self.payload = json.dumps(json.load(json_file))
@@ -16,8 +16,8 @@ class SmallRequestUser(FastHttpUser):
     @task
     def small_request(self):
         with self.client.post(
-            config.API_ENDPOINT, 
-            data=self.payload, 
+            config.API_ENDPOINT,
+            data=self.payload,
             headers=config.headers,
             catch_response=True
         ) as response:
@@ -29,7 +29,7 @@ class MediumRequestUser(FastHttpUser):
     weight = 0  # Disabled for 3000 destination focus
     wait_time = between(0.1, 0.5)
     host = config.BASE_HOST
-    
+
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_50_destinations.json') as json_file:
             self.payload = json.dumps(json.load(json_file))
@@ -38,8 +38,8 @@ class MediumRequestUser(FastHttpUser):
     @task
     def medium_request(self):
         with self.client.post(
-            config.API_ENDPOINT, 
-            data=self.payload, 
+            config.API_ENDPOINT,
+            data=self.payload,
             headers=config.headers,
             catch_response=True
         ) as response:
@@ -51,7 +51,7 @@ class LargeRequestUser(FastHttpUser):
     weight = 0  # Disabled for 3000 destination focus
     wait_time = between(0.1, 0.5)
     host = config.BASE_HOST
-    
+
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_500_destinations.json') as json_file:
             self.payload = json.dumps(json.load(json_file))
@@ -60,8 +60,8 @@ class LargeRequestUser(FastHttpUser):
     @task
     def large_request(self):
         with self.client.post(
-            config.API_ENDPOINT, 
-            data=self.payload, 
+            config.API_ENDPOINT,
+            data=self.payload,
             headers=config.headers,
             catch_response=True
         ) as response:
@@ -73,7 +73,7 @@ class ExtraLargeRequestUser(FastHttpUser):
     weight = 0  # Disabled for 3000 destination focus
     wait_time = between(0.1, 0.5)
     host = config.BASE_HOST
-    
+
     def on_start(self):
         with open(config.ccs_prefix + 'ccs_1500_destinations.json') as json_file:
             self.payload = json.dumps(json.load(json_file))
@@ -82,8 +82,8 @@ class ExtraLargeRequestUser(FastHttpUser):
     @task
     def extra_large_request(self):
         with self.client.post(
-            config.API_ENDPOINT, 
-            data=self.payload, 
+            config.API_ENDPOINT,
+            data=self.payload,
             headers=config.headers,
             catch_response=True
         ) as response:
@@ -95,7 +95,7 @@ class MassiveRequestUser(FastHttpUser):
     weight = 100  # Only active user class for 3000 destination testing
     wait_time = between(0.1, 0.5)
     host = config.BASE_HOST
-    
+
     def on_start(self):
         with open(config.ccs_prefix + "ccs_3000_destinations.json") as json_file:
             self.payload = json.dumps(json.load(json_file))
@@ -104,8 +104,8 @@ class MassiveRequestUser(FastHttpUser):
     @task
     def massive_request(self):
         with self.client.post(
-            config.API_ENDPOINT, 
-            data=self.payload, 
+            config.API_ENDPOINT,
+            data=self.payload,
             headers=config.headers,
             catch_response=True
         ) as response:
