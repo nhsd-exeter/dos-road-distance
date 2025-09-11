@@ -26,4 +26,4 @@ class TimeDelayStressUser(FastHttpUser):
                 response.failure(f"HTTP {response.status_code}")
 
         self.delay_time += self.delay_increment
-        time.sleep(self.delay_time)  # Intentional delay for this test type
+        time.sleep(self.delay_time)
