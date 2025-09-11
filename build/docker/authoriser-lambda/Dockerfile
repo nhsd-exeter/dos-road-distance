@@ -13,12 +13,18 @@ RUN dnf -y install $DEPENDENCIES
 
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
+# Debug: Check available libxml2 versions
+RUN dnf list available libxml2* || true
+
 # Added to fix CVE-2025-7425 vulnerability
 RUN dnf clean all && \
     dnf --refresh makecache && \
-    dnf --refresh upgrade -y libxml2 && \
+    (dnf --refresh install -y libxml2-2.10.4-1.amzn2023.0.14 || \
+     dnf --refresh install -y libxml2-2.10.5 || \
+     dnf --refresh upgrade -y libxml2) && \
     dnf clean all
-# Check libxm2 version
+
+# Check libxml2 version after update
 RUN rpm -q libxml2
 
 EXPOSE 8080
