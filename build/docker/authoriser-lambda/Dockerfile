@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.13-2025.01.15
+FROM amazon/aws-lambda-python:3.13.2025.09.11.14-x86_64
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
