@@ -16,10 +16,13 @@ RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 # Upgrade dnf first to get more functionality
 RUN dnf -y update dnf
 
-# Added to fix CVE-2025-7425 vulnerability - update with upgraded dnf
+# Added to fix CVE-2025-7425 vulnerability - aggressive cache clearing
 RUN dnf clean all && \
-    dnf --refresh makecache && \
-    dnf -y update libxml2 && \
+    dnf clean metadata && \
+    dnf clean packages && \
+    rm -rf /var/cache/dnf/* && \
+    dnf makecache --refresh && \
+    dnf -y --refresh update libxml2 && \
     dnf clean all
 
 # Check libxml2 version after update
