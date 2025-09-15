@@ -15,13 +15,10 @@ RUN dnf -y install $DEPENDENCIES
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN pip3 install pytest
 
-# Debug: Check available libxml2 versions
-RUN dnf list available libxml2* || true
-
 # Added to fix CVE-2025-7425 vulnerability - use AWS advisory
 RUN dnf clean all && \
     dnf --refresh makecache && \
-    dnf update --advisory ALAS2023-2025-1154 --releasever 2023.8.20250908 && \
+    dnf update libxml2 --releasever 2023.8.20250908 && \
     dnf clean all
 
 # Check libxml2 version after update
