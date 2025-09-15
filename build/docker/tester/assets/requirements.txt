@@ -1,7 +1,7 @@
 awscli==1.35.7
 jsonschema==4.23.0
 pytest==8.3.3
-protobuf==5.28.2
+protobuf==6.31.1
 pyyaml==6.0.2
 requests==2.32.3
 numpy==2.1.2
