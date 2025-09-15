@@ -15,11 +15,13 @@ RUN dnf -y install $DEPENDENCIES
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN pip3 install pytest
 
-# Added to fix CVE-2025-7425 vulnerability - use AWS remediation step
+# Upgrade dnf first to get more functionality
+RUN dnf -y update dnf
+
+# Added to fix CVE-2025-7425 vulnerability - update with upgraded dnf
 RUN dnf clean all && \
     dnf --refresh makecache && \
-    dnf check-update && \
-    dnf -y update && \
+    dnf -y update libxml2 && \
     dnf clean all
 
 # Check libxml2 version after update
