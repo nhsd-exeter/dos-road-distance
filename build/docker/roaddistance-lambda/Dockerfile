@@ -18,7 +18,7 @@ RUN pip3 install pytest
 # Added to fix CVE-2025-7425 vulnerability - force specific version
 RUN dnf clean all && \
     dnf --refresh makecache && \
-    dnf --assumeyes --best --allowerasing install libxml2-2.10.4-1.amzn2023.0.13.x86_64 && \
+    dnf -y install libxml2-2.10.4-1.amzn2023.0.13.x86_64 && \
     dnf clean all
 
 # Check libxml2 version after update
