@@ -1,13 +1,4 @@
-FROM public.ecr.aws/amazonlinux/amazonlinux:2023
-
-# Install Lambda Runtime Interface Client
-RUN dnf install -y python3.13 python3.13-pip && \
-    pip3.13 install awslambdaric && \
-    dnf clean all
-
-# Set up Lambda environment
-ENV LAMBDA_TASK_ROOT=/var/task
-ENV LAMBDA_RUNTIME_DIR=/var/runtime
+FROM public.ecr.aws/lambda/python:3.13
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
@@ -24,14 +15,10 @@ RUN dnf -y install $DEPENDENCIES
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 RUN pip3 install pytest
 
-# Added to fix CVE-2025-7425 vulnerability - aggressive update approach
+# Added to fix CVE-2025-7425 vulnerability - force specific version
 RUN dnf clean all && \
     dnf --refresh makecache && \
-    dnf config-manager --set-enabled amzn2023-core && \
-    dnf --refresh --best --allowerasing reinstall libxml2 && \
-    (dnf update --releasever=2023.8.20250908 libxml2 || \
-     dnf downgrade libxml2 && dnf update libxml2 || \
-     dnf remove libxml2 && dnf install libxml2) && \
+    dnf --assumeyes --best --allowerasing install libxml2-2.10.4-1.amzn2023.0.13.x86_64 && \
     dnf clean all
 
 # Check libxml2 version after update
