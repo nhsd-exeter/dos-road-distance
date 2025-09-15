@@ -13,10 +13,10 @@ RUN dnf -y install $DEPENDENCIES
 
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
-# Added to fix CVE-2025-7425 vulnerability - use AWS advisory
+# Added to fix CVE-2025-7425 vulnerability - use AWS security update approach
 RUN dnf clean all && \
     dnf --refresh makecache && \
-    dnf update libxml2 --releasever 2023.8.20250908 && \
+    dnf update --security --releasever=2023.8.20250908 libxml2 && \
     dnf clean all
 
 # Check libxml2 version after update
