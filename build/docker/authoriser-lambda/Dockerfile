@@ -16,7 +16,7 @@ RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 # Added to fix CVE-2025-7425 vulnerability - install devel package to get patched version
 RUN dnf clean all && \
     dnf --refresh makecache && \
-    dnf -y install libxml2-devel-2.10.4-1.amzn2023.0.13.x86_64 && \
+    dnf -y install libxml2-devel && \
     dnf clean all
 
 # Check libxml2 version after update
