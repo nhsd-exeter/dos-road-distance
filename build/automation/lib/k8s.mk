@@ -154,6 +154,71 @@ k8s-job-tester-get-pod-name: ### Get the name of the job pod mandatory: TESTER_N
 		--selector "name=$(TESTER_NAME)" \
 		--output jsonpath='{.items..metadata.name}'
 
+k8s-job-simple-wait-to-complete: ### Wait for job to complete using job status only - mandatory: TESTER_NAME=[tester_name], SECONDS=[timeout seconds]
+	eval "$$(make k8s-kubeconfig-export-variables)"
+	seconds=$(or $(SECONDS), 60)
+	echo "Waiting for job $(TESTER_NAME) to complete in $$seconds seconds"
+	echo "Monitoring job status (no pod access required)..."
+
+	# Check if job is already complete first
+	if kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}' 2>/dev/null | grep -q "True"; then
+		echo "SUCCESS: Job $(TESTER_NAME) is already completed"
+		echo "Getting job logs..."
+		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+		exit 0
+	fi
+
+	# Check if job has already failed
+	if kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}' 2>/dev/null | grep -q "True"; then
+		echo "ERROR: Job $(TESTER_NAME) has already failed"
+		echo "Getting job logs..."
+		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+		exit 1
+	fi
+
+	# Use kubectl wait with timeout for job completion
+	if kubectl wait --for=condition=complete job/$(TESTER_NAME) \
+		--timeout=$${seconds}s \
+		--namespace=$(K8S_APP_NAMESPACE) 2>/dev/null; then
+		echo "SUCCESS: Job $(TESTER_NAME) completed successfully"
+		echo "Getting job logs for job complete..."
+		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+		exit 0
+	elif kubectl wait --for=condition=failed job/$(TESTER_NAME) \
+		--timeout=5s \
+		--namespace=$(K8S_APP_NAMESPACE) 2>/dev/null; then
+		echo "ERROR: Job $(TESTER_NAME) failed"
+		echo "Getting job logs for job failed..."
+		kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+		exit 1
+	else
+# 		if kubectl get job "${TESTER_NAME}" --namespace="${K8S_APP_NAMESPACE}" -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}' 2>/dev/null | grep -q "True"; then
+# 				echo "SUCCESS: Job ${TESTER_NAME} is already completed"
+# 				echo "Getting job logs..."
+# 				kubectl logs --namespace="${K8S_APP_NAMESPACE}" job/"${TESTER_NAME}" --tail=50 || echo "Could not retrieve logs"
+# 				exit 0
+# 		else
+# 				echo "ERROR: Job ${TESTER_NAME} is not completed or doesn't exist"
+# 				exit 1
+# 		fi
+		# Check if job is already complete first
+		if kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o jsonpath='{.status.conditions[?(@.type=="complete")].status}' 2>/dev/null | grep -q "True"; then
+			echo "SUCCESS: Job $(TESTER_NAME) is successfully completed"
+			echo "Getting job logs for job complete in status check..."
+			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+			exit 0
+		else
+			echo "Current job events:--------------------------------------------------------------"
+			kubectl get events --namespace=$(K8S_APP_NAMESPACE) --sort-by=.metadata.creationTimestamp
+			echo "ERROR: Job $(TESTER_NAME) did not complete within $$seconds seconds"
+			echo "Current job status in else for failed:"
+			kubectl get job $(TESTER_NAME) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status"
+			echo "Getting available logs..."
+			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(TESTER_NAME) --tail=50 || echo "Could not retrieve logs"
+			exit 1
+		fi
+	fi
+
 k8s-alb-get-ingress-endpoint: ### Get ALB ingress enpoint - mandatory: PROFILE=[name]
 	# set up
 	eval "$$(make aws-assume-role-export-variables)"
