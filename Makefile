@@ -52,6 +52,15 @@ provision: # Provision environment - mandatory: PROFILE=[name],STACKS=[comma sep
 clean:
 	make stop
 	docker network rm $(DOCKER_NETWORK) 2> /dev/null ||:
+	# Clean Python cache files using Python script for better permission handling
+	python3 cleanup_python_cache.py . 2>/dev/null ||:
+	# Fallback to find commands if Python script fails
+	find . -type d -name __pycache__ -exec chmod -R 755 {} + 2>/dev/null ||:
+	find . -name "*.pyc" -exec chmod 644 {} + 2>/dev/null ||:
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null ||:
+	find . -name "*.pyc" -delete 2>/dev/null ||:
+	find . -name "*.pyo" -delete 2>/dev/null ||:
+	find . -name "*~" -delete 2>/dev/null ||:
 
 # ==============================================================================
 # Supporting targets
