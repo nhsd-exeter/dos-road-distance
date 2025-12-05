@@ -24,18 +24,22 @@ pipeline {
     stage("Workspace Cleanup & Checkout") {
       steps {
         script {
-          // Completely delete the workspace directory and recreate
+          // Use cleanWs() for complete and reliable workspace cleanup
           echo "Performing complete workspace cleanup..."
-          deleteDir()
+          cleanWs(
+            cleanWhenAborted: true,
+            cleanWhenFailure: true,
+            cleanWhenNotBuilt: true,
+            cleanWhenSuccess: true,
+            cleanWhenUnstable: true,
+            deleteDirs: true
+          )
 
-          // Now perform checkout with clean workspace
           checkout([
             $class: 'GitSCM',
             branches: [[name: "${env.BRANCH_NAME}"]],
             extensions: [
-              [$class: 'CloneOption', depth: 1, shallow: true, noTags: true],
-              [$class: 'CleanBeforeCheckout'],
-              [$class: 'CleanCheckout']
+              [$class: 'CloneOption', depth: 1, shallow: true, noTags: true]
             ],
             userRemoteConfigs: [[
               url: 'https://github.com/nhsd-exeter/dos-road-distance.git',
