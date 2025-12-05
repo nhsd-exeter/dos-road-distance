@@ -24,31 +24,26 @@ pipeline {
     stage("Workspace Cleanup & Checkout") {
       steps {
         script {
-          // Force clean the workspace of any existing Python cache files
-          sh '''
-            echo "Cleaning workspace before checkout..."
+          // Completely delete the workspace directory and recreate
+          echo "Performing complete workspace cleanup..."
+          deleteDir()
 
-            # Remove any existing Python cache files/directories with permission fixes
-            find . -type d -name __pycache__ -exec chmod -R 755 {} + 2>/dev/null || true
-            find . -name "*.pyc" -exec chmod 644 {} + 2>/dev/null || true
-            find . -name "*.pyo" -exec chmod 644 {} + 2>/dev/null || true
+          // Now perform checkout with clean workspace
+          checkout([
+            $class: 'GitSCM',
+            branches: [[name: "${env.BRANCH_NAME}"]],
+            extensions: [
+              [$class: 'CloneOption', depth: 1, shallow: true, noTags: true],
+              [$class: 'CleanBeforeCheckout'],
+              [$class: 'CleanCheckout']
+            ],
+            userRemoteConfigs: [[
+              url: 'https://github.com/nhsd-exeter/dos-road-distance.git',
+              credentialsId: 'gitlab-texas_automation-user'
+            ]]
+          ])
 
-            # Use Python script for robust cleanup if available
-            if [ -f cleanup_python_cache.py ]; then
-              python3 cleanup_python_cache.py . 2>/dev/null || true
-            fi
-
-            # Fallback cleanup
-            find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-            find . -name "*.pyc" -delete 2>/dev/null || true
-            find . -name "*.pyo" -delete 2>/dev/null || true
-            find . -name "*~" -delete 2>/dev/null || true
-
-            echo "Workspace cleanup completed."
-          '''
-
-          // Perform the checkout after cleaning
-          checkout scm
+          echo "Checkout completed with clean workspace."
         }
       }
     }
