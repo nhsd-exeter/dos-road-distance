@@ -176,21 +176,6 @@ pipeline {
         } catch (Exception e) {
           echo "Standard cleanup failed: ${e.getMessage()}"
         }
-
-        // Comprehensive workspace cleanup
-        try {
-          sh '''
-            echo "Performing final workspace cleanup..."
-            find . -type d -name __pycache__ -exec chmod -R 755 {} + 2>/dev/null || true
-            find . -name "*.pyc" -exec chmod 644 {} + 2>/dev/null || true
-            find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-            find . -name "*.pyc" -delete 2>/dev/null || true
-            find . -name "*.pyo" -delete 2>/dev/null || true
-            echo "Final cleanup completed."
-          '''
-        } catch (Exception e) {
-          echo "Final cleanup failed: ${e.getMessage()}"
-        }
       }
     }
   }
