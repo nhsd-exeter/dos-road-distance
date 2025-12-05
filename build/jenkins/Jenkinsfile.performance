@@ -21,22 +21,28 @@ pipeline {
       steps {
         script {
           echo "Performing complete workspace cleanup..."
-          deleteDir()
-          
+          // Use cleanWs() for more thorough workspace cleanup
+          cleanWs(
+            cleanWhenAborted: true,
+            cleanWhenFailure: true,
+            cleanWhenNotBuilt: true,
+            cleanWhenSuccess: true,
+            cleanWhenUnstable: true,
+            deleteDirs: true
+          )
+
           checkout([
             $class: 'GitSCM',
             branches: [[name: "${env.BRANCH_NAME}"]],
             extensions: [
-              [$class: 'CloneOption', depth: 1, shallow: true, noTags: true],
-              [$class: 'CleanBeforeCheckout'],
-              [$class: 'CleanCheckout']
+              [$class: 'CloneOption', depth: 1, shallow: true, noTags: true]
             ],
             userRemoteConfigs: [[
               url: 'https://github.com/nhsd-exeter/dos-road-distance.git',
               credentialsId: 'gitlab-texas_automation-user'
             ]]
           ])
-          
+
           echo "Checkout completed with clean workspace."
         }
       }
