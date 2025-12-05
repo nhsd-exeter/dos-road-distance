@@ -1,3 +1,4 @@
+// Jenkins Pipeline with Python cache cleanup to prevent workspace deletion issues
 pipeline {
   agent any
   parameters {
@@ -10,6 +11,7 @@ pipeline {
     disableConcurrentBuilds()
     parallelsAlwaysFailFast()
     timeout(time: 25, unit: "MINUTES")
+    skipDefaultCheckout(true)
   }
   environment {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
@@ -19,6 +21,37 @@ pipeline {
   }
 
   stages {
+    stage("Workspace Cleanup & Checkout") {
+      steps {
+        script {
+          // Force clean the workspace of any existing Python cache files
+          sh '''
+            echo "Cleaning workspace before checkout..."
+            
+            # Remove any existing Python cache files/directories with permission fixes
+            find . -type d -name __pycache__ -exec chmod -R 755 {} + 2>/dev/null || true
+            find . -name "*.pyc" -exec chmod 644 {} + 2>/dev/null || true
+            find . -name "*.pyo" -exec chmod 644 {} + 2>/dev/null || true
+            
+            # Use Python script for robust cleanup if available
+            if [ -f cleanup_python_cache.py ]; then
+              python3 cleanup_python_cache.py . 2>/dev/null || true
+            fi
+            
+            # Fallback cleanup
+            find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+            find . -name "*.pyc" -delete 2>/dev/null || true
+            find . -name "*.pyo" -delete 2>/dev/null || true
+            find . -name "*~" -delete 2>/dev/null || true
+            
+            echo "Workspace cleanup completed."
+          '''
+          
+          // Perform the checkout after cleaning
+          checkout scm
+        }
+      }
+    }
     stage("Show Configuration") {
       when {
         beforeAgent true
@@ -84,7 +117,54 @@ pipeline {
     }
   }
   post {
-    always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Infrastructure)' BUILD_STATUS=${currentBuild.currentResult}" }
-    cleanup { sh "make clean" }
+    always { 
+      script {
+        try {
+          sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Infrastructure)' BUILD_STATUS=${currentBuild.currentResult}"
+        } catch (Exception e) {
+          echo "Failed to send notification: ${e.getMessage()}"
+        }
+      }
+    }
+    cleanup { 
+      script {
+        try {
+          sh "make clean"
+        } catch (Exception e) {
+          echo "Make clean failed: ${e.getMessage()}"
+        }
+        
+        // Always perform thorough workspace cleanup
+        try {
+          sh '''
+            echo "Performing final workspace cleanup..."
+            
+            # Use Python cleanup script if available
+            if [ -f cleanup_python_cache.py ]; then
+              python3 cleanup_python_cache.py . 2>/dev/null || true
+            fi
+            
+            # Comprehensive cleanup with permission fixes
+            find . -type d -name __pycache__ -exec chmod -R 755 {} + 2>/dev/null || true
+            find . -name "*.pyc" -exec chmod 644 {} + 2>/dev/null || true
+            find . -name "*.pyo" -exec chmod 644 {} + 2>/dev/null || true
+            
+            # Remove cache files and directories
+            find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+            find . -name "*.pyc" -delete 2>/dev/null || true
+            find . -name "*.pyo" -delete 2>/dev/null || true
+            find . -name "*~" -delete 2>/dev/null || true
+            find . -name "*.tmp" -delete 2>/dev/null || true
+            
+            # Clean any pytest cache
+            find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
+            
+            echo "Final cleanup completed."
+          '''
+        } catch (Exception e) {
+          echo "Final cleanup failed: ${e.getMessage()}"
+        }
+      }
+    }
   }
 }

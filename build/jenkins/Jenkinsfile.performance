@@ -8,6 +8,7 @@ pipeline {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
     disableConcurrentBuilds()
     parallelsAlwaysFailFast()
+    skipDefaultCheckout(true)
   }
   environment {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
@@ -16,6 +17,22 @@ pipeline {
     LOCUST_LOCUSTFILE = "${params.SCENARIO}"
   }
   stages {
+    stage('Workspace Cleanup & Checkout') {
+      steps {
+        script {
+          // Clean workspace before checkout
+          sh '''
+            echo "Cleaning workspace before checkout..."
+            find . -type d -name __pycache__ -exec chmod -R 755 {} + 2>/dev/null || true
+            find . -name "*.pyc" -exec chmod 644 {} + 2>/dev/null || true
+            find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+            find . -name "*.pyc" -delete 2>/dev/null || true
+            echo "Workspace cleanup completed."
+          '''
+          checkout scm
+        }
+      }
+    }
     stage('Fetch and Set Perf Test Host') {
       steps {
         script {
@@ -129,7 +146,38 @@ pipeline {
     }
   }
   post {
-    always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Performance)' BUILD_STATUS=${currentBuild.currentResult}" }
-    cleanup { sh "make clean && make performance-delete" }
+    always { 
+      script {
+        try {
+          sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Performance)' BUILD_STATUS=${currentBuild.currentResult}"
+        } catch (Exception e) {
+          echo "Failed to send notification: ${e.getMessage()}"
+        }
+      }
+    }
+    cleanup { 
+      script {
+        try {
+          sh "make clean && make performance-delete"
+        } catch (Exception e) {
+          echo "Standard cleanup failed: ${e.getMessage()}"
+        }
+        
+        // Comprehensive workspace cleanup
+        try {
+          sh '''
+            echo "Performing final workspace cleanup..."
+            find . -type d -name __pycache__ -exec chmod -R 755 {} + 2>/dev/null || true
+            find . -name "*.pyc" -exec chmod 644 {} + 2>/dev/null || true
+            find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+            find . -name "*.pyc" -delete 2>/dev/null || true
+            find . -name "*.pyo" -delete 2>/dev/null || true
+            echo "Final cleanup completed."
+          '''
+        } catch (Exception e) {
+          echo "Final cleanup failed: ${e.getMessage()}"
+        }
+      }
+    }
   }
 }
