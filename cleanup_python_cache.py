@@ -25,26 +25,26 @@ def make_writable(func, path, exc_info):
 def cleanup_python_cache(root_dir='.'):
     """
     Clean up Python cache files and directories.
-    
+
     Args:
         root_dir (str): Root directory to start cleanup from. Defaults to current directory.
     """
     root_path = Path(root_dir).resolve()
-    
+
     print(f"Starting Python cache cleanup from: {root_path}")
-    
+
     # Patterns to clean
     patterns = [
         '**/__pycache__',
         '**/*.pyc',
-        '**/*.pyo', 
+        '**/*.pyo',
         '**/*$py.class',
         '**/*.so'
     ]
-    
+
     cleaned_files = 0
     cleaned_dirs = 0
-    
+
     for pattern in patterns:
         for path in root_path.glob(pattern):
             try:
@@ -64,7 +64,7 @@ def cleanup_python_cache(root_dir='.'):
             except (OSError, PermissionError) as e:
                 print(f"Warning: Could not remove {path}: {e}")
                 continue
-    
+
     print(f"Cleanup complete. Removed {cleaned_dirs} directories and {cleaned_files} files.")
     return cleaned_dirs + cleaned_files > 0
 
@@ -72,7 +72,7 @@ def cleanup_python_cache(root_dir='.'):
 if __name__ == '__main__':
     # Allow specifying root directory as command line argument
     root_dir = sys.argv[1] if len(sys.argv) > 1 else '.'
-    
+
     try:
         success = cleanup_python_cache(root_dir)
         sys.exit(0 if success else 1)
