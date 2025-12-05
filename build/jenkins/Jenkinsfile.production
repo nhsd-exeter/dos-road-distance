@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  parameters {
+    choice(name: 'WORKSPACECLEANUP', choices: ['False', 'True'], description: 'Clean workspace and cache before build?')
+  }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
     disableConcurrentBuilds()
@@ -16,16 +19,17 @@ pipeline {
     stage("Workspace Cleanup & Checkout") {
       steps {
         script {
-          echo "Performing complete workspace cleanup..."
-          // Use cleanWs() for more thorough workspace cleanup
-          cleanWs(
-            cleanWhenAborted: true,
-            cleanWhenFailure: true,
-            cleanWhenNotBuilt: true,
-            cleanWhenSuccess: true,
-            cleanWhenUnstable: true,
-            deleteDirs: true
-          )
+          if (params.WORKSPACECLEANUP == "True") {
+            echo "Performing complete workspace cleanup with cleanWs()..."
+            cleanWs(
+              cleanWhenAborted: true,
+              cleanWhenFailure: true,
+              cleanWhenNotBuilt: true,
+              cleanWhenSuccess: true,
+              cleanWhenUnstable: true,
+              deleteDirs: true
+            )
+          }
 
           checkout([
             $class: 'GitSCM',
@@ -83,7 +87,11 @@ pipeline {
     cleanup {
       script {
         try {
-          sh 'make clean'
+          if (params.WORKSPACECLEANUP == "True") {
+            sh "make python-clean"
+          } else {
+            sh "make clean"
+          }
         } catch (Exception e) {
           echo "Make clean failed: ${e.getMessage()}"
         }

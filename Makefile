@@ -52,6 +52,8 @@ provision: # Provision environment - mandatory: PROFILE=[name],STACKS=[comma sep
 clean:
 	make stop
 	docker network rm $(DOCKER_NETWORK) 2> /dev/null ||:
+
+python-clean:
 	# Clean Python cache files using Python script for better permission handling
 	python3 cleanup_python_cache.py . 2>/dev/null ||:
 	# Fallback to find commands if Python script fails

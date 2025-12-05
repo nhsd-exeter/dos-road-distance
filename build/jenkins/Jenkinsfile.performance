@@ -3,6 +3,7 @@ pipeline {
   parameters {
     choice(name: 'ENVIRONMENT', choices: ['performance', 'test', 'test1', 'test2', 'test3', 'test4', 'fix', 'regression'], description: 'Environment to test')
     choice(name: 'SCENARIO', choices: ['scenario1.py', 'scenario1b.py', 'scenario2.py', 'scenario2b.py', 'scenario3.py', 'scenario4.py'], description: 'Performance scenario to run')
+    choice(name: 'WORKSPACECLEANUP', choices: ['False', 'True'], description: 'Clean workspace and cache before build?')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -20,16 +21,17 @@ pipeline {
     stage('Workspace Cleanup & Checkout') {
       steps {
         script {
-          echo "Performing complete workspace cleanup..."
-          // Use cleanWs() for more thorough workspace cleanup
-          cleanWs(
-            cleanWhenAborted: true,
-            cleanWhenFailure: true,
-            cleanWhenNotBuilt: true,
-            cleanWhenSuccess: true,
-            cleanWhenUnstable: true,
-            deleteDirs: true
-          )
+          if (params.WORKSPACECLEANUP == "True") {
+            echo "Performing complete workspace cleanup with cleanWs()..."
+            cleanWs(
+              cleanWhenAborted: true,
+              cleanWhenFailure: true,
+              cleanWhenNotBuilt: true,
+              cleanWhenSuccess: true,
+              cleanWhenUnstable: true,
+              deleteDirs: true
+            )
+          }
 
           checkout([
             $class: 'GitSCM',
@@ -171,10 +173,10 @@ pipeline {
     }
     cleanup {
       script {
-        try {
+        if (params.WORKSPACECLEANUP == "True") {
+            sh "make python-clean && make performance-delete"
+        } else {
           sh "make clean && make performance-delete"
-        } catch (Exception e) {
-          echo "Standard cleanup failed: ${e.getMessage()}"
         }
       }
     }

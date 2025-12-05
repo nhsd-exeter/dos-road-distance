@@ -5,6 +5,7 @@ pipeline {
     choice(name: 'ENVIRONMENT', choices: ['nonprod'], description: 'Environment:')
     choice(name: 'DeployTask', choices: ['Yes', 'No'], description: 'Deploying from Task Branch?')
     choice(name: 'Mock', choices: ['True', 'False'], description: 'Mock Enabled/Disabled?')
+    choice(name: 'WORKSPACECLEANUP', choices: ['False', 'True'], description: 'Clean workspace and cache before build?')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
@@ -24,16 +25,17 @@ pipeline {
     stage("Workspace Cleanup & Checkout") {
       steps {
         script {
-          // Use cleanWs() for complete and reliable workspace cleanup
-          echo "Performing complete workspace cleanup..."
-          cleanWs(
-            cleanWhenAborted: true,
-            cleanWhenFailure: true,
-            cleanWhenNotBuilt: true,
-            cleanWhenSuccess: true,
-            cleanWhenUnstable: true,
-            deleteDirs: true
-          )
+          if (params.WORKSPACECLEANUP == "True") {
+            echo "Performing complete workspace cleanup with cleanWs()..."
+            cleanWs(
+              cleanWhenAborted: true,
+              cleanWhenFailure: true,
+              cleanWhenNotBuilt: true,
+              cleanWhenSuccess: true,
+              cleanWhenUnstable: true,
+              deleteDirs: true
+            )
+          }
 
           checkout([
             $class: 'GitSCM',
@@ -128,7 +130,11 @@ pipeline {
     cleanup {
       script {
         try {
-          sh "make clean"
+          if (params.WORKSPACECLEANUP == "True") {
+            sh "make python-clean"
+          } else {
+            sh "make clean"
+          }
         } catch (Exception e) {
           echo "Make clean failed: ${e.getMessage()}"
         }
