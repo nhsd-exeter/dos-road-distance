@@ -131,7 +131,7 @@ pipeline {
       script {
         try {
           if (params.WORKSPACECLEANUP == "True") {
-            sh "make python-clean"
+            sh "make python-cache-clean"
           } else {
             sh "make clean"
           }

@@ -174,7 +174,7 @@ pipeline {
     cleanup {
       script {
         if (params.WORKSPACECLEANUP == "True") {
-            sh "make python-clean && make performance-delete"
+            sh "make python-cache-clean && make performance-delete"
         } else {
           sh "make clean && make performance-delete"
         }
