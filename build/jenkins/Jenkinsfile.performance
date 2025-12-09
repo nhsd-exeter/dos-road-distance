@@ -3,11 +3,13 @@ pipeline {
   parameters {
     choice(name: 'ENVIRONMENT', choices: ['performance', 'test', 'test1', 'test2', 'test3', 'test4', 'fix', 'regression'], description: 'Environment to test')
     choice(name: 'SCENARIO', choices: ['scenario1.py', 'scenario1b.py', 'scenario2.py', 'scenario2b.py', 'scenario3.py', 'scenario4.py'], description: 'Performance scenario to run')
+    choice(name: 'WORKSPACECLEANUP', choices: ['False', 'True'], description: 'Clean workspace and cache before build?')
   }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
     disableConcurrentBuilds()
     parallelsAlwaysFailFast()
+    skipDefaultCheckout(true)
   }
   environment {
     BUILD_DATE = sh(returnStdout: true, script: "date -u +'%Y-%m-%dT%H:%M:%S%z'").trim()
@@ -16,6 +18,37 @@ pipeline {
     LOCUST_LOCUSTFILE = "${params.SCENARIO}"
   }
   stages {
+    stage('Workspace Cleanup & Checkout') {
+      steps {
+        script {
+          if (params.WORKSPACECLEANUP == "True") {
+            echo "Performing complete workspace cleanup with cleanWs()..."
+            cleanWs(
+              cleanWhenAborted: true,
+              cleanWhenFailure: true,
+              cleanWhenNotBuilt: true,
+              cleanWhenSuccess: true,
+              cleanWhenUnstable: true,
+              deleteDirs: true
+            )
+          }
+
+          checkout([
+            $class: 'GitSCM',
+            branches: [[name: "${env.BRANCH_NAME}"]],
+            extensions: [
+              [$class: 'CloneOption', depth: 1, shallow: true, noTags: true]
+            ],
+            userRemoteConfigs: [[
+              url: 'https://github.com/nhsd-exeter/dos-road-distance.git',
+              credentialsId: 'gitlab-texas_automation-user'
+            ]]
+          ])
+
+          echo "Checkout completed with clean workspace."
+        }
+      }
+    }
     stage('Fetch and Set Perf Test Host') {
       steps {
         script {
@@ -129,7 +162,23 @@ pipeline {
     }
   }
   post {
-    always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Performance)' BUILD_STATUS=${currentBuild.currentResult}" }
-    cleanup { sh "make clean && make performance-delete" }
+    always {
+      script {
+        try {
+          sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Performance)' BUILD_STATUS=${currentBuild.currentResult}"
+        } catch (Exception e) {
+          echo "Failed to send notification: ${e.getMessage()}"
+        }
+      }
+    }
+    cleanup {
+      script {
+        if (params.WORKSPACECLEANUP == "True") {
+            sh "make python-cache-clean && make performance-delete"
+        } else {
+          sh "make clean && make performance-delete"
+        }
+      }
+    }
   }
 }

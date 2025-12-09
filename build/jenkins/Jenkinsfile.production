@@ -1,10 +1,14 @@
 pipeline {
   agent any
+  parameters {
+    choice(name: 'WORKSPACECLEANUP', choices: ['False', 'True'], description: 'Clean workspace and cache before build?')
+  }
   options {
     buildDiscarder(logRotator(daysToKeepStr: "7", numToKeepStr: "13"))
     disableConcurrentBuilds()
     parallelsAlwaysFailFast()
     timeout(time: 25, unit: "MINUTES")
+    skipDefaultCheckout(true)
   }
   environment {
     GIT_TAG = "${env.BRANCH_NAME}"
@@ -12,6 +16,37 @@ pipeline {
   }
   triggers { pollSCM(env.BRANCH_NAME == "main" ? "* * * * *" : "") }
   stages {
+    stage("Workspace Cleanup & Checkout") {
+      steps {
+        script {
+          if (params.WORKSPACECLEANUP == "True") {
+            echo "Performing complete workspace cleanup with cleanWs()..."
+            cleanWs(
+              cleanWhenAborted: true,
+              cleanWhenFailure: true,
+              cleanWhenNotBuilt: true,
+              cleanWhenSuccess: true,
+              cleanWhenUnstable: true,
+              deleteDirs: true
+            )
+          }
+
+          checkout([
+            $class: 'GitSCM',
+            branches: [[name: "${env.BRANCH_NAME}"]],
+            extensions: [
+              [$class: 'CloneOption', depth: 1, shallow: true, noTags: true]
+            ],
+            userRemoteConfigs: [[
+              url: 'https://github.com/nhsd-exeter/dos-road-distance.git',
+              credentialsId: 'gitlab-texas_automation-user'
+            ]]
+          ])
+
+          echo "Checkout completed with clean workspace."
+        }
+      }
+    }
     stage("Show Configuration") {
       when { expression { env.PROFILE == "put" || env.PROFILE == "live" } }
       steps {
@@ -40,6 +75,27 @@ pipeline {
     }
   }
   post {
-    always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Production)' BUILD_STATUS=${currentBuild.currentResult}" }
+    always {
+      script {
+        try {
+          sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Production)' BUILD_STATUS=${currentBuild.currentResult}"
+        } catch (Exception e) {
+          echo "Failed to send notification: ${e.getMessage()}"
+        }
+      }
+    }
+    cleanup {
+      script {
+        try {
+          if (params.WORKSPACECLEANUP == "True") {
+            sh "make python-cache-clean"
+          } else {
+            sh "make clean"
+          }
+        } catch (Exception e) {
+          echo "Make clean failed: ${e.getMessage()}"
+        }
+      }
+    }
   }
 }

@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'test5', 'istest1', 'istest2', 'istest3', 'fix', 'performance', 'performance2', 'regression'], description: 'Environment of the Stage to deploy')
+        choice(name: 'ENVIRONMENT', choices: ['test', 'test1', 'test2', 'test3', 'test4', 'test5', 'istest1', 'istest2', 'istest3', 'fix', 'performance', 'performance2', 'regression'], description: 'Before starting the build, please make sure you have locked the environment via #dos-environment-bookings slack channel')
         string(name: 'LAMBDA_VERSION', defaultValue: '1', description:  'Version or alias of the RD Lambda for stage to point at')
     }
     options {
@@ -35,7 +35,23 @@ pipeline {
         }
     }
     post {
-        always { sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Stage)' BUILD_STATUS=${currentBuild.currentResult}" }
-        cleanup { sh 'make clean' }
+        always {
+            script {
+                try {
+                    sh "make pipeline-send-notification PIPELINE_NAME='Road Distance (Stage)' BUILD_STATUS=${currentBuild.currentResult}"
+                } catch (Exception e) {
+                    echo "Failed to send notification: ${e.getMessage()}"
+                }
+            }
+        }
+        cleanup {
+            script {
+                try {
+                    sh 'make clean'
+                } catch (Exception e) {
+                    echo "Make clean failed: ${e.getMessage()}"
+                }
+            }
+        }
     }
 }
