@@ -3,18 +3,27 @@ FROM public.ecr.aws/lambda/python:3.13
 WORKDIR ${LAMBDA_TASK_ROOT}
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
+# Dependencies useful for local lambda development and debugging
+ENV DEPENDENCIES="tar gzip less"
+
 COPY assets/ .
 COPY root/ /root/
 
-# Update system packages and install dependencies in single layer
-RUN dnf -y update --refresh && \
-    dnf -y install tar gzip less libxml2 && \
+RUN dnf -y update --refresh
+RUN dnf -y install $DEPENDENCIES
+
+RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
+RUN pip3 install pytest
+
+# Added to fix CVE-2025-7425 vulnerability - force specific version
+RUN rm -f /etc/dnf/vars/releasever && \
+    dnf clean all && \
+    dnf makecache && \
+    dnf -y install libxml2 && \
     dnf clean all
 
-# Install Python dependencies with security updates
-RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}" && \
-    pip3 install pytest && \
-    pip3 install --upgrade "urllib3==2.6.0" --target "${LAMBDA_TASK_ROOT}"
+# Check libxml2 version after update
+RUN rpm -q libxml2
 
 EXPOSE 8080
 
