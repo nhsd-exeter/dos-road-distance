@@ -59,6 +59,7 @@ pipeline {
         anyOf {
           expression { params.DeployTask == "Yes" }
           branch 'main'
+          expression { env.BRANCH_NAME.startsWith('release') }
         }
       }
       steps {
@@ -71,6 +72,7 @@ pipeline {
         anyOf {
           expression { params.DeployTask == "Yes" }
           branch 'main'
+          expression { env.BRANCH_NAME.startsWith('release') }
         }
       }
       steps {
@@ -85,6 +87,7 @@ pipeline {
         anyOf {
           expression { params.DeployTask == "Yes" }
           branch 'main'
+          expression { env.BRANCH_NAME.startsWith('release') }
         }
       }
       steps {
@@ -98,6 +101,7 @@ pipeline {
         anyOf {
           expression { params.DeployTask == "Yes" }
           branch 'main'
+          expression { env.BRANCH_NAME.startsWith('release') }
         }
       }
       steps { sh "echo Running Tests..." }
@@ -108,6 +112,7 @@ pipeline {
         anyOf {
           expression { params.DeployTask == "Yes" }
           branch 'main'
+          expression { env.BRANCH_NAME.startsWith('release') }
         }
       }
       steps {
