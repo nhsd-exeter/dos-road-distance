@@ -305,8 +305,9 @@ parse-profile-from-tag: # Return profile based off of git tag - Mandatory GIT_TA
 	echo $(GIT_TAG) | cut -d "-" -f2
 
 tag: # Tag commit for production deployment as `[YYYYmmddHHMMSS]-[env]` - mandatory: PROFILE=[profile name],COMMIT=[hash]
-	hash=$$(make git-hash COMMIT=$(COMMIT))
-	make git-tag-create-environment-deployment PROFILE=$(PROFILE) COMMIT=$$hash
+	hash=$$(make git-hash COMMIT=$(COMMIT) 2>/dev/null) && \
+	export COMMIT=$$hash && \
+	make git-tag-create-environment-deployment PROFILE=$(PROFILE) ENVIRONMENT=$(ENVIRONMENT)
 
 # --------------------------------------
 

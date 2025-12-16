@@ -108,13 +108,16 @@ git-check-if-commit-changed-directory: ### Check if any file changed in the give
 	fi
 	git diff --name-only --cached $$compare_to --diff-filter=ACDMRT | grep --quiet '^$(DIR)' && echo true || echo false
 
-git-commit-get-hash git-hash: ### Get short commit hash - optional: COMMIT=[commit, defaults to HEAD]
+git-commit-get-hash: ### Get short commit hash - optional: COMMIT=[commit, defaults to HEAD]
 	git rev-parse --short $(or $(COMMIT), HEAD) 2> /dev/null || echo unknown
 
-git-commit-get-timestamp git-ts: ### Get commit timestamp - optional: COMMIT=[commit, defaults to HEAD]
+git-hash: ### Get the full commit hash - optional: COMMIT=[commit, defaults to HEAD]
+	git rev-parse $(or $(COMMIT), HEAD) 2> /dev/null || echo unknown
+
+git-commit-get-timestamp git-ts: ### Get commit timestamp - optional: COMMIT=[commit, defaults to HEAD]
 	TZ=UTC git show -s --format=%cd --date=format-local:%Y%m%d%H%M%S $(or $(COMMIT), HEAD) | cat 2> /dev/null || echo unknown
 
-git-commit-get-message git-msg: ### Get commit message - optional: COMMIT=[commit, defaults to HEAD]
+git-commit-get-message git-msg: ### Get commit message - optional: COMMIT=[commit, defaults to HEAD]
 	git log --format=%B -n 1 $(or $(COMMIT), HEAD)
 
 # ==============================================================================
@@ -124,14 +127,14 @@ git-tag-is-environment-deployment: ### Check if a commit is tagged as environmen
 	(git show-ref --tags -d | grep $$(git rev-parse $$commit) | sed -e 's;.* refs/tags/;;' -e 's;\^{};;' | grep -- -$(ENVIRONMENT)$$) > /dev/null 2>&1 && echo true || echo false
 
 git-tag-create: ### Tag a commit - mandatory: TAG=[tag name]; optional: COMMIT=[commit, defaults to main]
-	commit=$(or $(COMMIT), $$(make git-branch-get-main-name))
-	git tag $(TAG) $$commit
+	commit=$${COMMIT:-$(or $(COMMIT), $$(make git-branch-get-main-name))}; \
+	git tag $(TAG) $$commit; \
 	git push origin $(TAG)
 
 git-tag-create-environment-deployment: ### Tag environment deployment as `[YYYYmmddHHMMSS]-[env]` - mandatory: PROFILE=[profile name]; optional: COMMIT=[release candidate tag name, defaults to main]
 	[ $(PROFILE) == local ] && (echo "ERROR: Please, specify the PROFILE"; exit 1)
-	commit=$(or $(COMMIT), $$(make git-branch-get-main-name))
-	tag=$(BUILD_TIMESTAMP)-$(ENVIRONMENT)
+	commit=$${COMMIT:-$(or $(COMMIT), $$(make git-branch-get-main-name))}; \
+	tag=$(BUILD_TIMESTAMP)-$(ENVIRONMENT); \
 	make git-tag-create TAG=$$tag COMMIT=$$commit
 
 git-tag-get-environment-deployment: ### Get the latest environment deployment tag for the whole repository or just the specified commit - mandatory: PROFILE=[profile name]; optional: COMMIT=[commit]
