@@ -12,7 +12,6 @@ pipeline {
   }
   environment {
     GIT_TAG = "${env.BRANCH_NAME}"
-    PROFILE = sh(returnStdout: true, script: "make parse-profile-from-tag GIT_TAG=$GIT_TAG").trim()
   }
   triggers { pollSCM(env.BRANCH_NAME == "main" ? "* * * * *" : "") }
   stages {
@@ -44,6 +43,10 @@ pipeline {
           ])
 
           echo "Checkout completed with clean workspace."
+
+          // Set the PROFILE environment variable after checkout
+          env.PROFILE = sh(returnStdout: true, script: "make parse-profile-from-tag GIT_TAG=${env.GIT_TAG}").trim()
+          echo "Determined PROFILE: ${env.PROFILE}"
         }
       }
     }
