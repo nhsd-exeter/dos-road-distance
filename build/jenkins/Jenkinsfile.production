@@ -64,6 +64,14 @@ pipeline {
         script { sh "make show-configuration" }
       }
     }
+    stage("Build App") {
+      when { expression { env.PROFILE == "put" || env.PROFILE == "live" } }
+      steps {
+        script { sh "make build" }
+        script { sh "make unit-test" }
+        script { sh "make push" }
+      }
+    }
     stage("Propagate Artefacts") {
       when { expression { env.PROFILE == "put" || env.PROFILE == "live" } }
       steps{
