@@ -30,15 +30,23 @@ pipeline {
             )
           }
 
+          // Determine if BRANCH_NAME is a tag (timestamp format) or actual branch
+          def isTag = env.BRANCH_NAME ==~ /^\d{14}-.+/
+          def refSpec = isTag ? "+refs/tags/*:refs/remotes/origin/tags/*" : "+refs/heads/*:refs/remotes/origin/*"
+          def branchSpec = isTag ? "refs/tags/${env.BRANCH_NAME}" : "${env.BRANCH_NAME}"
+
+          echo "Checking out ${isTag ? 'tag' : 'branch'}: ${env.BRANCH_NAME}"
+
           checkout([
             $class: 'GitSCM',
-            branches: [[name: "${env.BRANCH_NAME}"]],
+            branches: [[name: branchSpec]],
             extensions: [
-              [$class: 'CloneOption', depth: 1, shallow: true, noTags: true]
+              [$class: 'CloneOption', depth: 1, shallow: true, noTags: false]
             ],
             userRemoteConfigs: [[
               url: 'https://github.com/nhsd-exeter/dos-road-distance.git',
-              credentialsId: 'gitlab-texas_automation-user'
+              credentialsId: 'gitlab-texas_automation-user',
+              refspec: refSpec
             ]]
           ])
 
