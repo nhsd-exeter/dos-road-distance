@@ -32,9 +32,9 @@ pipeline {
 
           checkout([
             $class: 'GitSCM',
-            branches: [[name: "${env.BRANCH_NAME}"]],
+            branches: [[name: "refs/tags/${env.BRANCH_NAME}"]],
             extensions: [
-              [$class: 'CloneOption', depth: 1, shallow: true, noTags: true]
+              [$class: 'CloneOption', depth: 1, shallow: true, noTags: false]
             ],
             userRemoteConfigs: [[
               url: 'https://github.com/nhsd-exeter/dos-road-distance.git',
