@@ -55,7 +55,7 @@ clean:
 
 python-cache-clean:
 	# Clean Python cache files using Python script for better permission handling
-	python3 cleanup_python_cache.py . 2>/dev/null ||:
+	python3 $(abspath $(PROJECT_DIR)/build/automation/lib/scripts/cleanup_python_cache.py) . 2>/dev/null ||:
 	# Fallback to find commands if Python script fails
 	find . -type d -name __pycache__ -exec chmod -R 755 {} + 2>/dev/null ||:
 	find . -name "*.pyc" -exec chmod 644 {} + 2>/dev/null ||:
