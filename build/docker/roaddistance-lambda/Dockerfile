@@ -34,8 +34,13 @@ RUN dnf -y update glib2-2.82.2-769.amzn2023 && \
 
 
 # Fix CVE-2025-61726 - Update AWS Lambda RIE to version with Go stdlib 1.25.6
-RUN curl -Lo /usr/local/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie && \
-    chmod +x /usr/local/bin/aws-lambda-rie
+# First, remove any existing aws-lambda-rie binary
+RUN rm -f /usr/local/bin/aws-lambda-rie /var/runtime/bootstrap /var/lang/bin/aws-lambda-rie || true
+# Download the latest version with Go 1.25.6 (or force rebuild from source)
+RUN curl -Lo /tmp/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie && \
+    chmod +x /tmp/aws-lambda-rie && \
+    mv /tmp/aws-lambda-rie /usr/local/bin/aws-lambda-rie && \
+    ln -sf /usr/local/bin/aws-lambda-rie /var/runtime/bootstrap
 
 # Check versions after updates
 RUN rpm -q libxml2 glib2
