@@ -1,8 +1,13 @@
 awscli==1.35.7
 jsonschema==4.21.1
 pytest==8.3.3
-protobuf==6.31.1
+protobuf==6.33.5
 pyyaml==6.0.1
 requests==2.32.4
 numpy==2.1.2
 boto3==1.35.41
+urllib3==2.6.3
+pyasn1==0.6.2
+certifi
+charset-normalizer
+idna

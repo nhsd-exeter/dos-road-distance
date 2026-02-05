@@ -24,11 +24,10 @@ RUN rm -f /etc/dnf/vars/releasever && \
 RUN dnf -y update glib2-2.82.2-769.amzn2023 && \
     dnf clean all
 
-# Fix Python package CVEs - completely remove all versions and clean install
-RUN pip3 uninstall -y urllib3 pyasn1 requests || true
-RUN rm -rf /var/lang/lib/python*/site-packages/urllib3* /var/lang/lib/python*/site-packages/pyasn1* || true
-RUN rm -rf ${LAMBDA_TASK_ROOT}/urllib3* ${LAMBDA_TASK_ROOT}/pyasn1* ${LAMBDA_TASK_ROOT}/requests* || true
-RUN pip3 install urllib3==2.6.3 pyasn1==0.6.2 requests==2.32.4 certifi charset-normalizer idna --target "${LAMBDA_TASK_ROOT}" --no-cache-dir
+# Fix Python package CVEs - completely remove all versions and clean install from requirements.txt
+RUN pip3 uninstall -y urllib3 pyasn1 requests protobuf || true
+RUN rm -rf /var/lang/lib/python*/site-packages/urllib3* /var/lang/lib/python*/site-packages/pyasn1* /var/lang/lib/python*/site-packages/protobuf* || true
+RUN rm -rf ${LAMBDA_TASK_ROOT}/urllib3* ${LAMBDA_TASK_ROOT}/pyasn1* ${LAMBDA_TASK_ROOT}/requests* ${LAMBDA_TASK_ROOT}/protobuf* || true
 
 # Fix CVE-2025-61726 - Update AWS Lambda RIE to version with Go stdlib 1.25.6
 RUN curl -Lo /usr/local/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie && \
