@@ -32,6 +32,10 @@ RUN rm -rf /var/lang/lib/python*/site-packages/urllib3* /var/lang/lib/python*/si
 RUN rm -rf ${LAMBDA_TASK_ROOT}/urllib3* ${LAMBDA_TASK_ROOT}/pyasn1* ${LAMBDA_TASK_ROOT}/requests* || true
 RUN pip3 install urllib3==2.6.3 pyasn1==0.6.2 requests==2.32.4 certifi charset-normalizer idna --target "${LAMBDA_TASK_ROOT}" --no-cache-dir
 
+# Fix CVE-2025-61726 - Update AWS Lambda RIE to version with Go stdlib 1.25.6
+RUN curl -Lo /usr/local/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie && \
+    chmod +x /usr/local/bin/aws-lambda-rie
+
 # Check versions after updates
 RUN rpm -q libxml2 glib2
 RUN python3 -c "import urllib3; print(f'urllib3 version: {urllib3.__version__}')"
