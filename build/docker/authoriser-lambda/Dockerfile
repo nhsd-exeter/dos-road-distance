@@ -26,19 +26,20 @@ RUN rm -f /etc/dnf/vars/releasever && \
     dnf clean all
 
 # Fix CVE-2025-13601 and CVE-2025-14087 - update glib2 to latest fixed version
-RUN dnf -y update glib2 && \
+RUN dnf update -y openssl && \
+    dnf -y update glib2 && \
     dnf clean all
 
 # Fix additional OS package CVEs - upgrade to latest available versions
-RUN dnf clean all && \
-    dnf makecache --refresh && \
-    dnf -y update \
-        libtasn1 \
-        libcap \
-        openssl-fips-provider-latest \
-        openssl-snapsafe-libs && \
-    rpm -q libtasn1 libcap openssl-fips-provider-latest openssl-snapsafe-libs && \
-    dnf clean all
+# RUN dnf clean all && \
+#     dnf makecache --refresh && \
+#     dnf -y update \
+#         libtasn1 \
+#         libcap \
+#         openssl-fips-provider-latest \
+#         openssl-snapsafe-libs && \
+#     rpm -q libtasn1 libcap openssl-fips-provider-latest openssl-snapsafe-libs && \
+#     dnf clean all
 
 # Fix CVE-2025-61726 - Using latest base image which should have Go stdlib 1.25.6
 # Verify the aws-lambda-rie binary is present and accessible
