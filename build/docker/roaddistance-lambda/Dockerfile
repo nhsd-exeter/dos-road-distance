@@ -32,6 +32,14 @@ RUN rm -f /etc/dnf/vars/releasever && \
 RUN dnf -y update glib2-2.82.2-769.amzn2023 && \
     dnf clean all
 
+# Fix additional OS package CVEs - install specific fixed versions
+RUN dnf -y install \
+    libtasn1-4.19.0-1.amzn2023.0.6.x86_64 \
+    openssl-fips-provider-latest-3.2.2-1.amzn2023.0.4.x86_64 \
+    openssl-snapsafe-libs-3.2.2-1.amzn2023.0.4.x86_64 \
+    libcap-2.73-1.amzn2023.0.6.x86_64 && \
+    dnf clean all
+
 
 # Fix CVE-2025-61726 - Using latest base image which should have Go stdlib 1.25.6
 # Verify the aws-lambda-rie binary is present and accessible
