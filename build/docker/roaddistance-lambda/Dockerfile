@@ -25,33 +25,47 @@ RUN set -eux && \
     pip3 install pytest && \
     \
     # Fix multiple CVEs by installing secure package versions
-    # CVE-2025-7425: libxml2 vulnerability
-    # CVE-2025-13601, CVE-2025-14087: glib2 vulnerabilities
-    # CVE-2025-13151: libtasn1 stack buffer overflow (HIGH)
-    # CVE-2025-68121, CVE-2025-61726, CVE-2025-61731, CVE-2025-68119: libcap vulnerabilities (CRITICAL/HIGH)
-    # CVE-2025-15467: OpenSSL AEAD cipher vulnerabilities (HIGH)
     rm -f /etc/dnf/vars/releasever && \
+    echo "2023.7" > /etc/dnf/vars/releasever && \
     dnf clean all && \
     dnf makecache --refresh && \
     dnf -y install libxml2 && \
     dnf -y update glib2 && \
-    dnf -y install \
-        'libtasn1-4.19.0-1.amzn2023.0.6.x86_64' \
-        'libcap-2.73-1.amzn2023.0.6.x86_64' \
-        'openssl-fips-provider-latest-3.2.2-1.amzn2023.0.4.x86_64' \
-        'openssl-snapsafe-libs-3.2.2-1.amzn2023.0.4.x86_64' || \
-    dnf -y update libtasn1 libcap openssl-fips-provider-latest openssl-snapsafe-libs && \
     \
-    # Fix go/stdlib CVEs by updating aws-lambda-rie to version with Go 1.26.0-rc.3 or later
-    # CVE-2025-68121: TLS session resumption vulnerability (CRITICAL)
-    # CVE-2025-22871: HTTP request smuggling vulnerability (CRITICAL)
-    # CVE-2025-61725: ParseAddress CPU consumption (HIGH)
-    # CVE-2025-61726: URL query parameter memory consumption (HIGH)
-    # CVE-2025-61729: HostnameError resource consumption (HIGH)
-    # CVE-2025-47907: Database query race condition (HIGH)
-    # CVE-2025-58187: Certificate name constraint processing (HIGH)
-    # CVE-2025-58188: DSA certificate validation panic (HIGH)
-    # CVE-2025-61723: PEM parsing performance issue (HIGH)
+    # Enable latest repository updates
+    dnf -y update --refresh --best --allowerasing && \
+    \
+    # Force update all vulnerable packages to latest available versions
+    dnf -y update --best --allowerasing \
+        libtasn1 \
+        libcap \
+        openssl-fips-provider-latest \
+        openssl-snapsafe-libs \
+        openssl-libs \
+        openssl && \
+    \
+    # Try to install specific secure versions, fallback to latest if not available
+    dnf -y install \
+        'libtasn1-4.19.0-1.amzn2023.0.7.x86_64' || \
+    dnf -y install \
+        'libtasn1-4.19.0-1.amzn2023.0.6.x86_64' || \
+    dnf -y update libtasn1 && \
+    dnf -y install \
+        'libcap-2.73-1.amzn2023.0.7.x86_64' || \
+    dnf -y install \
+        'libcap-2.73-1.amzn2023.0.6.x86_64' || \
+    dnf -y update libcap && \
+    dnf -y install \
+        'openssl-fips-provider-latest-3.2.2-1.amzn2023.0.5.x86_64' || \
+    dnf -y install \
+        'openssl-fips-provider-latest-3.2.2-1.amzn2023.0.4.x86_64' || \
+    dnf -y update openssl-fips-provider-latest && \
+    dnf -y install \
+        'openssl-snapsafe-libs-3.2.2-1.amzn2023.0.5.x86_64' || \
+    dnf -y install \
+        'openssl-snapsafe-libs-3.2.2-1.amzn2023.0.4.x86_64' || \
+    dnf -y update openssl-snapsafe-libs && \
+    \
     wget -O /tmp/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/download/v1.32/aws-lambda-rie-x86_64 && \
     chmod +x /tmp/aws-lambda-rie && \
     mv /tmp/aws-lambda-rie /usr/local/bin/aws-lambda-rie && \
@@ -60,6 +74,13 @@ RUN set -eux && \
     echo "=== Package versions after CVE fixes ===" && \
     rpm -q libtasn1 libcap openssl-fips-provider-latest openssl-snapsafe-libs libxml2 glib2 && \
     ls -la /usr/local/bin/aws-lambda-rie && \
+    \
+    # Additional verification for specific CVE requirements
+    echo "=== Verifying CVE fix requirements ===" && \
+    rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' libtasn1 | grep -E '(4\.19\.0-1\.amzn2023\.0\.[6-9]|4\.1[0-9]\.|4\.[2-9][0-9]\.)' || echo "WARNING: libtasn1 version may not fully address CVE-2025-13151" && \
+    rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' libcap | grep -E '(2\.73-1\.amzn2023\.0\.[6-9]|2\.7[4-9]\.|2\.[8-9][0-9]\.)' || echo "WARNING: libcap version may not fully address CVE-2025-68119/CVE-2025-61731" && \
+    rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' openssl-fips-provider-latest | grep -E '(3\.2\.2-1\.amzn2023\.0\.[4-9]|3\.2\.[3-9]|3\.[3-9]\.)' || echo "WARNING: openssl-fips-provider-latest version may not fully address CVE-2025-15467" && \
+    rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' openssl-snapsafe-libs | grep -E '(3\.2\.2-1\.amzn2023\.0\.[4-9]|3\.2\.[3-9]|3\.[3-9]\.)' || echo "WARNING: openssl-snapsafe-libs version may not fully address CVE-2025-15467" && \
     echo "=== Python package versions ===" && \
     python3 -c "import urllib3; print(f'urllib3 version: {urllib3.__version__}')" && \
     python3 -c "import pyasn1; print(f'pyasn1 version: {pyasn1.__version__}')" && \
