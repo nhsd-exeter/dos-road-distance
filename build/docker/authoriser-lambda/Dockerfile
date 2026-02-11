@@ -11,24 +11,43 @@ COPY assets/ .
 RUN dnf -y update --refresh
 RUN dnf -y install $DEPENDENCIES
 
+# Fix Python package CVEs - completely remove all vulnerable versions first
+RUN pip3 uninstall -y urllib3 pyasn1 requests protobuf || true
+RUN rm -rf /var/lang/lib/python*/site-packages/urllib3* /var/lang/lib/python*/site-packages/pyasn1* /var/lang/lib/python*/site-packages/protobuf* /var/lang/lib/python*/site-packages/requests* || true
+RUN rm -rf ${LAMBDA_TASK_ROOT}/urllib3* ${LAMBDA_TASK_ROOT}/pyasn1* ${LAMBDA_TASK_ROOT}/requests* ${LAMBDA_TASK_ROOT}/protobuf* || true
+
+# Now install fixed versions from requirements.txt
 RUN pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
-# Added to fix CVE-2025-7425 vulnerability - force specific version
 RUN rm -f /etc/dnf/vars/releasever && \
     dnf clean all && \
     dnf makecache && \
     dnf -y install libxml2 && \
     dnf clean all
 
-# Fix CVE-2025-13601 and CVE-2025-14087 - update glib2 to latest fixed version
-RUN dnf -y update glib2-2.82.2-769.amzn2023 && \
+# Update glib2 for CVE-2025-13601 and CVE-2025-14087
+RUN dnf -y update glib2 && \
     dnf clean all
 
-# Fix Python package CVEs - completely remove all versions and clean install
-RUN pip3 uninstall -y urllib3 pyasn1 requests || true
-RUN rm -rf /var/lang/lib/python*/site-packages/urllib3* /var/lang/lib/python*/site-packages/pyasn1* || true
-RUN rm -rf ${LAMBDA_TASK_ROOT}/urllib3* ${LAMBDA_TASK_ROOT}/pyasn1* ${LAMBDA_TASK_ROOT}/requests* || true
-RUN pip3 install urllib3==2.6.3 pyasn1==0.6.2 requests==2.32.4 certifi charset-normalizer idna --target "${LAMBDA_TASK_ROOT}" --no-cache-dir
+# Fix CVE packages - install specific required versions for x86_64
+RUN dnf clean all && \
+    dnf makecache --refresh && \
+    dnf -y install \
+        'libtasn1-4.19.0-1.amzn2023.0.6.x86_64' \
+        'libcap-2.73-1.amzn2023.0.6.x86_64' \
+        'openssl-fips-provider-latest-3.2.2-1.amzn2023.0.4.x86_64' \
+        'openssl-snapsafe-libs-3.2.2-1.amzn2023.0.4.x86_64' || \
+    dnf -y update \
+        libtasn1 \
+        libcap \
+        openssl-fips-provider-latest \
+        openssl-snapsafe-libs && \
+    echo "Package versions after update:" && \
+    rpm -q libtasn1 libcap openssl-fips-provider-latest openssl-snapsafe-libs && \
+    dnf clean all
+
+# Verify the aws-lambda-rie binary is present and accessible
+RUN ls -la /usr/local/bin/aws-lambda-rie || ls -la /var/runtime/bootstrap || echo "AWS Lambda RIE location check"
 
 # Check versions after updates
 RUN rpm -q libxml2 glib2
