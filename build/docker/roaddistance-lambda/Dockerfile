@@ -18,7 +18,7 @@ RUN set -eux && \
     # Fix Python package CVEs - remove vulnerable versions
     pip3 uninstall -y urllib3 pyasn1 requests protobuf || true && \
     rm -rf /var/lang/lib/python*/site-packages/{urllib3*,pyasn1*,protobuf*,requests*} \
-            ${LAMBDA_TASK_ROOT}/{urllib3*,pyasn1*,requests*,protobuf*} || true && \
+        ${LAMBDA_TASK_ROOT}/{urllib3*,pyasn1*,requests*,protobuf*} || true && \
     \
     # Install fixed Python packages
     pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}" && \
