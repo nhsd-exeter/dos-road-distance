@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:latest
+FROM public.ecr.aws/lambda/python:3.13
 
 # Set working directory and environment variables
 WORKDIR ${LAMBDA_TASK_ROOT}
@@ -67,21 +67,6 @@ RUN set -eux && \
     wget -O /tmp/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/download/v1.32/aws-lambda-rie-x86_64 && \
     chmod +x /tmp/aws-lambda-rie && \
     mv /tmp/aws-lambda-rie /usr/local/bin/aws-lambda-rie && \
-    \
-    # Verify installations and versions
-    echo "=== Package versions after CVE fixes ===" && \
-    rpm -q libtasn1 libcap openssl-fips-provider-latest openssl-snapsafe-libs libxml2 glib2 && \
-    ls -la /usr/local/bin/aws-lambda-rie && \
-    \
-    # Additional verification for specific CVE requirements
-    echo "=== Verifying CVE fix requirements ===" && \
-    rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' libtasn1 | grep -E '(4\.19\.0-1\.amzn2023\.0\.[6-9]|4\.1[0-9]\.|4\.[2-9][0-9]\.)' || echo "WARNING: libtasn1 version may not fully address CVE-2025-13151" && \
-    rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' libcap | grep -E '(2\.73-1\.amzn2023\.0\.[6-9]|2\.7[4-9]\.|2\.[8-9][0-9]\.)' || echo "WARNING: libcap version may not fully address CVE-2025-68119/CVE-2025-61731" && \
-    rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' openssl-fips-provider-latest | grep -E '(3\.2\.2-1\.amzn2023\.0\.[4-9]|3\.2\.[3-9]|3\.[3-9]\.)' || echo "WARNING: openssl-fips-provider-latest version may not fully address CVE-2025-15467" && \
-    rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' openssl-snapsafe-libs | grep -E '(3\.2\.2-1\.amzn2023\.0\.[4-9]|3\.2\.[3-9]|3\.[3-9]\.)' || echo "WARNING: openssl-snapsafe-libs version may not fully address CVE-2025-15467" && \
-    echo "=== Python package versions ===" && \
-    python3 -c "import urllib3; print(f'urllib3 version: {urllib3.__version__}')" && \
-    python3 -c "import pyasn1; print(f'pyasn1 version: {pyasn1.__version__}')" && \
     \
     # Clean up to reduce layer size
     dnf -y remove wget && \

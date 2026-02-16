@@ -1,49 +1,8 @@
-# Python cache and test files
 .pytest_cache
 __pycache__
-*.pyc
-*.pyo
-*.pyd
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-
-# Testing and documentation
 docs
 protoout
 tests
-*.log
-log/
-
-# Development files
+log/rd.log
 README.md
 yaml_to_json.py
-*.md
-.git
-.gitignore
-
-# IDE and editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
