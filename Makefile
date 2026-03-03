@@ -327,7 +327,40 @@ performance-deploy: # mandatory - PROFILE=[name], SECONDS=[time of performance]
 	eval "$$(make aws-assume-role-export-variables)"
 	eval "$$(make secret-fetch-and-export-variables ENVIRONMENT=performance)"
 	make k8s-deploy STACK=performance AWS_ECR=$(AWS_LAMBDA_ECR)
-	make k8s-job-simple-wait-to-complete TESTER_NAME=$(SERVICE_PREFIX) SECONDS=$(shell expr $(SECONDS) + 300)
+	make performance-wait SECONDS=$(SECONDS)
+
+performance-wait: ### Poll job completion with AWS credential refresh every 60s - mandatory: SECONDS=[timeout]
+	eval "$$(make k8s-kubeconfig-export-variables)"
+	total=$(shell expr $(or $(SECONDS), 3600) + 300)
+	interval=60
+	elapsed=0
+	echo "Polling job $(SERVICE_PREFIX) for completion every $${interval}s (timeout $${total}s)"
+	while [ $$elapsed -le $$total ]; do
+		unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+		eval "$$(make aws-assume-role-export-variables)"
+		eval "$$(make k8s-kubeconfig-export-variables)"
+		status=$$(kubectl get job $(SERVICE_PREFIX) --namespace=$(K8S_APP_NAMESPACE) \
+			-o jsonpath='{.status.conditions[?(@.type=="Complete")].status}' 2>/dev/null || echo "")
+		if [ "$$status" = "True" ]; then
+			echo "SUCCESS: Job $(SERVICE_PREFIX) completed at $${elapsed}s"
+			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(SERVICE_PREFIX) --tail=50 || echo "Could not retrieve logs"
+			exit 0
+		fi
+		failed=$$(kubectl get job $(SERVICE_PREFIX) --namespace=$(K8S_APP_NAMESPACE) \
+			-o jsonpath='{.status.conditions[?(@.type=="Failed")].status}' 2>/dev/null || echo "")
+		if [ "$$failed" = "True" ]; then
+			echo "ERROR: Job $(SERVICE_PREFIX) failed at $${elapsed}s"
+			kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(SERVICE_PREFIX) --tail=50 || echo "Could not retrieve logs"
+			exit 1
+		fi
+		echo "Job still running at $${elapsed}s elapsed, next check in $${interval}s..."
+		sleep $$interval
+		elapsed=$$((elapsed + interval))
+	done
+	echo "ERROR: Job $(SERVICE_PREFIX) did not complete within $${total}s"
+	kubectl get job $(SERVICE_PREFIX) --namespace=$(K8S_APP_NAMESPACE) -o wide || echo "Could not get job status"
+	kubectl logs --namespace=$(K8S_APP_NAMESPACE) job/$(SERVICE_PREFIX) --tail=50 || echo "Could not retrieve logs"
+	exit 1
 
 performance-delete: # mandatory - PROFILE=[name]
 	eval "$$(make aws-assume-role-export-variables)"
