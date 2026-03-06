@@ -57,6 +57,7 @@ class StepUpLoadShape(LoadTestShape):
         {"duration": 1800, "users": 90, "spawn_rate": 30, "request_file": "ccs_50_destinations.json"},
         {"duration": 2400, "users": 120, "spawn_rate": 40, "request_file": "ccs_50_destinations.json"},
         {"duration": 3000, "users": 150, "spawn_rate": 50, "request_file": "ccs_50_destinations.json"},
+        {"duration": 3600, "users": 180, "spawn_rate": 60, "request_file": "ccs_50_destinations.json"}
     ]
 
     def tick(self):
